@@ -74,3 +74,50 @@ List<dynamic> testArray() {
 String toCapitalize(String text) {
   return text[0].toUpperCase() + text.substring(1);
 }
+
+int objectArrayCount(dynamic objectArray) {
+  if (objectArray == null) {
+    return 0;
+  }
+  return objectArray.length;
+}
+
+List<dynamic> searchRuleDocumentsFilter(
+  List<dynamic> rulesArray,
+  String filterText,
+) {
+  final lowerCaseFilterText = filterText.toLowerCase();
+
+  final filteredArray = rulesArray.where((rule) {
+    final title = rule['document']['version']['title'].toString().toLowerCase();
+    return title.contains(lowerCaseFilterText);
+  }).toList();
+
+  return filteredArray;
+}
+
+List<dynamic> pagination(
+  List<dynamic> data,
+  int perPage,
+) {
+  int end = math.min(perPage, data.length);
+  return data.sublist(0, end);
+}
+
+List<dynamic> keywordsArrayNameKey(List<dynamic> keywordsArray) {
+  return keywordsArray.map((item) => {'name': item['key']}).toList();
+}
+
+int stringLength(String text) {
+  return text.length;
+}
+
+bool? isSameText(
+  String? firstText,
+  String? secondText,
+) {
+  if (firstText == secondText) {
+    return true;
+  }
+  return false;
+}

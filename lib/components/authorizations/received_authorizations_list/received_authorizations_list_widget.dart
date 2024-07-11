@@ -100,13 +100,15 @@ class _ReceivedAuthorizationsListWidgetState
           children: [
             Builder(
               builder: (context) {
-                final authorizationsItem = widget.authorizationsArray!.toList();
+                final authorizationsItem =
+                    widget.authorizationsArray!.toList();
                 if (authorizationsItem.isEmpty) {
                   return const EmptyListWidget(
                     title: 'Sin Autorizaciones',
                     text: 'No hay autorizaciones, intenta de nuevo más tarde.',
                   );
                 }
+
                 return ListView.separated(
                   padding: EdgeInsets.zero,
                   primary: false,

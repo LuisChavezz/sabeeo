@@ -222,4 +222,33 @@ class FFAppState extends ChangeNotifier {
   void insertAtIndexInAllAuthorizations(int index, dynamic value) {
     allAuthorizations.insert(index, value);
   }
+
+  List<dynamic> _rulesDocumentsArray = [];
+  List<dynamic> get rulesDocumentsArray => _rulesDocumentsArray;
+  set rulesDocumentsArray(List<dynamic> value) {
+    _rulesDocumentsArray = value;
+  }
+
+  void addToRulesDocumentsArray(dynamic value) {
+    rulesDocumentsArray.add(value);
+  }
+
+  void removeFromRulesDocumentsArray(dynamic value) {
+    rulesDocumentsArray.remove(value);
+  }
+
+  void removeAtIndexFromRulesDocumentsArray(int index) {
+    rulesDocumentsArray.removeAt(index);
+  }
+
+  void updateRulesDocumentsArrayAtIndex(
+    int index,
+    dynamic Function(dynamic) updateFn,
+  ) {
+    rulesDocumentsArray[index] = updateFn(_rulesDocumentsArray[index]);
+  }
+
+  void insertAtIndexInRulesDocumentsArray(int index, dynamic value) {
+    rulesDocumentsArray.insert(index, value);
+  }
 }

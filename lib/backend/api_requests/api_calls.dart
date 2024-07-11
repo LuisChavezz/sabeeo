@@ -13,8 +13,7 @@ const _kPrivateApiFunctionName = 'ffPrivateApiCall';
 /// Start Authenticate Group Code
 
 class AuthenticateGroup {
-  static String getBaseUrl() =>
-      'https://test-apiv2.menita.cloud/api/authenticate';
+  static String getBaseUrl() => 'https://apiv2.menita.cloud/api/authenticate';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
   };
@@ -167,7 +166,7 @@ class ValidateLoginOTPCall {
 /// Start Users Group Code
 
 class UsersGroup {
-  static String getBaseUrl() => 'https://test-apiv2.menita.cloud/api/users';
+  static String getBaseUrl() => 'https://apiv2.menita.cloud/api/users';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
   };
@@ -257,7 +256,7 @@ class ProfileCall {
 /// Start Anomalies Group Code
 
 class AnomaliesGroup {
-  static String getBaseUrl() => 'https://test-apiv2.menita.cloud/api/anomalies';
+  static String getBaseUrl() => 'https://apiv2.menita.cloud/api/anomalies';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
   };
@@ -317,7 +316,7 @@ class GetAnomaliesCall {
 /// Start KPI Group Code
 
 class KpiGroup {
-  static String getBaseUrl() => 'https://test-apiv2.menita.cloud/api/kpi';
+  static String getBaseUrl() => 'https://apiv2.menita.cloud/api/kpi';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
   };
@@ -373,8 +372,7 @@ class GetKpisCall {
 /// Start Memorandum Group Code
 
 class MemorandumGroup {
-  static String getBaseUrl() =>
-      'https://test-apiv2.menita.cloud/api/memorandum';
+  static String getBaseUrl() => 'https://apiv2.menita.cloud/api/memorandum';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
   };
@@ -463,7 +461,7 @@ class ConfirmMemorandumCall {
 
 class NotificationsGroup {
   static String getBaseUrl() =>
-      'https://test-apiv2.menita.cloud/api/broadcast-messages';
+      'https://apiv2.menita.cloud/api/broadcast-messages';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
   };
@@ -552,8 +550,7 @@ class ReadNotificactionCall {
 /// Start Authorizations Group Code
 
 class AuthorizationsGroup {
-  static String getBaseUrl() =>
-      'https://test-apiv2.menita.cloud/api/authorization';
+  static String getBaseUrl() => 'https://apiv2.menita.cloud/api/authorization';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
   };
@@ -563,6 +560,7 @@ class AuthorizationsGroup {
       AuthorizationDetailsCall();
   static ResponseAuthorizationCall responseAuthorizationCall =
       ResponseAuthorizationCall();
+  static GetHistoryAuthsCall getHistoryAuthsCall = GetHistoryAuthsCall();
 }
 
 class GetRequestedAuthsCall {
@@ -785,19 +783,19 @@ class ResponseAuthorizationCall {
       ));
 }
 
-/// End Authorizations Group Code
-
-class GetAllAuthorizationsCall {
-  static Future<ApiCallResponse> call({
+class GetHistoryAuthsCall {
+  Future<ApiCallResponse> call({
     String? token = '',
     int? page = 1,
     int? perPage = 10,
     String? searchKeys = 'subject',
     String? searchValue = '',
   }) async {
+    final baseUrl = AuthorizationsGroup.getBaseUrl();
+
     return ApiManager.instance.makeApiCall(
-      callName: 'Get All Authorizations',
-      apiUrl: 'https://test-apiv2.menita.cloud/api/authorization',
+      callName: 'Get History Auths',
+      apiUrl: '$baseUrl/historial/app_mitosis',
       callType: ApiCallType.GET,
       headers: {
         'Content-Type': 'application/json',
@@ -818,24 +816,131 @@ class GetAllAuthorizationsCall {
     );
   }
 
-  static List? rows(dynamic response) => getJsonField(
+  List? rows(dynamic response) => getJsonField(
         response,
         r'''$.data.rows''',
         true,
       ) as List?;
-  static int? totalRows(dynamic response) => castToType<int>(getJsonField(
+  int? totalRows(dynamic response) => castToType<int>(getJsonField(
         response,
         r'''$.data.total''',
       ));
-  static int? statusCode(dynamic response) => castToType<int>(getJsonField(
+  int? statusCode(dynamic response) => castToType<int>(getJsonField(
         response,
         r'''$.statusCode''',
       ));
-  static String? message(dynamic response) => castToType<String>(getJsonField(
+  String? message(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.message''',
       ));
 }
+
+/// End Authorizations Group Code
+
+/// Start Original API Endpoints Group Code
+
+class OriginalAPIEndpointsGroup {
+  static String getBaseUrl() => 'https://apiv2.menita.cloud/api';
+  static Map<String, String> headers = {
+    'Content-Type': 'application/json',
+  };
+  static GetDocumentsCall getDocumentsCall = GetDocumentsCall();
+  static ConfirmDocumentCall confirmDocumentCall = ConfirmDocumentCall();
+}
+
+class GetDocumentsCall {
+  Future<ApiCallResponse> call({
+    String? token = '',
+    int? page = 1,
+    int? perPage = 10,
+    String? searchValue = '',
+  }) async {
+    final baseUrl = OriginalAPIEndpointsGroup.getBaseUrl();
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'Get Documents',
+      apiUrl: '$baseUrl/confirmed-documents/user',
+      callType: ApiCallType.GET,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      params: {
+        'page': page,
+        'perPage': perPage,
+        'searchKeys': "document_name",
+        'searchValue': searchValue,
+        'sortBy': "id",
+        'descending': 1,
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  List? data(dynamic response) => getJsonField(
+        response,
+        r'''$.data''',
+        true,
+      ) as List?;
+  int? statusCode(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.statusCode''',
+      ));
+}
+
+class ConfirmDocumentCall {
+  Future<ApiCallResponse> call({
+    String? token = '',
+    int? documentId,
+    int? versionId,
+    bool? status = true,
+    String? nip = '',
+  }) async {
+    final baseUrl = OriginalAPIEndpointsGroup.getBaseUrl();
+
+    final ffApiRequestBody = '''
+{
+  "documentId": $documentId,
+  "versionId": $versionId,
+  "status": $status,
+  "nip": $nip
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'Confirm Document',
+      apiUrl: '$baseUrl/confirmed-documents/confirm',
+      callType: ApiCallType.POST,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  int? statusCode(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.statusCode''',
+      ));
+  String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+}
+
+/// End Original API Endpoints Group Code
 
 class ApiPagingParams {
   int nextPageNumber = 0;

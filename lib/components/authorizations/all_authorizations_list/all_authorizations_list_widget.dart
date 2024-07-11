@@ -67,18 +67,21 @@ class _AllAuthorizationsListWidgetState
       onRefresh: () async {
         Function() navigate = () {};
         await widget.toggleIsLoading?.call();
-        _model.refreshReqAuthsResp = await GetAllAuthorizationsCall.call(
+        _model.refreshReqAuthsResp =
+            await AuthorizationsGroup.getHistoryAuthsCall.call(
           token: currentAuthenticationToken,
           perPage: _model.moreAuthorizationsPerPage,
           searchValue: widget.searchValue,
         );
 
         if ((_model.refreshReqAuthsResp?.succeeded ?? true)) {
-          FFAppState().allAuthorizations = GetAllAuthorizationsCall.rows(
-            (_model.refreshReqAuthsResp?.jsonBody ?? ''),
-          )!
-              .toList()
-              .cast<dynamic>();
+          FFAppState().allAuthorizations =
+              AuthorizationsGroup.getHistoryAuthsCall
+                  .rows(
+                    (_model.refreshReqAuthsResp?.jsonBody ?? ''),
+                  )!
+                  .toList()
+                  .cast<dynamic>();
           _model.updatePage(() {});
         } else {
           if ((_model.refreshReqAuthsResp?.statusCode ?? 200) == 401) {
@@ -104,13 +107,15 @@ class _AllAuthorizationsListWidgetState
           children: [
             Builder(
               builder: (context) {
-                final authorizationsItem = widget.authorizationsArray!.toList();
+                final authorizationsItem =
+                    widget.authorizationsArray!.toList();
                 if (authorizationsItem.isEmpty) {
                   return const EmptyListWidget(
                     title: 'Sin Autorizaciones',
                     text: 'No hay autorizaciones, intenta de nuevo más tarde.',
                   );
                 }
+
                 return ListView.separated(
                   padding: EdgeInsets.zero,
                   primary: false,
@@ -348,7 +353,7 @@ class _AllAuthorizationsListWidgetState
                         _model.moreAuthorizationsPerPage + 10;
                     setState(() {});
                     _model.moreAuthorizationsResp =
-                        await GetAllAuthorizationsCall.call(
+                        await AuthorizationsGroup.getHistoryAuthsCall.call(
                       token: currentAuthenticationToken,
                       perPage: _model.moreAuthorizationsPerPage,
                       searchValue: widget.searchValue,
@@ -357,9 +362,10 @@ class _AllAuthorizationsListWidgetState
                     shouldSetState = true;
                     if ((_model.moreAuthorizationsResp?.succeeded ?? true)) {
                       FFAppState().allAuthorizations =
-                          GetAllAuthorizationsCall.rows(
-                        (_model.moreAuthorizationsResp?.jsonBody ?? ''),
-                      )!
+                          AuthorizationsGroup.getHistoryAuthsCall
+                              .rows(
+                                (_model.moreAuthorizationsResp?.jsonBody ?? ''),
+                              )!
                               .toList()
                               .cast<dynamic>();
                       _model.updatePage(() {});

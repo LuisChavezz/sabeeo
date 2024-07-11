@@ -11,9 +11,9 @@ class AllAuthorizationsListModel
 
   ///  State fields for stateful widgets in this component.
 
-  // Stores action output result for [Backend Call - API (Get All Authorizations)] action in Column widget.
+  // Stores action output result for [Backend Call - API (Get History Auths)] action in Column widget.
   ApiCallResponse? refreshReqAuthsResp;
-  // Stores action output result for [Backend Call - API (Get All Authorizations)] action in Button widget.
+  // Stores action output result for [Backend Call - API (Get History Auths)] action in Button widget.
   ApiCallResponse? moreAuthorizationsResp;
 
   @override

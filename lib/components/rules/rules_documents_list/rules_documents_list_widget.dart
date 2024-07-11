@@ -1,37 +1,39 @@
-import '/auth/custom_auth/auth_util.dart';
-import '/backend/api_requests/api_calls.dart';
 import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'requested_authorizations_list_model.dart';
-export 'requested_authorizations_list_model.dart';
+import 'rules_documents_list_model.dart';
+export 'rules_documents_list_model.dart';
 
-class RequestedAuthorizationsListWidget extends StatefulWidget {
-  const RequestedAuthorizationsListWidget({
+class RulesDocumentsListWidget extends StatefulWidget {
+  const RulesDocumentsListWidget({
     super.key,
-    required this.authorizationsArray,
-    required this.authorizationsTotalRows,
+    required this.rulesArray,
+    required this.rulesTotalRows,
     required this.toggleIsLoading,
     required this.searchValue,
+    required this.setMoreRules,
+    required this.reloadQuery,
   });
 
-  final List<dynamic>? authorizationsArray;
-  final int? authorizationsTotalRows;
+  final List<dynamic>? rulesArray;
+  final int? rulesTotalRows;
   final Future Function()? toggleIsLoading;
   final String? searchValue;
+  final Future Function(int perPage)? setMoreRules;
+  final Future Function()? reloadQuery;
 
   @override
-  State<RequestedAuthorizationsListWidget> createState() =>
-      _RequestedAuthorizationsListWidgetState();
+  State<RulesDocumentsListWidget> createState() =>
+      _RulesDocumentsListWidgetState();
 }
 
-class _RequestedAuthorizationsListWidgetState
-    extends State<RequestedAuthorizationsListWidget> {
-  late RequestedAuthorizationsListModel _model;
+class _RulesDocumentsListWidgetState extends State<RulesDocumentsListWidget> {
+  late RulesDocumentsListModel _model;
 
   @override
   void setState(VoidCallback callback) {
@@ -42,11 +44,11 @@ class _RequestedAuthorizationsListWidgetState
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => RequestedAuthorizationsListModel());
+    _model = createModel(context, () => RulesDocumentsListModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.moreAuthorizationsPerPage = 10;
+      _model.moreRulesPerPage = 10;
       setState(() {});
     });
   }
@@ -65,40 +67,7 @@ class _RequestedAuthorizationsListWidgetState
     return RefreshIndicator(
       color: FlutterFlowTheme.of(context).primary,
       onRefresh: () async {
-        Function() navigate = () {};
-        await widget.toggleIsLoading?.call();
-        _model.refreshReqAuthsResp =
-            await AuthorizationsGroup.getRequestedAuthsCall.call(
-          token: currentAuthenticationToken,
-          perPage: _model.moreAuthorizationsPerPage,
-          searchValue: widget.searchValue,
-        );
-
-        if ((_model.refreshReqAuthsResp?.succeeded ?? true)) {
-          FFAppState().reqAuthorizationsArray =
-              AuthorizationsGroup.getRequestedAuthsCall
-                  .rows(
-                    (_model.refreshReqAuthsResp?.jsonBody ?? ''),
-                  )!
-                  .toList()
-                  .cast<dynamic>();
-          _model.updatePage(() {});
-        } else {
-          if ((_model.refreshReqAuthsResp?.statusCode ?? 200) == 401) {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
-
-            navigate = () => context.goNamedAuth('Login', context.mounted);
-
-            navigate();
-            return;
-          }
-        }
-
-        await widget.toggleIsLoading?.call();
-
-        navigate();
+        await widget.reloadQuery?.call();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -107,9 +76,8 @@ class _RequestedAuthorizationsListWidgetState
           children: [
             Builder(
               builder: (context) {
-                final authorizationsItem =
-                    widget.authorizationsArray!.toList();
-                if (authorizationsItem.isEmpty) {
+                final rules = widget.rulesArray!.toList();
+                if (rules.isEmpty) {
                   return const EmptyListWidget(
                     title: 'Sin Autorizaciones',
                     text: 'No hay autorizaciones, intenta de nuevo más tarde.',
@@ -121,11 +89,10 @@ class _RequestedAuthorizationsListWidgetState
                   primary: false,
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
-                  itemCount: authorizationsItem.length,
+                  itemCount: rules.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 16.0),
-                  itemBuilder: (context, authorizationsItemIndex) {
-                    final authorizationsItemItem =
-                        authorizationsItem[authorizationsItemIndex];
+                  itemBuilder: (context, rulesIndex) {
+                    final rulesItem = rules[rulesIndex];
                     return InkWell(
                       splashColor: Colors.transparent,
                       focusColor: Colors.transparent,
@@ -133,20 +100,17 @@ class _RequestedAuthorizationsListWidgetState
                       highlightColor: Colors.transparent,
                       onTap: () async {
                         context.pushNamed(
-                          'Authorization_details',
+                          'Rule_details',
                           queryParameters: {
-                            'authorizationId': serializeParam(
-                              getJsonField(
-                                authorizationsItemItem,
-                                r'''$.id''',
-                              ).toString(),
-                              ParamType.String,
+                            'rulesDocument': serializeParam(
+                              rulesItem,
+                              ParamType.JSON,
                             ),
                           }.withoutNulls,
                         );
                       },
                       child: Container(
-                        height: 130.0,
+                        height: 150.0,
                         decoration: BoxDecoration(
                           color: FlutterFlowTheme.of(context).info,
                           boxShadow: const [
@@ -191,8 +155,8 @@ class _RequestedAuthorizationsListWidgetState
                                         Expanded(
                                           child: Text(
                                             getJsonField(
-                                              authorizationsItemItem,
-                                              r'''$.subject''',
+                                              rulesItem,
+                                              r'''$.document.version.title''',
                                             ).toString(),
                                             textAlign: TextAlign.start,
                                             maxLines: 2,
@@ -214,67 +178,53 @@ class _RequestedAuthorizationsListWidgetState
                                     Row(
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(24.0),
-                                              child: Image.network(
-                                                getJsonField(
-                                                  authorizationsItemItem,
-                                                  r'''$.emitter_profile_picture''',
-                                                ).toString(),
-                                                width: 35.0,
-                                                height: 35.0,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Solicitante',
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    fontFamily: 'Montserrat',
-                                                    fontSize: 12.0,
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.w300,
-                                                  ),
-                                            ),
-                                          ].divide(const SizedBox(width: 6.0)),
+                                        Icon(
+                                          Icons.business_rounded,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          size: 24.0,
                                         ),
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(24.0),
-                                              child: Image.network(
-                                                getJsonField(
-                                                  authorizationsItemItem,
-                                                  r'''$.originalAuthorizer_profile_picture''',
-                                                ).toString(),
-                                                width: 35.0,
-                                                height: 35.0,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Autorizador',
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    fontFamily: 'Montserrat',
-                                                    fontSize: 12.0,
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.w300,
-                                                  ),
-                                            ),
-                                          ].divide(const SizedBox(width: 6.0)),
+                                        Expanded(
+                                          child: Builder(
+                                            builder: (context) {
+                                              final company = getJsonField(
+                                                rulesItem,
+                                                r'''$.document.companies''',
+                                              ).toList();
+
+                                              return SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: List.generate(
+                                                      company.length,
+                                                      (companyIndex) {
+                                                    final companyItem =
+                                                        company[companyIndex];
+                                                    return ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              24.0),
+                                                      child: Image.network(
+                                                        getJsonField(
+                                                          companyItem,
+                                                          r'''$.logo''',
+                                                        ).toString(),
+                                                        width: 28.0,
+                                                        height: 28.0,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    );
+                                                  }).divide(
+                                                      const SizedBox(width: 12.0)),
+                                                ),
+                                              );
+                                            },
+                                          ),
                                         ),
-                                      ].divide(const SizedBox(width: 16.0)),
+                                      ].divide(const SizedBox(width: 12.0)),
                                     ),
                                     Row(
                                       mainAxisSize: MainAxisSize.max,
@@ -285,7 +235,7 @@ class _RequestedAuthorizationsListWidgetState
                                           Icons.calendar_month,
                                           color: FlutterFlowTheme.of(context)
                                               .secondaryText,
-                                          size: 20.0,
+                                          size: 22.0,
                                         ),
                                         Padding(
                                           padding:
@@ -293,9 +243,44 @@ class _RequestedAuthorizationsListWidgetState
                                                   0.0, 2.0, 0.0, 0.0),
                                           child: Text(
                                             getJsonField(
-                                              authorizationsItemItem,
-                                              r'''$.createdAt''',
+                                              rulesItem,
+                                              r'''$.document.version.createdAt''',
                                             ).toString(),
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Montserrat',
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .secondaryText,
+                                                  fontSize: 12.0,
+                                                  letterSpacing: 0.0,
+                                                  fontWeight: FontWeight.w300,
+                                                ),
+                                          ),
+                                        ),
+                                      ].divide(const SizedBox(width: 6.0)),
+                                    ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.hive_outlined,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          size: 22.0,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsetsDirectional.fromSTEB(
+                                                  0.0, 2.0, 0.0, 0.0),
+                                          child: Text(
+                                            '${functions.objectArrayCount(getJsonField(
+                                                  rulesItem,
+                                                  r'''$.document.version.departments''',
+                                                )).toString()} departamentos',
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
@@ -323,55 +308,23 @@ class _RequestedAuthorizationsListWidgetState
                 );
               },
             ),
-            if (FFAppState().reqAuthorizationsArray.length <
-                widget.authorizationsTotalRows!)
+            if (widget.rulesArray!.length <
+                functions
+                    .searchRuleDocumentsFilter(
+                        FFAppState().rulesDocumentsArray.toList(),
+                        widget.searchValue!)
+                    .length)
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
                 child: FFButtonWidget(
                   onPressed: () async {
-                    var shouldSetState = false;
-                    Function() navigate = () {};
                     await widget.toggleIsLoading?.call();
-                    _model.moreAuthorizationsPerPage =
-                        _model.moreAuthorizationsPerPage + 10;
+                    _model.moreRulesPerPage = _model.moreRulesPerPage + 10;
                     setState(() {});
-                    _model.moreAuthorizationsResp =
-                        await AuthorizationsGroup.getRequestedAuthsCall.call(
-                      token: currentAuthenticationToken,
-                      perPage: _model.moreAuthorizationsPerPage,
-                      searchValue: widget.searchValue,
+                    await widget.setMoreRules?.call(
+                      _model.moreRulesPerPage,
                     );
-
-                    shouldSetState = true;
-                    if ((_model.moreAuthorizationsResp?.succeeded ?? true)) {
-                      FFAppState().reqAuthorizationsArray =
-                          AuthorizationsGroup.getRequestedAuthsCall
-                              .rows(
-                                (_model.moreAuthorizationsResp?.jsonBody ?? ''),
-                              )!
-                              .toList()
-                              .cast<dynamic>();
-                      _model.updatePage(() {});
-                    } else {
-                      if ((_model.moreAuthorizationsResp?.statusCode ?? 200) ==
-                          401) {
-                        GoRouter.of(context).prepareAuthEvent();
-                        await authManager.signOut();
-                        GoRouter.of(context).clearRedirectLocation();
-
-                        navigate =
-                            () => context.goNamedAuth('Login', context.mounted);
-
-                        navigate();
-                        if (shouldSetState) setState(() {});
-                        return;
-                      }
-                    }
-
                     await widget.toggleIsLoading?.call();
-
-                    navigate();
-                    if (shouldSetState) setState(() {});
                   },
                   text: 'Ver más',
                   options: FFButtonOptions(

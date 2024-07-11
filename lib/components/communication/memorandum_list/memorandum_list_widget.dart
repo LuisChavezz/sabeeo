@@ -87,6 +87,7 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                     text: 'No hay memorandums, intenta de nuevo más tarde.',
                   );
                 }
+
                 return MasonryGridView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(

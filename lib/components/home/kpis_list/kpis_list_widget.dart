@@ -86,6 +86,7 @@ class _KpisListWidgetState extends State<KpisListWidget> {
                     text: 'No hay KPIs, intenta de nuevo más tarde.',
                   );
                 }
+
                 return ListView.separated(
                   padding: EdgeInsets.zero,
                   primary: false,

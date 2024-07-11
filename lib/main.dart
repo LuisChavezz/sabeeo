@@ -122,6 +122,7 @@ class _NavBarPageState extends State<NavBarPage> {
       'Home': const HomeWidget(),
       'Communication': const CommunicationWidget(),
       'Authorizations': const AuthorizationsWidget(),
+      'Rules': const RulesWidget(),
       'Menu_main': const MenuMainWidget(),
       'Dev': const DevWidget(),
     };
@@ -173,6 +174,18 @@ class _NavBarPageState extends State<NavBarPage> {
             ),
             activeIcon: Icon(
               FFIcons.kexclusin4,
+              size: 40.0,
+            ),
+            label: 'Autorizaciones',
+            tooltip: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              FFIcons.kgrupo2961,
+              size: 30.0,
+            ),
+            activeIcon: Icon(
+              FFIcons.kexclusin3,
               size: 40.0,
             ),
             label: 'Autorizaciones',

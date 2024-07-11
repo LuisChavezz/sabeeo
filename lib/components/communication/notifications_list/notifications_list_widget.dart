@@ -104,6 +104,7 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                     text: 'No hay notificaciones, intenta de nuevo más tarde.',
                   );
                 }
+
                 return ListView.separated(
                   padding: EdgeInsets.zero,
                   primary: false,

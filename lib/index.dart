@@ -4,7 +4,7 @@ export '/pages/authenticate/forgot_password/forgot_password_widget.dart'
     show ForgotPasswordWidget;
 export '/pages/menu/profile/profile/profile_widget.dart' show ProfileWidget;
 export '/pages/home/home/home_widget.dart' show HomeWidget;
-export '/pages/dev/dev_widget.dart' show DevWidget;
+export '/pages/test/dev/dev_widget.dart' show DevWidget;
 export '/pages/authenticate/login_sms/login_sms_widget.dart'
     show LoginSmsWidget;
 export '/pages/authenticate/login_otp/login_otp_widget.dart'
@@ -22,3 +22,6 @@ export '/pages/authorizations/authorizations_history/authorizations_history_widg
     show AuthorizationsHistoryWidget;
 export '/pages/authorizations/p_d_f_viewer/p_d_f_viewer_widget.dart'
     show PDFViewerWidget;
+export '/pages/rules/rules/rules_widget.dart' show RulesWidget;
+export '/pages/rules/rule_details/rule_details_widget.dart'
+    show RuleDetailsWidget;

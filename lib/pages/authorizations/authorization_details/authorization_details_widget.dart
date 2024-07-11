@@ -1,5 +1,6 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/components/authorizations/authorization_pdf_list/authorization_pdf_list_widget.dart';
 import '/components/ui/alert_message/alert_message_widget.dart';
 import '/components/ui/confirm_action/confirm_action_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -10,7 +11,6 @@ import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'authorization_details_model.dart';
 export 'authorization_details_model.dart';
@@ -374,7 +374,7 @@ class _AuthorizationDetailsWidgetState
                                     .body(
                                   (_model.authorizationResp?.jsonBody ?? ''),
                                 )!,
-                                onLinkTap: (url, _, __, ___) => launchURL(url!),
+                                onLinkTap: (url, _, __) => launchURL(url!),
                               ),
                             ),
                             if (AuthorizationsGroup.authorizationDetailsCall
@@ -388,162 +388,15 @@ class _AuthorizationDetailsWidgetState
                                   (_model.authorizationResp?.jsonBody ?? ''),
                                 ))!
                                     .isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 12.0, 0.0, 0.0),
-                                child: Container(
-                                  width: MediaQuery.sizeOf(context).width * 1.0,
-                                  decoration: BoxDecoration(
-                                    color: Colors.transparent,
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    border: Border.all(
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                          child: SvgPicture.network(
-                                            'https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg',
-                                            height: 60.0,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              if (false)
-                                                InkWell(
-                                                  splashColor:
-                                                      Colors.transparent,
-                                                  focusColor:
-                                                      Colors.transparent,
-                                                  hoverColor:
-                                                      Colors.transparent,
-                                                  highlightColor:
-                                                      Colors.transparent,
-                                                  onTap: () async {
-                                                    context.pushNamed(
-                                                      'PDF_viewer',
-                                                      queryParameters: {
-                                                        'pdfUrl':
-                                                            serializeParam(
-                                                          getJsonField(
-                                                            AuthorizationsGroup
-                                                                .authorizationDetailsCall
-                                                                .pdfResource(
-                                                                  (_model.authorizationResp
-                                                                          ?.jsonBody ??
-                                                                      ''),
-                                                                )
-                                                                ?.first,
-                                                            r'''$.content''',
-                                                          ).toString(),
-                                                          ParamType.String,
-                                                        ),
-                                                      }.withoutNulls,
-                                                    );
-                                                  },
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    children: [
-                                                      Icon(
-                                                        Icons
-                                                            .remove_red_eye_outlined,
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .secondaryText,
-                                                        size: 24.0,
-                                                      ),
-                                                      Text(
-                                                        'Ver PDF',
-                                                        style: FlutterFlowTheme
-                                                                .of(context)
-                                                            .bodyMedium
-                                                            .override(
-                                                              fontFamily:
-                                                                  'Montserrat',
-                                                              fontSize: 12.0,
-                                                              letterSpacing:
-                                                                  0.0,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
-                                                            ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              InkWell(
-                                                splashColor: Colors.transparent,
-                                                focusColor: Colors.transparent,
-                                                hoverColor: Colors.transparent,
-                                                highlightColor:
-                                                    Colors.transparent,
-                                                onTap: () async {
-                                                  await launchURL(getJsonField(
-                                                    AuthorizationsGroup
-                                                        .authorizationDetailsCall
-                                                        .pdfResource(
-                                                          (_model.authorizationResp
-                                                                  ?.jsonBody ??
-                                                              ''),
-                                                        )!
-                                                        .first,
-                                                    r'''$.content''',
-                                                  ).toString());
-                                                },
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  children: [
-                                                    Icon(
-                                                      Icons
-                                                          .browser_updated_outlined,
-                                                      color:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .secondaryText,
-                                                      size: 24.0,
-                                                    ),
-                                                    Text(
-                                                      'Abrir PDF',
-                                                      style: FlutterFlowTheme
-                                                              .of(context)
-                                                          .bodyMedium
-                                                          .override(
-                                                            fontFamily:
-                                                                'Montserrat',
-                                                            fontSize: 12.0,
-                                                            letterSpacing: 0.0,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                          ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ].divide(const SizedBox(width: 12.0)),
-                                    ),
-                                  ),
+                              wrapWithModel(
+                                model: _model.authorizationPdfListModel,
+                                updateCallback: () => setState(() {}),
+                                child: AuthorizationPdfListWidget(
+                                  pdfArray: AuthorizationsGroup
+                                      .authorizationDetailsCall
+                                      .pdfResource(
+                                    (_model.authorizationResp?.jsonBody ?? ''),
+                                  )!,
                                 ),
                               ),
                           ],

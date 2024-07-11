@@ -1,60 +1,66 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
-import '/components/authorizations/all_authorizations_list/all_authorizations_list_widget.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
+import '/components/rules/rules_documents_list/rules_documents_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'authorizations_history_model.dart';
-export 'authorizations_history_model.dart';
+import 'rules_model.dart';
+export 'rules_model.dart';
 
-class AuthorizationsHistoryWidget extends StatefulWidget {
-  const AuthorizationsHistoryWidget({super.key});
+class RulesWidget extends StatefulWidget {
+  const RulesWidget({super.key});
 
   @override
-  State<AuthorizationsHistoryWidget> createState() =>
-      _AuthorizationsHistoryWidgetState();
+  State<RulesWidget> createState() => _RulesWidgetState();
 }
 
-class _AuthorizationsHistoryWidgetState
-    extends State<AuthorizationsHistoryWidget> {
-  late AuthorizationsHistoryModel _model;
+class _RulesWidgetState extends State<RulesWidget> {
+  late RulesModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => AuthorizationsHistoryModel());
+    _model = createModel(context, () => RulesModel());
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       Function() navigate = () {};
       _model.isLoading = true;
       setState(() {});
-      _model.allAuthsResp = await AuthorizationsGroup.getHistoryAuthsCall.call(
+      _model.rulesResp = await OriginalAPIEndpointsGroup.getDocumentsCall.call(
         token: currentAuthenticationToken,
-        perPage: 10,
+        perPage: _model.rulesPerPage,
       );
 
-      if ((_model.allAuthsResp?.succeeded ?? true)) {
-        FFAppState().allAuthorizations = AuthorizationsGroup.getHistoryAuthsCall
-            .rows(
-              (_model.allAuthsResp?.jsonBody ?? ''),
-            )!
+      if ((_model.rulesResp?.succeeded ?? true)) {
+        FFAppState().rulesDocumentsArray =
+            OriginalAPIEndpointsGroup.getDocumentsCall
+                .data(
+                  (_model.rulesResp?.jsonBody ?? ''),
+                )!
+                .toList()
+                .cast<dynamic>();
+        setState(() {});
+        _model.rulesTotal = FFAppState().rulesDocumentsArray.length;
+        _model.rulesDocuments = functions
+            .pagination(
+                OriginalAPIEndpointsGroup.getDocumentsCall
+                    .data(
+                      (_model.rulesResp?.jsonBody ?? ''),
+                    )!
+                    .toList(),
+                _model.rulesPerPage!)
             .toList()
             .cast<dynamic>();
         setState(() {});
-        _model.authorizationsTotal =
-            AuthorizationsGroup.getHistoryAuthsCall.totalRows(
-          (_model.allAuthsResp?.jsonBody ?? ''),
-        );
-        setState(() {});
       } else {
-        if ((_model.allAuthsResp?.statusCode ?? 200) == 401) {
+        if ((_model.rulesResp?.statusCode ?? 200) == 401) {
           GoRouter.of(context).prepareAuthEvent();
           await authManager.signOut();
           GoRouter.of(context).clearRedirectLocation();
@@ -96,40 +102,28 @@ class _AuthorizationsHistoryWidgetState
         child: Scaffold(
           key: scaffoldKey,
           backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-          appBar: AppBar(
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-            automaticallyImplyLeading: false,
-            leading: FlutterFlowIconButton(
-              borderColor: Colors.transparent,
-              borderRadius: 30.0,
-              borderWidth: 1.0,
-              buttonSize: 60.0,
-              icon: Icon(
-                Icons.arrow_back_rounded,
-                color: FlutterFlowTheme.of(context).primaryText,
-                size: 30.0,
-              ),
-              onPressed: () async {
-                context.safePop();
-              },
-            ),
-            title: Text(
-              'Historial de Autorizaciones',
-              style: FlutterFlowTheme.of(context).headlineMedium.override(
-                    fontFamily: 'Montserrat',
-                    color: FlutterFlowTheme.of(context).secondaryText,
-                    fontSize: 18.0,
-                    letterSpacing: 0.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            actions: const [],
-            centerTitle: false,
-            elevation: 0.0,
-          ),
           body: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      'Tus Políticas y Procesos',
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            fontFamily: 'Montserrat',
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            fontSize: 20.0,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ].divide(const SizedBox(width: 16.0)),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 24.0),
                 child: Row(
@@ -201,56 +195,24 @@ class _AuthorizationsHistoryWidgetState
                       hoverColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       onTap: () async {
-                        var shouldSetState = false;
-                        Function() navigate = () {};
                         _model.isLoading = true;
-                        setState(() {});
                         _model.searchValue =
                             _model.searchFieldTextController.text;
+                        _model.rulesDocuments = functions
+                            .pagination(
+                                functions
+                                    .searchRuleDocumentsFilter(
+                                        FFAppState()
+                                            .rulesDocumentsArray
+                                            .toList(),
+                                        _model.searchFieldTextController.text)
+                                    .toList(),
+                                _model.rulesPerPage!)
+                            .toList()
+                            .cast<dynamic>();
                         setState(() {});
-                        _model.searchAuthsResp =
-                            await AuthorizationsGroup.getHistoryAuthsCall.call(
-                          token: currentAuthenticationToken,
-                          perPage: _model.authorizationsPerPage,
-                          searchValue: _model.searchFieldTextController.text,
-                        );
-
-                        shouldSetState = true;
-                        if ((_model.searchAuthsResp?.succeeded ?? true)) {
-                          FFAppState().allAuthorizations =
-                              AuthorizationsGroup.getHistoryAuthsCall
-                                  .rows(
-                                    (_model.searchAuthsResp?.jsonBody ?? ''),
-                                  )!
-                                  .toList()
-                                  .cast<dynamic>();
-                          setState(() {});
-                          _model.authorizationsTotal =
-                              AuthorizationsGroup.getHistoryAuthsCall.totalRows(
-                            (_model.searchAuthsResp?.jsonBody ?? ''),
-                          );
-                          setState(() {});
-                        } else {
-                          if ((_model.searchAuthsResp?.statusCode ?? 200) ==
-                              401) {
-                            GoRouter.of(context).prepareAuthEvent();
-                            await authManager.signOut();
-                            GoRouter.of(context).clearRedirectLocation();
-
-                            navigate = () =>
-                                context.goNamedAuth('Login', context.mounted);
-
-                            navigate();
-                            if (shouldSetState) setState(() {});
-                            return;
-                          }
-                        }
-
                         _model.isLoading = false;
                         setState(() {});
-
-                        navigate();
-                        if (shouldSetState) setState(() {});
                       },
                       child: Container(
                         width: 48.0,
@@ -283,9 +245,14 @@ class _AuthorizationsHistoryWidgetState
                         hoverColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                         onTap: () async {
-                          var shouldSetState = false;
-                          Function() navigate = () {};
                           _model.isLoading = true;
+                          _model.searchValue = null;
+                          _model.rulesDocuments = functions
+                              .pagination(
+                                  FFAppState().rulesDocumentsArray.toList(),
+                                  _model.rulesPerPage!)
+                              .toList()
+                              .cast<dynamic>();
                           setState(() {});
                           setState(() {
                             _model.searchFieldTextController?.text = '';
@@ -294,54 +261,8 @@ class _AuthorizationsHistoryWidgetState
                                     offset: _model.searchFieldTextController!
                                         .text.length);
                           });
-                          _model.searchValue = null;
-                          setState(() {});
-                          _model.clearSearchAuthsResp =
-                              await AuthorizationsGroup.getHistoryAuthsCall
-                                  .call(
-                            token: currentAuthenticationToken,
-                            perPage: _model.authorizationsPerPage,
-                          );
-
-                          shouldSetState = true;
-                          if ((_model.clearSearchAuthsResp?.succeeded ??
-                              true)) {
-                            FFAppState().allAuthorizations = AuthorizationsGroup
-                                .getHistoryAuthsCall
-                                .rows(
-                                  (_model.clearSearchAuthsResp?.jsonBody ?? ''),
-                                )!
-                                .toList()
-                                .cast<dynamic>();
-                            setState(() {});
-                            _model.authorizationsTotal = AuthorizationsGroup
-                                .getHistoryAuthsCall
-                                .totalRows(
-                              (_model.clearSearchAuthsResp?.jsonBody ?? ''),
-                            );
-                            setState(() {});
-                          } else {
-                            if ((_model.clearSearchAuthsResp?.statusCode ??
-                                    200) ==
-                                401) {
-                              GoRouter.of(context).prepareAuthEvent();
-                              await authManager.signOut();
-                              GoRouter.of(context).clearRedirectLocation();
-
-                              navigate = () =>
-                                  context.goNamedAuth('Login', context.mounted);
-
-                              navigate();
-                              if (shouldSetState) setState(() {});
-                              return;
-                            }
-                          }
-
                           _model.isLoading = false;
                           setState(() {});
-
-                          navigate();
-                          if (shouldSetState) setState(() {});
                         },
                         child: Container(
                           width: 48.0,
@@ -388,18 +309,97 @@ class _AuthorizationsHistoryWidgetState
                     padding:
                         const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 24.0),
                     child: wrapWithModel(
-                      model: _model.allAuthorizationsListModel,
+                      model: _model.rulesDocumentsListModel,
                       updateCallback: () => setState(() {}),
-                      child: AllAuthorizationsListWidget(
-                        authorizationsTotalRows: _model.authorizationsTotal!,
+                      child: RulesDocumentsListWidget(
+                        rulesTotalRows: _model.rulesTotal!,
                         searchValue: _model.searchValue != null &&
                                 _model.searchValue != ''
                             ? _model.searchValue!
                             : '',
-                        authorizationsArray: FFAppState().allAuthorizations,
+                        rulesArray: _model.rulesDocuments,
                         toggleIsLoading: () async {
                           _model.isLoading = !_model.isLoading;
                           setState(() {});
+                        },
+                        setMoreRules: (perPage) async {
+                          _model.rulesDocuments = functions
+                              .pagination(
+                                  functions
+                                      .searchRuleDocumentsFilter(
+                                          FFAppState()
+                                              .rulesDocumentsArray
+                                              .toList(),
+                                          _model.searchFieldTextController.text)
+                                      .toList(),
+                                  perPage)
+                              .toList()
+                              .cast<dynamic>();
+                          setState(() {});
+                        },
+                        reloadQuery: () async {
+                          var shouldSetState = false;
+                          Function() navigate = () {};
+                          _model.isLoading = true;
+                          setState(() {});
+                          _model.reloadRulesResp =
+                              await OriginalAPIEndpointsGroup.getDocumentsCall
+                                  .call(
+                            token: currentAuthenticationToken,
+                            perPage: _model.rulesPerPage,
+                          );
+
+                          shouldSetState = true;
+                          if ((_model.reloadRulesResp?.succeeded ?? true)) {
+                            FFAppState().rulesDocumentsArray =
+                                OriginalAPIEndpointsGroup.getDocumentsCall
+                                    .data(
+                                      (_model.reloadRulesResp?.jsonBody ?? ''),
+                                    )!
+                                    .toList()
+                                    .cast<dynamic>();
+                            setState(() {});
+                            _model.rulesTotal =
+                                FFAppState().rulesDocumentsArray.length;
+                            _model.rulesDocuments = functions
+                                .pagination(
+                                    functions
+                                        .searchRuleDocumentsFilter(
+                                            OriginalAPIEndpointsGroup
+                                                .getDocumentsCall
+                                                .data(
+                                                  (_model.reloadRulesResp
+                                                          ?.jsonBody ??
+                                                      ''),
+                                                )!
+                                                .toList(),
+                                            _model
+                                                .searchFieldTextController.text)
+                                        .toList(),
+                                    _model.rulesDocumentsListModel
+                                        .moreRulesPerPage)
+                                .toList()
+                                .cast<dynamic>();
+                            setState(() {});
+                          } else {
+                            if ((_model.reloadRulesResp?.statusCode ?? 200) ==
+                                401) {
+                              GoRouter.of(context).prepareAuthEvent();
+                              await authManager.signOut();
+                              GoRouter.of(context).clearRedirectLocation();
+
+                              navigate = () =>
+                                  context.goNamedAuth('Login', context.mounted);
+                              if (shouldSetState) setState(() {});
+                              return;
+                            }
+                          }
+
+                          _model.isLoading = false;
+                          setState(() {});
+
+                          navigate();
+                          if (shouldSetState) setState(() {});
                         },
                       ),
                     ),

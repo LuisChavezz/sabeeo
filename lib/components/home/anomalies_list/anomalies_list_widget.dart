@@ -88,6 +88,7 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                     text: 'No hay anomalías, intenta de nuevo más tarde.',
                   );
                 }
+
                 return MasonryGridView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
@@ -193,7 +194,8 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                 );
               },
             ),
-            if (FFAppState().anomaliesArray.length < widget.anomaliesTotalRows!)
+            if (FFAppState().anomaliesArray.length <
+                widget.anomaliesTotalRows!)
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
                 child: FFButtonWidget(

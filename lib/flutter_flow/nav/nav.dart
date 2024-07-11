@@ -187,6 +187,26 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               ParamType.String,
             ),
           ),
+        ),
+        FFRoute(
+          name: 'Rules',
+          path: '/rules',
+          builder: (context, params) =>
+              params.isEmpty ? const NavBarPage(initialPage: 'Rules') : const RulesWidget(),
+        ),
+        FFRoute(
+          name: 'Rule_details',
+          path: '/ruleDetails',
+          builder: (context, params) => RuleDetailsWidget(
+            rulesDocument: params.getParam(
+              'rulesDocument',
+              ParamType.JSON,
+            ),
+            authorizationId: params.getParam(
+              'authorizationId',
+              ParamType.String,
+            ),
+          ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );

@@ -699,7 +699,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                     fillColor: FlutterFlowTheme.of(context).secondary,
                     icon: Icon(
                       Icons.history_sharp,
-                      color: FlutterFlowTheme.of(context).primary,
+                      color: FlutterFlowTheme.of(context).tertiary,
                       size: 32.0,
                     ),
                     onPressed: () async {
