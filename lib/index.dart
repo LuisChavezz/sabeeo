@@ -9,12 +9,12 @@ export '/pages/authenticate/login_sms/login_sms_widget.dart'
     show LoginSmsWidget;
 export '/pages/authenticate/login_otp/login_otp_widget.dart'
     show LoginOtpWidget;
-export '/pages/menu/communication/communication/communication_widget.dart'
+export '/pages/communication/communication/communication_widget.dart'
     show CommunicationWidget;
 export '/pages/menu/menu_main/menu_main_widget.dart' show MenuMainWidget;
 export '/pages/authorizations/authorizations/authorizations_widget.dart'
     show AuthorizationsWidget;
-export '/pages/menu/communication/memorandum/memorandum_widget.dart'
+export '/pages/communication/memorandum/memorandum_widget.dart'
     show MemorandumWidget;
 export '/pages/authorizations/authorization_details/authorization_details_widget.dart'
     show AuthorizationDetailsWidget;

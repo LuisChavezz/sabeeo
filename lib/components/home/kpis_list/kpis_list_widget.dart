@@ -1,5 +1,6 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -55,6 +56,7 @@ class _KpisListWidgetState extends State<KpisListWidget> {
     return RefreshIndicator(
       color: FlutterFlowTheme.of(context).primary,
       onRefresh: () async {
+        Function() navigate = () {};
         await widget.toggleIsLoading?.call();
         _model.refreshKpisResp = await KpiGroup.getKpisCall.call(
           token: currentAuthenticationToken,
@@ -69,8 +71,47 @@ class _KpisListWidgetState extends State<KpisListWidget> {
               .toList()
               .cast<dynamic>();
           _model.updatePage(() {});
+        } else {
+          if ((_model.refreshKpisResp?.statusCode ?? 200) == 401) {
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
+
+            navigate = () => context.goNamedAuth('Login', context.mounted);
+
+            navigate();
+            return;
+          } else {
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              barrierColor: FlutterFlowTheme.of(context).barrierColor,
+              context: context,
+              builder: (context) {
+                return Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.refreshKpisResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      KpiGroup.getKpisCall
+                          .message(
+                            (_model.refreshKpisResp?.jsonBody ?? ''),
+                          )
+                          .toString(),
+                      'Ocurrió un error con el servidor.',
+                    ),
+                  ),
+                );
+              },
+            ).then((value) => safeSetState(() {}));
+          }
         }
+
         await widget.toggleIsLoading?.call();
+
+        navigate();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -202,6 +243,8 @@ class _KpisListWidgetState extends State<KpisListWidget> {
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
                 child: FFButtonWidget(
                   onPressed: () async {
+                    var shouldSetState = false;
+                    Function() navigate = () {};
                     await widget.toggleIsLoading?.call();
                     _model.moreKpisPerPage = _model.moreKpisPerPage + 10;
                     setState(() {});
@@ -210,6 +253,7 @@ class _KpisListWidgetState extends State<KpisListWidget> {
                       perPage: _model.moreKpisPerPage.toString(),
                     );
 
+                    shouldSetState = true;
                     if ((_model.moreKpisResp?.succeeded ?? true)) {
                       FFAppState().kpisArray = KpiGroup.getKpisCall
                           .rows(
@@ -218,10 +262,53 @@ class _KpisListWidgetState extends State<KpisListWidget> {
                           .toList()
                           .cast<dynamic>();
                       _model.updatePage(() {});
+                    } else {
+                      if ((_model.moreKpisResp?.statusCode ?? 200) == 401) {
+                        GoRouter.of(context).prepareAuthEvent();
+                        await authManager.signOut();
+                        GoRouter.of(context).clearRedirectLocation();
+
+                        navigate =
+                            () => context.goNamedAuth('Login', context.mounted);
+
+                        navigate();
+                        if (shouldSetState) setState(() {});
+                        return;
+                      } else {
+                        await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          barrierColor:
+                              FlutterFlowTheme.of(context).barrierColor,
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: MediaQuery.viewInsetsOf(context),
+                              child: AlertMessageWidget(
+                                buttonText: 'Aceptar',
+                                title:
+                                    'Error: ${KpiGroup.getKpisCall.statusCode(
+                                          (_model.moreKpisResp?.jsonBody ?? ''),
+                                        )?.toString()}',
+                                message: valueOrDefault<String>(
+                                  KpiGroup.getKpisCall
+                                      .message(
+                                        (_model.moreKpisResp?.jsonBody ?? ''),
+                                      )
+                                      .toString(),
+                                  'Ocurrió un error con el servidor.',
+                                ),
+                              ),
+                            );
+                          },
+                        ).then((value) => safeSetState(() {}));
+                      }
                     }
+
                     await widget.toggleIsLoading?.call();
 
-                    setState(() {});
+                    navigate();
+                    if (shouldSetState) setState(() {});
                   },
                   text: 'Ver más',
                   options: FFButtonOptions(

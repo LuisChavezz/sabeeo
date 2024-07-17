@@ -1,4 +1,5 @@
 import '/backend/api_requests/api_calls.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -333,6 +334,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget>
                                   children: [
                                     FFButtonWidget(
                                       onPressed: () async {
+                                        var shouldSetState = false;
                                         if (_model.formKey.currentState ==
                                                 null ||
                                             !_model.formKey.currentState!
@@ -346,53 +348,86 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget>
                                               .emailFieldTextController.text,
                                         );
 
+                                        shouldSetState = true;
                                         if ((_model
                                                 .recoverPassResp?.succeeded ??
                                             true)) {
-                                          await showDialog(
+                                          await showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            barrierColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .barrierColor,
                                             context: context,
-                                            builder: (alertDialogContext) {
-                                              return AlertDialog(
-                                                title:
-                                                    const Text('Solicitud enviada'),
-                                                content: const Text(
-                                                    'La solicitud de recuperación de contraseña ha sido enviada con éxito a su correo electrónico.'),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            alertDialogContext),
-                                                    child: const Text('Ok'),
+                                            builder: (context) {
+                                              return GestureDetector(
+                                                onTap: () => _model.unfocusNode
+                                                        .canRequestFocus
+                                                    ? FocusScope.of(context)
+                                                        .requestFocus(
+                                                            _model.unfocusNode)
+                                                    : FocusScope.of(context)
+                                                        .unfocus(),
+                                                child: Padding(
+                                                  padding:
+                                                      MediaQuery.viewInsetsOf(
+                                                          context),
+                                                  child: const AlertMessageWidget(
+                                                    buttonText: 'Aceptar',
+                                                    title: 'Solicitud enviada',
+                                                    message:
+                                                        'La solicitud de recuperación de contraseña ha sido enviada con éxito a su correo electrónico.',
                                                   ),
-                                                ],
+                                                ),
                                               );
                                             },
-                                          );
+                                          ).then(
+                                              (value) => safeSetState(() {}));
                                         } else {
-                                          await showDialog(
+                                          await showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            barrierColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .barrierColor,
                                             context: context,
-                                            builder: (alertDialogContext) {
-                                              return AlertDialog(
-                                                title: const Text(
-                                                    'Error en la solicitud'),
-                                                content: const Text(
-                                                    'Hubo un error al solicitar la recuperación de contraseña. Intentelo más tarde.'),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            alertDialogContext),
-                                                    child: const Text('Ok'),
+                                            builder: (context) {
+                                              return GestureDetector(
+                                                onTap: () => _model.unfocusNode
+                                                        .canRequestFocus
+                                                    ? FocusScope.of(context)
+                                                        .requestFocus(
+                                                            _model.unfocusNode)
+                                                    : FocusScope.of(context)
+                                                        .unfocus(),
+                                                child: Padding(
+                                                  padding:
+                                                      MediaQuery.viewInsetsOf(
+                                                          context),
+                                                  child: AlertMessageWidget(
+                                                    buttonText: 'Aceptar',
+                                                    title:
+                                                        'Error: ${(_model.recoverPassResp?.statusCode ?? 200).toString()}',
+                                                    message: UsersGroup
+                                                        .recoverPassCall
+                                                        .message(
+                                                      (_model.recoverPassResp
+                                                              ?.jsonBody ??
+                                                          ''),
+                                                    )!,
                                                   ),
-                                                ],
+                                                ),
                                               );
                                             },
-                                          );
+                                          ).then(
+                                              (value) => safeSetState(() {}));
+
+                                          if (shouldSetState) setState(() {});
+                                          return;
                                         }
 
                                         context.safePop();
-
-                                        setState(() {});
+                                        if (shouldSetState) setState(() {});
                                       },
                                       text: 'Enviar correo',
                                       options: FFButtonOptions(

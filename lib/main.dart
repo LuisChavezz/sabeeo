@@ -7,6 +7,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'auth/custom_auth/auth_util.dart';
 import 'auth/custom_auth/custom_auth_user_provider.dart';
 
+import 'backend/firebase/firebase_config.dart';
 import 'flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'index.dart';
@@ -15,6 +16,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
+  await initFirebase();
 
   await FlutterFlowTheme.initialize();
 
@@ -124,7 +126,6 @@ class _NavBarPageState extends State<NavBarPage> {
       'Authorizations': const AuthorizationsWidget(),
       'Rules': const RulesWidget(),
       'Menu_main': const MenuMainWidget(),
-      'Dev': const DevWidget(),
     };
     final currentIndex = tabs.keys.toList().indexOf(_currentPageName);
 
@@ -139,7 +140,7 @@ class _NavBarPageState extends State<NavBarPage> {
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         selectedItemColor: FlutterFlowTheme.of(context).primary,
         unselectedItemColor: FlutterFlowTheme.of(context).secondary,
-        showSelectedLabels: false,
+        showSelectedLabels: true,
         showUnselectedLabels: false,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
@@ -201,18 +202,6 @@ class _NavBarPageState extends State<NavBarPage> {
               size: 40.0,
             ),
             label: 'Menú',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              FFIcons.kgrupo2967,
-              size: 30.0,
-            ),
-            activeIcon: Icon(
-              FFIcons.kexclusin6,
-              size: 40.0,
-            ),
-            label: 'Dev',
             tooltip: '',
           )
         ],

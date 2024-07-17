@@ -1,6 +1,7 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/components/authorizations/all_authorizations_list/all_authorizations_list_widget.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -63,6 +64,34 @@ class _AuthorizationsHistoryWidgetState
 
           navigate();
           return;
+        } else {
+          await showModalBottomSheet(
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            barrierColor: FlutterFlowTheme.of(context).barrierColor,
+            context: context,
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => _model.unfocusNode.canRequestFocus
+                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+                    : FocusScope.of(context).unfocus(),
+                child: Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.allAuthsResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      AuthorizationsGroup.getHistoryAuthsCall.message(
+                        (_model.allAuthsResp?.jsonBody ?? ''),
+                      ),
+                      'Ocurrió un error en el servidor.',
+                    ),
+                  ),
+                ),
+              );
+            },
+          ).then((value) => safeSetState(() {}));
         }
       }
 
@@ -243,6 +272,39 @@ class _AuthorizationsHistoryWidgetState
                             navigate();
                             if (shouldSetState) setState(() {});
                             return;
+                          } else {
+                            await showModalBottomSheet(
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              barrierColor:
+                                  FlutterFlowTheme.of(context).barrierColor,
+                              context: context,
+                              builder: (context) {
+                                return GestureDetector(
+                                  onTap: () =>
+                                      _model.unfocusNode.canRequestFocus
+                                          ? FocusScope.of(context)
+                                              .requestFocus(_model.unfocusNode)
+                                          : FocusScope.of(context).unfocus(),
+                                  child: Padding(
+                                    padding: MediaQuery.viewInsetsOf(context),
+                                    child: AlertMessageWidget(
+                                      buttonText: 'Aceptar',
+                                      title:
+                                          'Error: ${(_model.searchAuthsResp?.statusCode ?? 200).toString()}',
+                                      message: valueOrDefault<String>(
+                                        AuthorizationsGroup.getHistoryAuthsCall
+                                            .message(
+                                          (_model.searchAuthsResp?.jsonBody ??
+                                              ''),
+                                        ),
+                                        'Ocurrió un error en el servidor.',
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ).then((value) => safeSetState(() {}));
                           }
                         }
 
@@ -334,6 +396,41 @@ class _AuthorizationsHistoryWidgetState
                               navigate();
                               if (shouldSetState) setState(() {});
                               return;
+                            } else {
+                              await showModalBottomSheet(
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                barrierColor:
+                                    FlutterFlowTheme.of(context).barrierColor,
+                                context: context,
+                                builder: (context) {
+                                  return GestureDetector(
+                                    onTap: () => _model
+                                            .unfocusNode.canRequestFocus
+                                        ? FocusScope.of(context)
+                                            .requestFocus(_model.unfocusNode)
+                                        : FocusScope.of(context).unfocus(),
+                                    child: Padding(
+                                      padding: MediaQuery.viewInsetsOf(context),
+                                      child: AlertMessageWidget(
+                                        buttonText: 'Aceptar',
+                                        title:
+                                            'Error: ${(_model.clearSearchAuthsResp?.statusCode ?? 200).toString()}',
+                                        message: valueOrDefault<String>(
+                                          AuthorizationsGroup
+                                              .getHistoryAuthsCall
+                                              .message(
+                                            (_model.clearSearchAuthsResp
+                                                    ?.jsonBody ??
+                                                ''),
+                                          ),
+                                          'Ocurrió un error en el servidor.',
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).then((value) => safeSetState(() {}));
                             }
                           }
 

@@ -1,5 +1,6 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -542,6 +543,44 @@ class _LoginWidgetState extends State<LoginWidget>
                                           );
                                           navigate = () => context.goNamedAuth(
                                               'Home', context.mounted);
+                                        } else {
+                                          await showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            barrierColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .barrierColor,
+                                            context: context,
+                                            builder: (context) {
+                                              return GestureDetector(
+                                                onTap: () => _model.unfocusNode
+                                                        .canRequestFocus
+                                                    ? FocusScope.of(context)
+                                                        .requestFocus(
+                                                            _model.unfocusNode)
+                                                    : FocusScope.of(context)
+                                                        .unfocus(),
+                                                child: Padding(
+                                                  padding:
+                                                      MediaQuery.viewInsetsOf(
+                                                          context),
+                                                  child: AlertMessageWidget(
+                                                    buttonText: 'Aceptar',
+                                                    title:
+                                                        'Error: ${(_model.loginResp?.statusCode ?? 200).toString()}',
+                                                    message: AuthenticateGroup
+                                                        .loginCall
+                                                        .message(
+                                                      (_model.loginResp
+                                                              ?.jsonBody ??
+                                                          ''),
+                                                    )!,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ).then(
+                                              (value) => safeSetState(() {}));
                                         }
 
                                         navigate();

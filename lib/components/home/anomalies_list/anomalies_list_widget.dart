@@ -1,5 +1,6 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -56,6 +57,7 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
     return RefreshIndicator(
       color: FlutterFlowTheme.of(context).primary,
       onRefresh: () async {
+        Function() navigate = () {};
         await widget.toggleIsLoading?.call();
         _model.refreshAnomaliesResp =
             await AnomaliesGroup.getAnomaliesCall.call(
@@ -71,8 +73,45 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
               .toList()
               .cast<dynamic>();
           _model.updatePage(() {});
+        } else {
+          if ((_model.refreshAnomaliesResp?.statusCode ?? 200) == 401) {
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
+
+            navigate = () => context.goNamedAuth('Login', context.mounted);
+
+            navigate();
+            return;
+          } else {
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              barrierColor: FlutterFlowTheme.of(context).barrierColor,
+              context: context,
+              builder: (context) {
+                return Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.refreshAnomaliesResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      AnomaliesGroup.getAnomaliesCall.message(
+                        (_model.refreshAnomaliesResp?.jsonBody ?? ''),
+                      ),
+                      'Ocurrió un error con el servidor.',
+                    ),
+                  ),
+                );
+              },
+            ).then((value) => safeSetState(() {}));
+          }
         }
+
         await widget.toggleIsLoading?.call();
+
+        navigate();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -200,6 +239,8 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
                 child: FFButtonWidget(
                   onPressed: () async {
+                    var shouldSetState = false;
+                    Function() navigate = () {};
                     await widget.toggleIsLoading?.call();
                     _model.moreAnomaliesPerPage =
                         _model.moreAnomaliesPerPage + 10;
@@ -210,6 +251,7 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                       perPage: _model.moreAnomaliesPerPage,
                     );
 
+                    shouldSetState = true;
                     if ((_model.moreAnomaliesResp?.succeeded ?? true)) {
                       FFAppState().anomaliesArray =
                           AnomaliesGroup.getAnomaliesCall
@@ -219,10 +261,50 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                               .toList()
                               .cast<dynamic>();
                       _model.updatePage(() {});
+                    } else {
+                      if ((_model.moreAnomaliesResp?.statusCode ?? 200) ==
+                          401) {
+                        GoRouter.of(context).prepareAuthEvent();
+                        await authManager.signOut();
+                        GoRouter.of(context).clearRedirectLocation();
+
+                        navigate =
+                            () => context.goNamedAuth('Login', context.mounted);
+
+                        navigate();
+                        if (shouldSetState) setState(() {});
+                        return;
+                      } else {
+                        await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          barrierColor:
+                              FlutterFlowTheme.of(context).barrierColor,
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: MediaQuery.viewInsetsOf(context),
+                              child: AlertMessageWidget(
+                                buttonText: 'Aceptar',
+                                title:
+                                    'Error: ${(_model.moreAnomaliesResp?.statusCode ?? 200).toString()}',
+                                message: valueOrDefault<String>(
+                                  AnomaliesGroup.getAnomaliesCall.message(
+                                    (_model.moreAnomaliesResp?.jsonBody ?? ''),
+                                  ),
+                                  'Ocurrió un error con el servidor.',
+                                ),
+                              ),
+                            );
+                          },
+                        ).then((value) => safeSetState(() {}));
+                      }
                     }
+
                     await widget.toggleIsLoading?.call();
 
-                    setState(() {});
+                    navigate();
+                    if (shouldSetState) setState(() {});
                   },
                   text: 'Ver más',
                   options: FFButtonOptions(

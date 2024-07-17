@@ -2,6 +2,7 @@ import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/components/home/anomalies_list/anomalies_list_widget.dart';
 import '/components/home/kpis_list/kpis_list_widget.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -52,11 +53,44 @@ class _HomeWidgetState extends State<HomeWidget> {
         );
         setState(() {});
       } else {
-        GoRouter.of(context).prepareAuthEvent();
-        await authManager.signOut();
-        GoRouter.of(context).clearRedirectLocation();
+        if ((_model.anomaliesResp?.statusCode ?? 200) == 401) {
+          GoRouter.of(context).prepareAuthEvent();
+          await authManager.signOut();
+          GoRouter.of(context).clearRedirectLocation();
 
-        navigate = () => context.goNamedAuth('Login', context.mounted);
+          navigate = () => context.goNamedAuth('Login', context.mounted);
+
+          navigate();
+          return;
+        } else {
+          await showModalBottomSheet(
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            barrierColor: FlutterFlowTheme.of(context).barrierColor,
+            context: context,
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => _model.unfocusNode.canRequestFocus
+                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+                    : FocusScope.of(context).unfocus(),
+                child: Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.anomaliesResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      AnomaliesGroup.getAnomaliesCall.message(
+                        (_model.anomaliesResp?.jsonBody ?? ''),
+                      ),
+                      'Ocurrió un error con el servidor.',
+                    ),
+                  ),
+                ),
+              );
+            },
+          ).then((value) => safeSetState(() {}));
+        }
       }
 
       _model.kpisResp = await KpiGroup.getKpisCall.call(
@@ -77,11 +111,46 @@ class _HomeWidgetState extends State<HomeWidget> {
         );
         setState(() {});
       } else {
-        GoRouter.of(context).prepareAuthEvent();
-        await authManager.signOut();
-        GoRouter.of(context).clearRedirectLocation();
+        if ((_model.kpisResp?.statusCode ?? 200) == 401) {
+          GoRouter.of(context).prepareAuthEvent();
+          await authManager.signOut();
+          GoRouter.of(context).clearRedirectLocation();
 
-        navigate = () => context.goNamedAuth('Login', context.mounted);
+          navigate = () => context.goNamedAuth('Login', context.mounted);
+
+          navigate();
+          return;
+        } else {
+          await showModalBottomSheet(
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            barrierColor: FlutterFlowTheme.of(context).barrierColor,
+            context: context,
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => _model.unfocusNode.canRequestFocus
+                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+                    : FocusScope.of(context).unfocus(),
+                child: Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.kpisResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      KpiGroup.getKpisCall
+                          .message(
+                            (_model.kpisResp?.jsonBody ?? ''),
+                          )
+                          .toString(),
+                      'Ocurrió un error con el servidor.',
+                    ),
+                  ),
+                ),
+              );
+            },
+          ).then((value) => safeSetState(() {}));
+        }
       }
 
       _model.isLoading = false;

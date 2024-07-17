@@ -1,4 +1,5 @@
 import '/backend/api_requests/api_calls.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -355,29 +356,45 @@ class _LoginSmsWidgetState extends State<LoginSmsWidget>
                                           if (shouldSetState) setState(() {});
                                           return;
                                         } else {
-                                          await showDialog(
+                                          await showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            barrierColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .barrierColor,
                                             context: context,
-                                            builder: (alertDialogContext) {
-                                              return AlertDialog(
-                                                title: const Text('Error'),
-                                                content: Text(AuthenticateGroup
-                                                    .loginOTPCall
-                                                    .message(
-                                                  (_model.loginOtpResp
-                                                          ?.jsonBody ??
-                                                      ''),
-                                                )!),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            alertDialogContext),
-                                                    child: const Text('Ok'),
+                                            builder: (context) {
+                                              return GestureDetector(
+                                                onTap: () => _model.unfocusNode
+                                                        .canRequestFocus
+                                                    ? FocusScope.of(context)
+                                                        .requestFocus(
+                                                            _model.unfocusNode)
+                                                    : FocusScope.of(context)
+                                                        .unfocus(),
+                                                child: Padding(
+                                                  padding:
+                                                      MediaQuery.viewInsetsOf(
+                                                          context),
+                                                  child: AlertMessageWidget(
+                                                    buttonText: 'Aceptar',
+                                                    title:
+                                                        'Error: ${(_model.loginOtpResp?.statusCode ?? 200).toString()}',
+                                                    message: AuthenticateGroup
+                                                        .loginOTPCall
+                                                        .message(
+                                                          (_model.loginOtpResp
+                                                                  ?.jsonBody ??
+                                                              ''),
+                                                        )
+                                                        .toString(),
                                                   ),
-                                                ],
+                                                ),
                                               );
                                             },
-                                          );
+                                          ).then(
+                                              (value) => safeSetState(() {}));
+
                                           if (shouldSetState) setState(() {});
                                           return;
                                         }

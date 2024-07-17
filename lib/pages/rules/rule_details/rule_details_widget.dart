@@ -1,5 +1,6 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/components/ui/confirm_rule_doc_action/confirm_rule_doc_action_widget.dart';
 import '/components/ui/tags_bottom_sheet/tags_bottom_sheet_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -69,6 +70,36 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
 
           navigate();
           return;
+        } else {
+          await showModalBottomSheet(
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            barrierColor: FlutterFlowTheme.of(context).barrierColor,
+            context: context,
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => _model.unfocusNode.canRequestFocus
+                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+                    : FocusScope.of(context).unfocus(),
+                child: Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.authorizationResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      AuthorizationsGroup.authorizationDetailsCall
+                          .message(
+                            (_model.authorizationResp?.jsonBody ?? ''),
+                          )
+                          .toString(),
+                      'Ocurrió un error en el servidor.',
+                    ),
+                  ),
+                ),
+              );
+            },
+          ).then((value) => safeSetState(() {}));
         }
       }
 
@@ -806,57 +837,84 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                                                         ?.statusCode ??
                                                     200) ==
                                                 401) {
-                                              await showDialog(
+                                              await showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                barrierColor:
+                                                    FlutterFlowTheme.of(context)
+                                                        .barrierColor,
                                                 context: context,
-                                                builder: (alertDialogContext) {
-                                                  return AlertDialog(
-                                                    title: Text(
-                                                        'Error: ${(_model.ruleDocConfirmResp?.statusCode ?? 200).toString()}'),
-                                                    content: Text(
-                                                        OriginalAPIEndpointsGroup
-                                                            .confirmDocumentCall
-                                                            .message(
-                                                      (_model.ruleDocConfirmResp
-                                                              ?.jsonBody ??
-                                                          ''),
-                                                    )!),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                alertDialogContext),
-                                                        child: const Text('Ok'),
+                                                builder: (context) {
+                                                  return GestureDetector(
+                                                    onTap: () => _model
+                                                            .unfocusNode
+                                                            .canRequestFocus
+                                                        ? FocusScope.of(context)
+                                                            .requestFocus(_model
+                                                                .unfocusNode)
+                                                        : FocusScope.of(context)
+                                                            .unfocus(),
+                                                    child: Padding(
+                                                      padding: MediaQuery
+                                                          .viewInsetsOf(
+                                                              context),
+                                                      child: const AlertMessageWidget(
+                                                        buttonText: 'Aceptar',
+                                                        title:
+                                                            'Lectura confirmada.',
+                                                        message:
+                                                            'La lectura del documento ha sido confirmada con éxito.',
                                                       ),
-                                                    ],
+                                                    ),
                                                   );
                                                 },
-                                              );
+                                              ).then((value) =>
+                                                  safeSetState(() {}));
                                             } else {
-                                              await showDialog(
+                                              await showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                barrierColor:
+                                                    FlutterFlowTheme.of(context)
+                                                        .barrierColor,
                                                 context: context,
-                                                builder: (alertDialogContext) {
-                                                  return AlertDialog(
-                                                    title: Text(
-                                                        'Error: ${(_model.ruleDocConfirmResp?.statusCode ?? 200).toString()}'),
-                                                    content: Text(
-                                                        OriginalAPIEndpointsGroup
-                                                            .confirmDocumentCall
-                                                            .message(
-                                                      (_model.ruleDocConfirmResp
-                                                              ?.jsonBody ??
-                                                          ''),
-                                                    )!),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                alertDialogContext),
-                                                        child: const Text('Ok'),
+                                                builder: (context) {
+                                                  return GestureDetector(
+                                                    onTap: () => _model
+                                                            .unfocusNode
+                                                            .canRequestFocus
+                                                        ? FocusScope.of(context)
+                                                            .requestFocus(_model
+                                                                .unfocusNode)
+                                                        : FocusScope.of(context)
+                                                            .unfocus(),
+                                                    child: Padding(
+                                                      padding: MediaQuery
+                                                          .viewInsetsOf(
+                                                              context),
+                                                      child: AlertMessageWidget(
+                                                        buttonText: 'Aceptar',
+                                                        title:
+                                                            'Error: ${(_model.ruleDocConfirmResp?.statusCode ?? 200).toString()}',
+                                                        message: valueOrDefault<
+                                                            String>(
+                                                          OriginalAPIEndpointsGroup
+                                                              .confirmDocumentCall
+                                                              .message(
+                                                            (_model.ruleDocConfirmResp
+                                                                    ?.jsonBody ??
+                                                                ''),
+                                                          ),
+                                                          'Ocurrió un error en el servidor.',
+                                                        ),
                                                       ),
-                                                    ],
+                                                    ),
                                                   );
                                                 },
-                                              );
+                                              ).then((value) =>
+                                                  safeSetState(() {}));
                                             }
 
                                             return;

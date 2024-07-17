@@ -107,8 +107,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Dev',
           path: '/dev',
-          builder: (context, params) =>
-              params.isEmpty ? const NavBarPage(initialPage: 'Dev') : const DevWidget(),
+          builder: (context, params) => const DevWidget(),
         ),
         FFRoute(
           name: 'Login_sms',

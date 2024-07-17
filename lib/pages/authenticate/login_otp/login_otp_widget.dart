@@ -316,7 +316,6 @@ class _LoginOtpWidgetState extends State<LoginOtpWidget>
                                     FFButtonWidget(
                                       onPressed: () async {
                                         var shouldSetState = false;
-                                        Function() navigate = () {};
                                         if (_model.formKey.currentState ==
                                                 null ||
                                             !_model.formKey.currentState!
@@ -353,41 +352,20 @@ class _LoginOtpWidgetState extends State<LoginOtpWidget>
                                                   ''),
                                             ),
                                           );
-                                          navigate = () => context.goNamedAuth(
+
+                                          context.goNamedAuth(
                                               'Home', context.mounted);
 
-                                          navigate();
                                           if (shouldSetState) setState(() {});
                                           return;
                                         } else {
-                                          await showDialog(
-                                            context: context,
-                                            builder: (alertDialogContext) {
-                                              return AlertDialog(
-                                                title: const Text('Error'),
-                                                content: Text(AuthenticateGroup
-                                                    .validateLoginOTPCall
-                                                    .message(
-                                                  (_model.validateOtpResp
-                                                          ?.jsonBody ??
-                                                      ''),
-                                                )!),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            alertDialogContext),
-                                                    child: const Text('Ok'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
                                           if (shouldSetState) setState(() {});
                                           return;
                                         }
 
-                                        navigate();
+                                        context.goNamedAuth(
+                                            'Home', context.mounted);
+
                                         if (shouldSetState) setState(() {});
                                       },
                                       text: 'Ingresar',

@@ -1,5 +1,6 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/components/ui/confirm_action/confirm_action_widget.dart';
 import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -83,6 +84,39 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
 
             navigate();
             return;
+          } else {
+            if ((_model.refreshNotificationsResp?.statusCode ?? 200) == 401) {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            } else {
+              await showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                barrierColor: FlutterFlowTheme.of(context).barrierColor,
+                context: context,
+                builder: (context) {
+                  return Padding(
+                    padding: MediaQuery.viewInsetsOf(context),
+                    child: AlertMessageWidget(
+                      buttonText: 'Aceptar',
+                      title:
+                          'Error: ${(_model.refreshNotificationsResp?.statusCode ?? 200).toString()}',
+                      message: valueOrDefault<String>(
+                        NotificationsGroup.getNotificationsCall
+                            .message(
+                              (_model.refreshNotificationsResp?.jsonBody ?? ''),
+                            )
+                            .toString(),
+                        'Ocurrió un error en el servidor.',
+                      ),
+                    ),
+                  );
+                },
+              ).then((value) => safeSetState(() {}));
+            }
           }
         }
 
@@ -340,6 +374,34 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                         navigate();
                         if (shouldSetState) setState(() {});
                         return;
+                      } else {
+                        await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          barrierColor:
+                              FlutterFlowTheme.of(context).barrierColor,
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: MediaQuery.viewInsetsOf(context),
+                              child: AlertMessageWidget(
+                                buttonText: 'Aceptar',
+                                title:
+                                    'Error: ${(_model.moreNotificationsResp?.statusCode ?? 200).toString()}',
+                                message: valueOrDefault<String>(
+                                  NotificationsGroup.getNotificationsCall
+                                      .message(
+                                        (_model.moreNotificationsResp
+                                                ?.jsonBody ??
+                                            ''),
+                                      )
+                                      .toString(),
+                                  'Ocurrió un error en el servidor.',
+                                ),
+                              ),
+                            );
+                          },
+                        ).then((value) => safeSetState(() {}));
                       }
                     }
 

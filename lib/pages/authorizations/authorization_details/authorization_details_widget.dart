@@ -70,6 +70,36 @@ class _AuthorizationDetailsWidgetState
 
           navigate();
           return;
+        } else {
+          await showModalBottomSheet(
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            barrierColor: FlutterFlowTheme.of(context).barrierColor,
+            context: context,
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => _model.unfocusNode.canRequestFocus
+                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+                    : FocusScope.of(context).unfocus(),
+                child: Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.authorizationResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      AuthorizationsGroup.authorizationDetailsCall
+                          .message(
+                            (_model.authorizationResp?.jsonBody ?? ''),
+                          )
+                          .toString(),
+                      'Ocurrió un error en el servidor.',
+                    ),
+                  ),
+                ),
+              );
+            },
+          ).then((value) => safeSetState(() {}));
         }
       }
 
@@ -468,6 +498,55 @@ class _AuthorizationDetailsWidgetState
                                                       200) ==
                                                   401) {
                                                 return;
+                                              } else {
+                                                await showModalBottomSheet(
+                                                  isScrollControlled: true,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  barrierColor:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .barrierColor,
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return GestureDetector(
+                                                      onTap: () => _model
+                                                              .unfocusNode
+                                                              .canRequestFocus
+                                                          ? FocusScope.of(
+                                                                  context)
+                                                              .requestFocus(_model
+                                                                  .unfocusNode)
+                                                          : FocusScope.of(
+                                                                  context)
+                                                              .unfocus(),
+                                                      child: Padding(
+                                                        padding: MediaQuery
+                                                            .viewInsetsOf(
+                                                                context),
+                                                        child:
+                                                            AlertMessageWidget(
+                                                          buttonText: 'Aceptar',
+                                                          title:
+                                                              'Error: ${(_model.rejectedAuthoResp?.statusCode ?? 200).toString()}',
+                                                          message:
+                                                              valueOrDefault<
+                                                                  String>(
+                                                            AuthorizationsGroup
+                                                                .responseAuthorizationCall
+                                                                .message(
+                                                              (_model.rejectedAuthoResp
+                                                                      ?.jsonBody ??
+                                                                  ''),
+                                                            ),
+                                                            'Ocurrió un error en el servidor.',
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ).then((value) =>
+                                                    safeSetState(() {}));
                                               }
                                             }
 
@@ -607,6 +686,55 @@ class _AuthorizationDetailsWidgetState
                                                       200) ==
                                                   401) {
                                                 return;
+                                              } else {
+                                                await showModalBottomSheet(
+                                                  isScrollControlled: true,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  barrierColor:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .barrierColor,
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return GestureDetector(
+                                                      onTap: () => _model
+                                                              .unfocusNode
+                                                              .canRequestFocus
+                                                          ? FocusScope.of(
+                                                                  context)
+                                                              .requestFocus(_model
+                                                                  .unfocusNode)
+                                                          : FocusScope.of(
+                                                                  context)
+                                                              .unfocus(),
+                                                      child: Padding(
+                                                        padding: MediaQuery
+                                                            .viewInsetsOf(
+                                                                context),
+                                                        child:
+                                                            AlertMessageWidget(
+                                                          buttonText: 'Aceptar',
+                                                          title:
+                                                              'Error: ${(_model.approvedAuthResp?.statusCode ?? 200).toString()}',
+                                                          message:
+                                                              valueOrDefault<
+                                                                  String>(
+                                                            AuthorizationsGroup
+                                                                .responseAuthorizationCall
+                                                                .message(
+                                                              (_model.approvedAuthResp
+                                                                      ?.jsonBody ??
+                                                                  ''),
+                                                            ),
+                                                            'Ocurrió un error en el servidor.',
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ).then((value) =>
+                                                    safeSetState(() {}));
                                               }
                                             }
 

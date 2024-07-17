@@ -1,5 +1,6 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -55,6 +56,7 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
     return RefreshIndicator(
       color: FlutterFlowTheme.of(context).primary,
       onRefresh: () async {
+        Function() navigate = () {};
         await widget.toggleIsLoading?.call();
         _model.refreshMemorandumsResp =
             await MemorandumGroup.getMemorandumsCall.call(
@@ -70,8 +72,42 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
               .toList()
               .cast<dynamic>();
           _model.updatePage(() {});
+        } else {
+          if ((_model.refreshMemorandumsResp?.statusCode ?? 200) == 401) {
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
+
+            navigate = () => context.goNamedAuth('Login', context.mounted);
+          } else {
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              barrierColor: FlutterFlowTheme.of(context).barrierColor,
+              context: context,
+              builder: (context) {
+                return Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.refreshMemorandumsResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      MemorandumGroup.getMemorandumsCall.message(
+                        (_model.refreshMemorandumsResp?.jsonBody ?? ''),
+                      ),
+                      'Ocurrió un error en el servidor.',
+                    ),
+                  ),
+                );
+              },
+            ).then((value) => safeSetState(() {}));
+          }
         }
+
         await widget.toggleIsLoading?.call();
+
+        navigate();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -218,6 +254,30 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                         navigate();
                         if (shouldSetState) setState(() {});
                         return;
+                      } else {
+                        await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          barrierColor:
+                              FlutterFlowTheme.of(context).barrierColor,
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: MediaQuery.viewInsetsOf(context),
+                              child: AlertMessageWidget(
+                                buttonText: 'Aceptar',
+                                title:
+                                    'Error: ${(_model.moreMemorandumResp?.statusCode ?? 200).toString()}',
+                                message: valueOrDefault<String>(
+                                  MemorandumGroup.getMemorandumsCall.message(
+                                    (_model.moreMemorandumResp?.jsonBody ?? ''),
+                                  ),
+                                  'Ocurrió un error en el servidor.',
+                                ),
+                              ),
+                            );
+                          },
+                        ).then((value) => safeSetState(() {}));
                       }
                     }
 

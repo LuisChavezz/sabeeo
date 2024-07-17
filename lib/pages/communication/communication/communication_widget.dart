@@ -2,6 +2,7 @@ import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/components/communication/memorandum_list/memorandum_list_widget.dart';
 import '/components/communication/notifications_list/notifications_list_widget.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -61,6 +62,34 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
 
           navigate();
           return;
+        } else {
+          await showModalBottomSheet(
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            barrierColor: FlutterFlowTheme.of(context).barrierColor,
+            context: context,
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => _model.unfocusNode.canRequestFocus
+                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+                    : FocusScope.of(context).unfocus(),
+                child: Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.memorandumsResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      MemorandumGroup.getMemorandumsCall.message(
+                        (_model.memorandumsResp?.jsonBody ?? ''),
+                      ),
+                      'Ocurrió un error en el servidor.',
+                    ),
+                  ),
+                ),
+              );
+            },
+          ).then((value) => safeSetState(() {}));
         }
       }
 
@@ -94,6 +123,36 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
 
           navigate();
           return;
+        } else {
+          await showModalBottomSheet(
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            barrierColor: FlutterFlowTheme.of(context).barrierColor,
+            context: context,
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => _model.unfocusNode.canRequestFocus
+                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+                    : FocusScope.of(context).unfocus(),
+                child: Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.notificationsResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      NotificationsGroup.getNotificationsCall
+                          .message(
+                            (_model.notificationsResp?.jsonBody ?? ''),
+                          )
+                          .toString(),
+                      'Ocurrió un error en el servidor.',
+                    ),
+                  ),
+                ),
+              );
+            },
+          ).then((value) => safeSetState(() {}));
         }
       }
 

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "300052433540",
+    "project_id": "sabeeo-6d3a5",
+    "storage_bucket": "sabeeo-6d3a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300052433540:android:ed1c9ed5b1d9de51b0d0d1",
+        "android_client_info": {
+          "package_name": "com.kinceit.sabeeo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCpvYOA4APqVrk766jRxeZagyj3mrFncs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300052433540:android:b9207a86c5accc6bb0d0d1",
+        "android_client_info": {
+          "package_name": "com.mycompany.sabeeo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCpvYOA4APqVrk766jRxeZagyj3mrFncs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,6 +2,7 @@ import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/components/authorizations/received_authorizations_list/received_authorizations_list_widget.dart';
 import '/components/authorizations/requested_authorizations_list/requested_authorizations_list_widget.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -65,6 +66,36 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
 
           navigate();
           return;
+        } else {
+          await showModalBottomSheet(
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            barrierColor: FlutterFlowTheme.of(context).barrierColor,
+            context: context,
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => _model.unfocusNode.canRequestFocus
+                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+                    : FocusScope.of(context).unfocus(),
+                child: Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.reqAuthsResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      AuthorizationsGroup.getRequestedAuthsCall
+                          .message(
+                            (_model.reqAuthsResp?.jsonBody ?? ''),
+                          )
+                          .toString(),
+                      'Ocurrió un error en el servidor.',
+                    ),
+                  ),
+                ),
+              );
+            },
+          ).then((value) => safeSetState(() {}));
         }
       }
 
@@ -97,6 +128,36 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
 
           navigate();
           return;
+        } else {
+          await showModalBottomSheet(
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            barrierColor: FlutterFlowTheme.of(context).barrierColor,
+            context: context,
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => _model.unfocusNode.canRequestFocus
+                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+                    : FocusScope.of(context).unfocus(),
+                child: Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.recAuthsResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      AuthorizationsGroup.getReceivedAuthsCall
+                          .message(
+                            (_model.recAuthsResp?.jsonBody ?? ''),
+                          )
+                          .toString(),
+                      'Ocurrió un erro en el servidor.',
+                    ),
+                  ),
+                ),
+              );
+            },
+          ).then((value) => safeSetState(() {}));
         }
       }
 
@@ -377,6 +438,44 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                   navigate();
                                   if (shouldSetState) setState(() {});
                                   return;
+                                } else {
+                                  await showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    barrierColor: FlutterFlowTheme.of(context)
+                                        .barrierColor,
+                                    context: context,
+                                    builder: (context) {
+                                      return GestureDetector(
+                                        onTap: () => _model
+                                                .unfocusNode.canRequestFocus
+                                            ? FocusScope.of(context)
+                                                .requestFocus(
+                                                    _model.unfocusNode)
+                                            : FocusScope.of(context).unfocus(),
+                                        child: Padding(
+                                          padding:
+                                              MediaQuery.viewInsetsOf(context),
+                                          child: AlertMessageWidget(
+                                            buttonText: 'Aceptar',
+                                            title:
+                                                'Error: ${(_model.reqSearchAuthsResp?.statusCode ?? 200).toString()}',
+                                            message: valueOrDefault<String>(
+                                              AuthorizationsGroup
+                                                  .getRequestedAuthsCall
+                                                  .message(
+                                                    (_model.reqSearchAuthsResp
+                                                            ?.jsonBody ??
+                                                        ''),
+                                                  )
+                                                  .toString(),
+                                              'Ocurrió un erro en el servidor.',
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ).then((value) => safeSetState(() {}));
                                 }
                               }
                             } else {
@@ -425,6 +524,44 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                   navigate();
                                   if (shouldSetState) setState(() {});
                                   return;
+                                } else {
+                                  await showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    barrierColor: FlutterFlowTheme.of(context)
+                                        .barrierColor,
+                                    context: context,
+                                    builder: (context) {
+                                      return GestureDetector(
+                                        onTap: () => _model
+                                                .unfocusNode.canRequestFocus
+                                            ? FocusScope.of(context)
+                                                .requestFocus(
+                                                    _model.unfocusNode)
+                                            : FocusScope.of(context).unfocus(),
+                                        child: Padding(
+                                          padding:
+                                              MediaQuery.viewInsetsOf(context),
+                                          child: AlertMessageWidget(
+                                            buttonText: 'Aceptar',
+                                            title:
+                                                'Error: ${(_model.recSearchAuthsResp?.statusCode ?? 200).toString()}',
+                                            message: valueOrDefault<String>(
+                                              AuthorizationsGroup
+                                                  .getReceivedAuthsCall
+                                                  .message(
+                                                    (_model.recSearchAuthsResp
+                                                            ?.jsonBody ??
+                                                        ''),
+                                                  )
+                                                  .toString(),
+                                              'Ocurrió un error en el servidor.',
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ).then((value) => safeSetState(() {}));
                                 }
                               }
                             }
@@ -534,6 +671,45 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                     navigate();
                                     if (shouldSetState) setState(() {});
                                     return;
+                                  } else {
+                                    await showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      barrierColor: FlutterFlowTheme.of(context)
+                                          .barrierColor,
+                                      context: context,
+                                      builder: (context) {
+                                        return GestureDetector(
+                                          onTap: () => _model
+                                                  .unfocusNode.canRequestFocus
+                                              ? FocusScope.of(context)
+                                                  .requestFocus(
+                                                      _model.unfocusNode)
+                                              : FocusScope.of(context)
+                                                  .unfocus(),
+                                          child: Padding(
+                                            padding: MediaQuery.viewInsetsOf(
+                                                context),
+                                            child: AlertMessageWidget(
+                                              buttonText: 'Aceptar',
+                                              title:
+                                                  'Error: ${(_model.reqClearSearchAuthsResp?.statusCode ?? 200).toString()}',
+                                              message: valueOrDefault<String>(
+                                                AuthorizationsGroup
+                                                    .getRequestedAuthsCall
+                                                    .message(
+                                                      (_model.reqClearSearchAuthsResp
+                                                              ?.jsonBody ??
+                                                          ''),
+                                                    )
+                                                    .toString(),
+                                                'Ocurrió un error en el servidor.',
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ).then((value) => safeSetState(() {}));
                                   }
                                 }
                               } else {
@@ -584,6 +760,45 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                     navigate();
                                     if (shouldSetState) setState(() {});
                                     return;
+                                  } else {
+                                    await showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      barrierColor: FlutterFlowTheme.of(context)
+                                          .barrierColor,
+                                      context: context,
+                                      builder: (context) {
+                                        return GestureDetector(
+                                          onTap: () => _model
+                                                  .unfocusNode.canRequestFocus
+                                              ? FocusScope.of(context)
+                                                  .requestFocus(
+                                                      _model.unfocusNode)
+                                              : FocusScope.of(context)
+                                                  .unfocus(),
+                                          child: Padding(
+                                            padding: MediaQuery.viewInsetsOf(
+                                                context),
+                                            child: AlertMessageWidget(
+                                              buttonText: 'Aceptar',
+                                              title:
+                                                  'Error: ${(_model.recClearSearchAuthsResp?.statusCode ?? 200).toString()}',
+                                              message: valueOrDefault<String>(
+                                                AuthorizationsGroup
+                                                    .getReceivedAuthsCall
+                                                    .message(
+                                                      (_model.recClearSearchAuthsResp
+                                                              ?.jsonBody ??
+                                                          ''),
+                                                    )
+                                                    .toString(),
+                                                'Ocurrió un error en el servidor.',
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ).then((value) => safeSetState(() {}));
                                   }
                                 }
                               }

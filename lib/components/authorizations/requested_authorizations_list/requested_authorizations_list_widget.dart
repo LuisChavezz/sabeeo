@@ -1,5 +1,6 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/components/ui/alert_message/alert_message_widget.dart';
 import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -93,6 +94,31 @@ class _RequestedAuthorizationsListWidgetState
 
             navigate();
             return;
+          } else {
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              barrierColor: FlutterFlowTheme.of(context).barrierColor,
+              context: context,
+              builder: (context) {
+                return Padding(
+                  padding: MediaQuery.viewInsetsOf(context),
+                  child: AlertMessageWidget(
+                    buttonText: 'Aceptar',
+                    title:
+                        'Error: ${(_model.refreshReqAuthsResp?.statusCode ?? 200).toString()}',
+                    message: valueOrDefault<String>(
+                      AuthorizationsGroup.getRequestedAuthsCall
+                          .message(
+                            (_model.refreshReqAuthsResp?.jsonBody ?? ''),
+                          )
+                          .toString(),
+                      'Ocurrió un error en el servidor.',
+                    ),
+                  ),
+                );
+              },
+            ).then((value) => safeSetState(() {}));
           }
         }
 
@@ -365,6 +391,34 @@ class _RequestedAuthorizationsListWidgetState
                         navigate();
                         if (shouldSetState) setState(() {});
                         return;
+                      } else {
+                        await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          barrierColor:
+                              FlutterFlowTheme.of(context).barrierColor,
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: MediaQuery.viewInsetsOf(context),
+                              child: AlertMessageWidget(
+                                buttonText: 'Aceptar',
+                                title:
+                                    'Error: ${(_model.moreAuthorizationsResp?.statusCode ?? 200).toString()}',
+                                message: valueOrDefault<String>(
+                                  AuthorizationsGroup.getRequestedAuthsCall
+                                      .message(
+                                        (_model.moreAuthorizationsResp
+                                                ?.jsonBody ??
+                                            ''),
+                                      )
+                                      .toString(),
+                                  'Ocurrió un error en el servidor.',
+                                ),
+                              ),
+                            );
+                          },
+                        ).then((value) => safeSetState(() {}));
                       }
                     }
 

@@ -104,7 +104,7 @@ class LoginOTPCall {
         response,
         r'''$.data.success''',
       ));
-  String? message(dynamic response) => castToType<String>(getJsonField(
+  String? dataMessage(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.data.message''',
       ));
@@ -112,6 +112,10 @@ class LoginOTPCall {
         response,
         r'''$.statusCode''',
       ));
+  dynamic message(dynamic response) => getJsonField(
+        response,
+        r'''$.message''',
+      );
 }
 
 class ValidateLoginOTPCall {
@@ -309,6 +313,10 @@ class GetAnomaliesCall {
         response,
         r'''$.data.total''',
       ));
+  String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
 }
 
 /// End Anomalies Group Code
@@ -365,6 +373,10 @@ class GetKpisCall {
         response,
         r'''$.statusCode''',
       ));
+  dynamic message(dynamic response) => getJsonField(
+        response,
+        r'''$.message''',
+      );
 }
 
 /// End KPI Group Code
@@ -511,6 +523,10 @@ class GetNotificationsCall {
         response,
         r'''$.statusCode''',
       ));
+  dynamic message(dynamic response) => getJsonField(
+        response,
+        r'''$.message''',
+      );
 }
 
 class ReadNotificactionCall {
@@ -609,6 +625,10 @@ class GetRequestedAuthsCall {
         response,
         r'''$.statusCode''',
       ));
+  dynamic message(dynamic response) => getJsonField(
+        response,
+        r'''$.message''',
+      );
 }
 
 class GetReceivedAuthsCall {
@@ -657,6 +677,10 @@ class GetReceivedAuthsCall {
         response,
         r'''$.statusCode''',
       ));
+  dynamic message(dynamic response) => getJsonField(
+        response,
+        r'''$.message''',
+      );
 }
 
 class AuthorizationDetailsCall {
@@ -727,6 +751,10 @@ class AuthorizationDetailsCall {
         r'''$.data.pdfResource''',
         true,
       ) as List?;
+  dynamic message(dynamic response) => getJsonField(
+        response,
+        r'''$.message''',
+      );
 }
 
 class ResponseAuthorizationCall {
