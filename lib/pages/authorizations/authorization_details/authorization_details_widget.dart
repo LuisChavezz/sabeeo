@@ -173,658 +173,680 @@ class _AuthorizationDetailsWidgetState
             centerTitle: false,
             elevation: 0.0,
           ),
-          body: Stack(
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  if (_model.isLoading)
-                    Align(
-                      alignment: const AlignmentDirectional(0.0, 0.0),
-                      child: Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 24.0),
-                        child: Lottie.asset(
-                          'assets/lottie_animations/Animation_-_1716841230423.json',
-                          width: MediaQuery.sizeOf(context).width * 0.5,
-                          height: MediaQuery.sizeOf(context).height * 0.25,
-                          fit: BoxFit.contain,
-                          animate: true,
+          body: SafeArea(
+            top: true,
+            child: Stack(
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    if (_model.isLoading)
+                      Align(
+                        alignment: const AlignmentDirectional(0.0, 0.0),
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 0.0, 24.0),
+                          child: Lottie.asset(
+                            'assets/lottie_animations/Animation_-_1716841230423.json',
+                            width: MediaQuery.sizeOf(context).width * 0.5,
+                            height: MediaQuery.sizeOf(context).height * 0.25,
+                            fit: BoxFit.contain,
+                            animate: true,
+                          ),
                         ),
                       ),
-                    ),
-                  if (!_model.isLoading)
-                    Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(24.0, 8.0, 24.0, 24.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 8.0),
-                                    child: Text(
-                                      valueOrDefault<String>(
-                                        AuthorizationsGroup
-                                            .authorizationDetailsCall
-                                            .subject(
-                                          (_model.authorizationResp?.jsonBody ??
-                                              ''),
-                                        ),
-                                        'Detalles de la Autorización',
-                                      ),
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
-                                            fontFamily: 'Montserrat',
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(24.0),
-                                      child: Image.network(
-                                        AuthorizationsGroup
-                                            .authorizationDetailsCall
-                                            .emitterProfilePic(
-                                          (_model.authorizationResp?.jsonBody ??
-                                              ''),
-                                        )!,
-                                        width: 35.0,
-                                        height: 35.0,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Solicitante',
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 12.0,
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w300,
-                                          ),
-                                    ),
-                                  ].divide(const SizedBox(width: 6.0)),
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(24.0),
-                                      child: Image.network(
-                                        AuthorizationsGroup
-                                            .authorizationDetailsCall
-                                            .authorizerProfilePic(
-                                          (_model.authorizationResp?.jsonBody ??
-                                              ''),
-                                        )!,
-                                        width: 35.0,
-                                        height: 35.0,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Autorizador',
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 12.0,
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w300,
-                                          ),
-                                    ),
-                                  ].divide(const SizedBox(width: 6.0)),
-                                ),
-                              ].divide(const SizedBox(width: 16.0)),
-                            ),
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 4.0, 0.0, 0.0),
-                              child: Row(
+                    if (!_model.isLoading)
+                      Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            24.0, 8.0, 24.0, 24.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Row(
                                 mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.calendar_month,
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        size: 20.0,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 2.0, 0.0, 0.0),
-                                        child: Text(
-                                          valueOrDefault<String>(
-                                            AuthorizationsGroup
-                                                .authorizationDetailsCall
-                                                .date(
-                                              (_model.authorizationResp
-                                                      ?.jsonBody ??
-                                                  ''),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          0.0, 0.0, 0.0, 8.0),
+                                      child: Text(
+                                        valueOrDefault<String>(
+                                          AuthorizationsGroup
+                                              .authorizationDetailsCall
+                                              .subject(
+                                            (_model.authorizationResp
+                                                    ?.jsonBody ??
+                                                ''),
+                                          ),
+                                          'Detalles de la Autorización',
+                                        ),
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .override(
+                                              fontFamily: 'Montserrat',
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                            '(sin fecha)',
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Montserrat',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryText,
-                                                fontSize: 12.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight: FontWeight.w300,
-                                              ),
-                                        ),
                                       ),
-                                    ].divide(const SizedBox(width: 6.0)),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: () {
-                                        if (_model.authorizationStatusValue ==
-                                            'pendant') {
-                                          return FlutterFlowTheme.of(context)
-                                              .pendant;
-                                        } else if (_model
-                                                .authorizationStatusValue ==
-                                            'approved') {
-                                          return FlutterFlowTheme.of(context)
-                                              .approved;
-                                        } else if (_model
-                                                .authorizationStatusValue ==
-                                            'rejected') {
-                                          return FlutterFlowTheme.of(context)
-                                              .rejected;
-                                        } else {
-                                          return const Color(0x00000000);
-                                        }
-                                      }(),
-                                      borderRadius: BorderRadius.circular(24.0),
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.fromSTEB(
-                                                  16.0, 4.0, 16.0, 4.0),
-                                          child: Text(
-                                            functions.toCapitalize(_model
-                                                .authorizationStatusLabel!),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Montserrat',
-                                                  color: Colors.white,
-                                                  fontSize: 12.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
-                                        ),
-                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 24.0, 0.0, 0.0),
-                              child: Html(
-                                data: AuthorizationsGroup
-                                    .authorizationDetailsCall
-                                    .body(
-                                  (_model.authorizationResp?.jsonBody ?? ''),
-                                )!,
-                                onLinkTap: (url, _, __) => launchURL(url!),
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(24.0),
+                                        child: Image.network(
+                                          AuthorizationsGroup
+                                              .authorizationDetailsCall
+                                              .emitterProfilePic(
+                                            (_model.authorizationResp
+                                                    ?.jsonBody ??
+                                                ''),
+                                          )!,
+                                          width: 35.0,
+                                          height: 35.0,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Solicitante',
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .override(
+                                              fontFamily: 'Montserrat',
+                                              fontSize: 12.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                      ),
+                                    ].divide(const SizedBox(width: 6.0)),
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(24.0),
+                                        child: Image.network(
+                                          AuthorizationsGroup
+                                              .authorizationDetailsCall
+                                              .authorizerProfilePic(
+                                            (_model.authorizationResp
+                                                    ?.jsonBody ??
+                                                ''),
+                                          )!,
+                                          width: 35.0,
+                                          height: 35.0,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Autorizador',
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .override(
+                                              fontFamily: 'Montserrat',
+                                              fontSize: 12.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                      ),
+                                    ].divide(const SizedBox(width: 6.0)),
+                                  ),
+                                ].divide(const SizedBox(width: 16.0)),
                               ),
-                            ),
-                            if (AuthorizationsGroup.authorizationDetailsCall
+                              Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 4.0, 0.0, 0.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.calendar_month,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          size: 20.0,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsetsDirectional.fromSTEB(
+                                                  0.0, 2.0, 0.0, 0.0),
+                                          child: Text(
+                                            valueOrDefault<String>(
+                                              AuthorizationsGroup
+                                                  .authorizationDetailsCall
+                                                  .date(
+                                                (_model.authorizationResp
+                                                        ?.jsonBody ??
+                                                    ''),
+                                              ),
+                                              '(sin fecha)',
+                                            ),
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Montserrat',
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .secondaryText,
+                                                  fontSize: 12.0,
+                                                  letterSpacing: 0.0,
+                                                  fontWeight: FontWeight.w300,
+                                                ),
+                                          ),
+                                        ),
+                                      ].divide(const SizedBox(width: 6.0)),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: () {
+                                          if (_model.authorizationStatusValue ==
+                                              'pendant') {
+                                            return FlutterFlowTheme.of(context)
+                                                .pendant;
+                                          } else if (_model
+                                                  .authorizationStatusValue ==
+                                              'approved') {
+                                            return FlutterFlowTheme.of(context)
+                                                .approved;
+                                          } else if (_model
+                                                  .authorizationStatusValue ==
+                                              'rejected') {
+                                            return FlutterFlowTheme.of(context)
+                                                .rejected;
+                                          } else {
+                                            return const Color(0x00000000);
+                                          }
+                                        }(),
+                                        borderRadius:
+                                            BorderRadius.circular(24.0),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsetsDirectional.fromSTEB(
+                                                    16.0, 4.0, 16.0, 4.0),
+                                            child: Text(
+                                              functions.toCapitalize(_model
+                                                  .authorizationStatusLabel!),
+                                              style: FlutterFlowTheme.of(
+                                                      context)
+                                                  .bodyMedium
+                                                  .override(
+                                                    fontFamily: 'Montserrat',
+                                                    color: Colors.white,
+                                                    fontSize: 12.0,
+                                                    letterSpacing: 0.0,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 24.0, 0.0, 0.0),
+                                child: Html(
+                                  data: AuthorizationsGroup
+                                      .authorizationDetailsCall
+                                      .body(
+                                    (_model.authorizationResp?.jsonBody ?? ''),
+                                  )!,
+                                  onLinkTap: (url, _, __) => launchURL(url!),
+                                ),
+                              ),
+                              if (AuthorizationsGroup.authorizationDetailsCall
+                                          .pdfResource(
+                                        (_model.authorizationResp?.jsonBody ??
+                                            ''),
+                                      ) !=
+                                      null &&
+                                  (AuthorizationsGroup.authorizationDetailsCall
+                                          .pdfResource(
+                                    (_model.authorizationResp?.jsonBody ?? ''),
+                                  ))!
+                                      .isNotEmpty)
+                                wrapWithModel(
+                                  model: _model.authorizationPdfListModel,
+                                  updateCallback: () => setState(() {}),
+                                  child: AuthorizationPdfListWidget(
+                                    pdfArray: AuthorizationsGroup
+                                        .authorizationDetailsCall
                                         .pdfResource(
                                       (_model.authorizationResp?.jsonBody ??
                                           ''),
-                                    ) !=
-                                    null &&
-                                (AuthorizationsGroup.authorizationDetailsCall
-                                        .pdfResource(
-                                  (_model.authorizationResp?.jsonBody ?? ''),
-                                ))!
-                                    .isNotEmpty)
-                              wrapWithModel(
-                                model: _model.authorizationPdfListModel,
-                                updateCallback: () => setState(() {}),
-                                child: AuthorizationPdfListWidget(
-                                  pdfArray: AuthorizationsGroup
-                                      .authorizationDetailsCall
-                                      .pdfResource(
-                                    (_model.authorizationResp?.jsonBody ?? ''),
-                                  )!,
+                                    )!,
+                                  ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                ],
-              ),
-              if (!_model.isLoading &&
-                  (_model.authorizationStatusValue == 'pendant'))
-                Align(
-                  alignment: const AlignmentDirectional(0.0, 1.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: FFButtonWidget(
-                            onPressed: () async {
-                              await showModalBottomSheet(
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                barrierColor:
-                                    FlutterFlowTheme.of(context).barrierColor,
-                                context: context,
-                                builder: (context) {
-                                  return GestureDetector(
-                                    onTap: () => _model
-                                            .unfocusNode.canRequestFocus
-                                        ? FocusScope.of(context)
-                                            .requestFocus(_model.unfocusNode)
-                                        : FocusScope.of(context).unfocus(),
-                                    child: Padding(
-                                      padding: MediaQuery.viewInsetsOf(context),
-                                      child: SizedBox(
-                                        height:
-                                            MediaQuery.sizeOf(context).height *
-                                                0.3,
-                                        child: ConfirmActionWidget(
-                                          confirmButtonText: 'Rechazar',
-                                          cancelButtonText: 'Cancelar',
-                                          mainAction: () async {
-                                            var shouldSetState = false;
-                                            navigate() {}
-                                            _model.isLoading = true;
-                                            setState(() {});
-                                            _model.rejectedAuthoResp =
-                                                await AuthorizationsGroup
-                                                    .responseAuthorizationCall
-                                                    .call(
-                                              token: currentAuthenticationToken,
-                                              id: widget.authorizationId,
-                                              status: 'rejected',
-                                            );
-
-                                            shouldSetState = true;
-                                            if ((_model.rejectedAuthoResp
-                                                    ?.succeeded ??
-                                                true)) {
-                                              _model.authorizationStatusValue =
-                                                  'rejected';
-                                              _model.authorizationStatusLabel =
-                                                  'rechazada';
+                  ],
+                ),
+                if (!_model.isLoading &&
+                    (_model.authorizationStatusValue == 'pendant'))
+                  Align(
+                    alignment: const AlignmentDirectional(0.0, 1.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: FFButtonWidget(
+                              onPressed: () async {
+                                await showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  barrierColor:
+                                      FlutterFlowTheme.of(context).barrierColor,
+                                  context: context,
+                                  builder: (context) {
+                                    return GestureDetector(
+                                      onTap: () => _model
+                                              .unfocusNode.canRequestFocus
+                                          ? FocusScope.of(context)
+                                              .requestFocus(_model.unfocusNode)
+                                          : FocusScope.of(context).unfocus(),
+                                      child: Padding(
+                                        padding:
+                                            MediaQuery.viewInsetsOf(context),
+                                        child: SizedBox(
+                                          height: MediaQuery.sizeOf(context)
+                                                  .height *
+                                              0.3,
+                                          child: ConfirmActionWidget(
+                                            confirmButtonText: 'Rechazar',
+                                            cancelButtonText: 'Cancelar',
+                                            mainAction: () async {
+                                              var shouldSetState = false;
+                                              navigate() {}
+                                              _model.isLoading = true;
                                               setState(() {});
-                                            } else {
+                                              _model.rejectedAuthoResp =
+                                                  await AuthorizationsGroup
+                                                      .responseAuthorizationCall
+                                                      .call(
+                                                token:
+                                                    currentAuthenticationToken,
+                                                id: widget.authorizationId,
+                                                status: 'rejected',
+                                              );
+
+                                              shouldSetState = true;
                                               if ((_model.rejectedAuthoResp
-                                                          ?.statusCode ??
-                                                      200) ==
-                                                  401) {
-                                                return;
+                                                      ?.succeeded ??
+                                                  true)) {
+                                                _model.authorizationStatusValue =
+                                                    'rejected';
+                                                _model.authorizationStatusLabel =
+                                                    'rechazada';
+                                                setState(() {});
                                               } else {
-                                                await showModalBottomSheet(
-                                                  isScrollControlled: true,
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  barrierColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .barrierColor,
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return GestureDetector(
-                                                      onTap: () => _model
-                                                              .unfocusNode
-                                                              .canRequestFocus
-                                                          ? FocusScope.of(
-                                                                  context)
-                                                              .requestFocus(_model
-                                                                  .unfocusNode)
-                                                          : FocusScope.of(
-                                                                  context)
-                                                              .unfocus(),
-                                                      child: Padding(
-                                                        padding: MediaQuery
-                                                            .viewInsetsOf(
-                                                                context),
-                                                        child:
-                                                            AlertMessageWidget(
-                                                          buttonText: 'Aceptar',
-                                                          title:
-                                                              'Error: ${(_model.rejectedAuthoResp?.statusCode ?? 200).toString()}',
-                                                          message:
-                                                              valueOrDefault<
-                                                                  String>(
-                                                            AuthorizationsGroup
-                                                                .responseAuthorizationCall
-                                                                .message(
-                                                              (_model.rejectedAuthoResp
-                                                                      ?.jsonBody ??
-                                                                  ''),
+                                                if ((_model.rejectedAuthoResp
+                                                            ?.statusCode ??
+                                                        200) ==
+                                                    401) {
+                                                  return;
+                                                } else {
+                                                  await showModalBottomSheet(
+                                                    isScrollControlled: true,
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    barrierColor:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .barrierColor,
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return GestureDetector(
+                                                        onTap: () => _model
+                                                                .unfocusNode
+                                                                .canRequestFocus
+                                                            ? FocusScope.of(
+                                                                    context)
+                                                                .requestFocus(_model
+                                                                    .unfocusNode)
+                                                            : FocusScope.of(
+                                                                    context)
+                                                                .unfocus(),
+                                                        child: Padding(
+                                                          padding: MediaQuery
+                                                              .viewInsetsOf(
+                                                                  context),
+                                                          child:
+                                                              AlertMessageWidget(
+                                                            buttonText:
+                                                                'Aceptar',
+                                                            title:
+                                                                'Error: ${(_model.rejectedAuthoResp?.statusCode ?? 200).toString()}',
+                                                            message:
+                                                                valueOrDefault<
+                                                                    String>(
+                                                              AuthorizationsGroup
+                                                                  .responseAuthorizationCall
+                                                                  .message(
+                                                                (_model.rejectedAuthoResp
+                                                                        ?.jsonBody ??
+                                                                    ''),
+                                                              ),
+                                                              'Ocurrió un error en el servidor.',
                                                             ),
-                                                            'Ocurrió un error en el servidor.',
                                                           ),
                                                         ),
-                                                      ),
-                                                    );
-                                                  },
-                                                ).then((value) =>
-                                                    safeSetState(() {}));
+                                                      );
+                                                    },
+                                                  ).then((value) =>
+                                                      safeSetState(() {}));
+                                                }
                                               }
-                                            }
 
-                                            _model.isLoading = false;
-                                            _model.wasUpdated = true;
-                                            setState(() {});
-                                            Navigator.pop(context);
-                                            await showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              barrierColor:
-                                                  FlutterFlowTheme.of(context)
-                                                      .barrierColor,
-                                              context: context,
-                                              builder: (context) {
-                                                return GestureDetector(
-                                                  onTap: () => _model
-                                                          .unfocusNode
-                                                          .canRequestFocus
-                                                      ? FocusScope.of(context)
-                                                          .requestFocus(_model
-                                                              .unfocusNode)
-                                                      : FocusScope.of(context)
-                                                          .unfocus(),
-                                                  child: Padding(
-                                                    padding:
-                                                        MediaQuery.viewInsetsOf(
-                                                            context),
-                                                    child: SizedBox(
-                                                      height: MediaQuery.sizeOf(
-                                                                  context)
-                                                              .height *
-                                                          0.35,
-                                                      child: const AlertMessageWidget(
-                                                        title: 'Rechazada',
-                                                        message:
-                                                            'La autorización ha sido rechazada con éxito.',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            ).then(
-                                                (value) => safeSetState(() {}));
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ).then((value) => safeSetState(() {}));
-
-                              setState(() {});
-                            },
-                            text: 'Rechazar',
-                            icon: const Icon(
-                              Icons.cancel_outlined,
-                              size: 20.0,
-                            ),
-                            options: FFButtonOptions(
-                              height: 36.0,
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  6.0, 0.0, 6.0, 0.0),
-                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 0.0, 0.0, 0.0),
-                              color: FlutterFlowTheme.of(context).error,
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .override(
-                                    fontFamily: 'Montserrat',
-                                    color: Colors.white,
-                                    fontSize: 16.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                              elevation: 2.0,
-                              borderSide: const BorderSide(
-                                color: Colors.transparent,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: FFButtonWidget(
-                            onPressed: () async {
-                              await showModalBottomSheet(
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                barrierColor:
-                                    FlutterFlowTheme.of(context).barrierColor,
-                                context: context,
-                                builder: (context) {
-                                  return GestureDetector(
-                                    onTap: () => _model
-                                            .unfocusNode.canRequestFocus
-                                        ? FocusScope.of(context)
-                                            .requestFocus(_model.unfocusNode)
-                                        : FocusScope.of(context).unfocus(),
-                                    child: Padding(
-                                      padding: MediaQuery.viewInsetsOf(context),
-                                      child: SizedBox(
-                                        height:
-                                            MediaQuery.sizeOf(context).height *
-                                                0.3,
-                                        child: ConfirmActionWidget(
-                                          confirmButtonText: 'Aprobar',
-                                          cancelButtonText: 'Cancelar',
-                                          mainAction: () async {
-                                            var shouldSetState = false;
-                                            navigate() {}
-                                            _model.isLoading = true;
-                                            setState(() {});
-                                            _model.approvedAuthResp =
-                                                await AuthorizationsGroup
-                                                    .responseAuthorizationCall
-                                                    .call(
-                                              token: currentAuthenticationToken,
-                                              id: widget.authorizationId,
-                                              status: 'approved',
-                                            );
-
-                                            shouldSetState = true;
-                                            if ((_model.approvedAuthResp
-                                                    ?.succeeded ??
-                                                true)) {
-                                              _model.authorizationStatusValue =
-                                                  'approved';
-                                              _model.authorizationStatusLabel =
-                                                  'aprobada';
+                                              _model.isLoading = false;
+                                              _model.wasUpdated = true;
                                               setState(() {});
-                                            } else {
-                                              if ((_model.approvedAuthResp
-                                                          ?.statusCode ??
-                                                      200) ==
-                                                  401) {
-                                                return;
-                                              } else {
-                                                await showModalBottomSheet(
-                                                  isScrollControlled: true,
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  barrierColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .barrierColor,
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return GestureDetector(
-                                                      onTap: () => _model
-                                                              .unfocusNode
-                                                              .canRequestFocus
-                                                          ? FocusScope.of(
-                                                                  context)
-                                                              .requestFocus(_model
-                                                                  .unfocusNode)
-                                                          : FocusScope.of(
-                                                                  context)
-                                                              .unfocus(),
-                                                      child: Padding(
-                                                        padding: MediaQuery
-                                                            .viewInsetsOf(
-                                                                context),
+                                              Navigator.pop(context);
+                                              await showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                barrierColor:
+                                                    FlutterFlowTheme.of(context)
+                                                        .barrierColor,
+                                                context: context,
+                                                builder: (context) {
+                                                  return GestureDetector(
+                                                    onTap: () => _model
+                                                            .unfocusNode
+                                                            .canRequestFocus
+                                                        ? FocusScope.of(context)
+                                                            .requestFocus(_model
+                                                                .unfocusNode)
+                                                        : FocusScope.of(context)
+                                                            .unfocus(),
+                                                    child: Padding(
+                                                      padding: MediaQuery
+                                                          .viewInsetsOf(
+                                                              context),
+                                                      child: SizedBox(
+                                                        height:
+                                                            MediaQuery.sizeOf(
+                                                                        context)
+                                                                    .height *
+                                                                0.35,
                                                         child:
-                                                            AlertMessageWidget(
-                                                          buttonText: 'Aceptar',
-                                                          title:
-                                                              'Error: ${(_model.approvedAuthResp?.statusCode ?? 200).toString()}',
+                                                            const AlertMessageWidget(
+                                                          title: 'Rechazada',
                                                           message:
-                                                              valueOrDefault<
-                                                                  String>(
-                                                            AuthorizationsGroup
-                                                                .responseAuthorizationCall
-                                                                .message(
-                                                              (_model.approvedAuthResp
-                                                                      ?.jsonBody ??
-                                                                  ''),
-                                                            ),
-                                                            'Ocurrió un error en el servidor.',
-                                                          ),
+                                                              'La autorización ha sido rechazada con éxito.',
                                                         ),
                                                       ),
-                                                    );
-                                                  },
-                                                ).then((value) =>
-                                                    safeSetState(() {}));
-                                              }
-                                            }
-
-                                            _model.isLoading = false;
-                                            _model.wasUpdated = true;
-                                            setState(() {});
-                                            Navigator.pop(context);
-                                            await showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              barrierColor:
-                                                  FlutterFlowTheme.of(context)
-                                                      .barrierColor,
-                                              context: context,
-                                              builder: (context) {
-                                                return GestureDetector(
-                                                  onTap: () => _model
-                                                          .unfocusNode
-                                                          .canRequestFocus
-                                                      ? FocusScope.of(context)
-                                                          .requestFocus(_model
-                                                              .unfocusNode)
-                                                      : FocusScope.of(context)
-                                                          .unfocus(),
-                                                  child: Padding(
-                                                    padding:
-                                                        MediaQuery.viewInsetsOf(
-                                                            context),
-                                                    child: SizedBox(
-                                                      height: MediaQuery.sizeOf(
-                                                                  context)
-                                                              .height *
-                                                          0.35,
-                                                      child: const AlertMessageWidget(
-                                                        title: 'Aprobada',
-                                                        message:
-                                                            'La autorización ha sido aprobada con éxito.',
-                                                      ),
                                                     ),
-                                                  ),
-                                                );
-                                              },
-                                            ).then(
-                                                (value) => safeSetState(() {}));
-                                          },
+                                                  );
+                                                },
+                                              ).then((value) =>
+                                                  safeSetState(() {}));
+                                            },
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ).then((value) => safeSetState(() {}));
+                                    );
+                                  },
+                                ).then((value) => safeSetState(() {}));
 
-                              setState(() {});
-                            },
-                            text: 'Aprobar',
-                            icon: const Icon(
-                              Icons.check_circle_outline_rounded,
-                              size: 20.0,
-                            ),
-                            options: FFButtonOptions(
-                              height: 36.0,
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  6.0, 0.0, 6.0, 0.0),
-                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 0.0, 0.0, 0.0),
-                              color: FlutterFlowTheme.of(context).success,
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .override(
-                                    fontFamily: 'Montserrat',
-                                    color: Colors.white,
-                                    fontSize: 16.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                              elevation: 2.0,
-                              borderSide: const BorderSide(
-                                color: Colors.transparent,
-                                width: 2.0,
+                                setState(() {});
+                              },
+                              text: 'Rechazar',
+                              icon: const Icon(
+                                Icons.cancel_outlined,
+                                size: 20.0,
                               ),
-                              borderRadius: BorderRadius.circular(12.0),
+                              options: FFButtonOptions(
+                                height: 36.0,
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    6.0, 0.0, 6.0, 0.0),
+                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 0.0, 0.0),
+                                color: FlutterFlowTheme.of(context).error,
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .override(
+                                      fontFamily: 'Montserrat',
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                elevation: 2.0,
+                                borderSide: const BorderSide(
+                                  color: Colors.transparent,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
                             ),
                           ),
-                        ),
-                      ].divide(const SizedBox(width: 16.0)),
+                          Expanded(
+                            child: FFButtonWidget(
+                              onPressed: () async {
+                                await showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  barrierColor:
+                                      FlutterFlowTheme.of(context).barrierColor,
+                                  context: context,
+                                  builder: (context) {
+                                    return GestureDetector(
+                                      onTap: () => _model
+                                              .unfocusNode.canRequestFocus
+                                          ? FocusScope.of(context)
+                                              .requestFocus(_model.unfocusNode)
+                                          : FocusScope.of(context).unfocus(),
+                                      child: Padding(
+                                        padding:
+                                            MediaQuery.viewInsetsOf(context),
+                                        child: SizedBox(
+                                          height: MediaQuery.sizeOf(context)
+                                                  .height *
+                                              0.3,
+                                          child: ConfirmActionWidget(
+                                            confirmButtonText: 'Aprobar',
+                                            cancelButtonText: 'Cancelar',
+                                            mainAction: () async {
+                                              var shouldSetState = false;
+                                              navigate() {}
+                                              _model.isLoading = true;
+                                              setState(() {});
+                                              _model.approvedAuthResp =
+                                                  await AuthorizationsGroup
+                                                      .responseAuthorizationCall
+                                                      .call(
+                                                token:
+                                                    currentAuthenticationToken,
+                                                id: widget.authorizationId,
+                                                status: 'approved',
+                                              );
+
+                                              shouldSetState = true;
+                                              if ((_model.approvedAuthResp
+                                                      ?.succeeded ??
+                                                  true)) {
+                                                _model.authorizationStatusValue =
+                                                    'approved';
+                                                _model.authorizationStatusLabel =
+                                                    'aprobada';
+                                                setState(() {});
+                                              } else {
+                                                if ((_model.approvedAuthResp
+                                                            ?.statusCode ??
+                                                        200) ==
+                                                    401) {
+                                                  return;
+                                                } else {
+                                                  await showModalBottomSheet(
+                                                    isScrollControlled: true,
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    barrierColor:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .barrierColor,
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return GestureDetector(
+                                                        onTap: () => _model
+                                                                .unfocusNode
+                                                                .canRequestFocus
+                                                            ? FocusScope.of(
+                                                                    context)
+                                                                .requestFocus(_model
+                                                                    .unfocusNode)
+                                                            : FocusScope.of(
+                                                                    context)
+                                                                .unfocus(),
+                                                        child: Padding(
+                                                          padding: MediaQuery
+                                                              .viewInsetsOf(
+                                                                  context),
+                                                          child:
+                                                              AlertMessageWidget(
+                                                            buttonText:
+                                                                'Aceptar',
+                                                            title:
+                                                                'Error: ${(_model.approvedAuthResp?.statusCode ?? 200).toString()}',
+                                                            message:
+                                                                valueOrDefault<
+                                                                    String>(
+                                                              AuthorizationsGroup
+                                                                  .responseAuthorizationCall
+                                                                  .message(
+                                                                (_model.approvedAuthResp
+                                                                        ?.jsonBody ??
+                                                                    ''),
+                                                              ),
+                                                              'Ocurrió un error en el servidor.',
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ).then((value) =>
+                                                      safeSetState(() {}));
+                                                }
+                                              }
+
+                                              _model.isLoading = false;
+                                              _model.wasUpdated = true;
+                                              setState(() {});
+                                              Navigator.pop(context);
+                                              await showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                barrierColor:
+                                                    FlutterFlowTheme.of(context)
+                                                        .barrierColor,
+                                                context: context,
+                                                builder: (context) {
+                                                  return GestureDetector(
+                                                    onTap: () => _model
+                                                            .unfocusNode
+                                                            .canRequestFocus
+                                                        ? FocusScope.of(context)
+                                                            .requestFocus(_model
+                                                                .unfocusNode)
+                                                        : FocusScope.of(context)
+                                                            .unfocus(),
+                                                    child: Padding(
+                                                      padding: MediaQuery
+                                                          .viewInsetsOf(
+                                                              context),
+                                                      child: SizedBox(
+                                                        height:
+                                                            MediaQuery.sizeOf(
+                                                                        context)
+                                                                    .height *
+                                                                0.35,
+                                                        child:
+                                                            const AlertMessageWidget(
+                                                          title: 'Aprobada',
+                                                          message:
+                                                              'La autorización ha sido aprobada con éxito.',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ).then((value) =>
+                                                  safeSetState(() {}));
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ).then((value) => safeSetState(() {}));
+
+                                setState(() {});
+                              },
+                              text: 'Aprobar',
+                              icon: const Icon(
+                                Icons.check_circle_outline_rounded,
+                                size: 20.0,
+                              ),
+                              options: FFButtonOptions(
+                                height: 36.0,
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    6.0, 0.0, 6.0, 0.0),
+                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 0.0, 0.0),
+                                color: FlutterFlowTheme.of(context).success,
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .override(
+                                      fontFamily: 'Montserrat',
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                elevation: 2.0,
+                                borderSide: const BorderSide(
+                                  color: Colors.transparent,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                            ),
+                          ),
+                        ].divide(const SizedBox(width: 16.0)),
+                      ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

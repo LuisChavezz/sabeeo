@@ -66,10 +66,13 @@ class _PDFViewerWidgetState extends State<PDFViewerWidget> {
           centerTitle: false,
           elevation: 0.0,
         ),
-        body: FlutterFlowPdfViewer(
-          networkPath: widget.pdfUrl!,
-          height: MediaQuery.sizeOf(context).height * 0.82,
-          horizontalScroll: false,
+        body: SafeArea(
+          top: true,
+          child: FlutterFlowPdfViewer(
+            networkPath: widget.pdfUrl!,
+            height: MediaQuery.sizeOf(context).height * 0.82,
+            horizontalScroll: false,
+          ),
         ),
       ),
     );
