@@ -175,36 +175,42 @@ class _HomeWidgetState extends State<HomeWidget> {
       onTap: () => _model.unfocusNode.canRequestFocus
           ? FocusScope.of(context).requestFocus(_model.unfocusNode)
           : FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        body: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: FFButtonWidget(
-                      onPressed: () async {
-                        _model.switchValue = 'anom';
-                        setState(() {});
-                      },
-                      text: 'Anomalías',
-                      options: FFButtonOptions(
-                        height: 48.0,
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(6.0, 0.0, 6.0, 0.0),
-                        iconPadding:
-                            const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                        color: _model.switchValue == 'anom'
-                            ? FlutterFlowTheme.of(context).primary
-                            : FlutterFlowTheme.of(context).primaryBackground,
-                        textStyle:
-                            FlutterFlowTheme.of(context).titleSmall.override(
+      child: WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+          key: scaffoldKey,
+          backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+          body: SafeArea(
+            top: true,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: FFButtonWidget(
+                          onPressed: () async {
+                            _model.switchValue = 'anom';
+                            setState(() {});
+                          },
+                          text: 'Anomalías',
+                          options: FFButtonOptions(
+                            height: 48.0,
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                6.0, 0.0, 6.0, 0.0),
+                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 0.0, 0.0),
+                            color: _model.switchValue == 'anom'
+                                ? FlutterFlowTheme.of(context).primary
+                                : FlutterFlowTheme.of(context)
+                                    .primaryBackground,
+                            textStyle: FlutterFlowTheme.of(context)
+                                .titleSmall
+                                .override(
                                   fontFamily: 'Montserrat',
                                   color: _model.switchValue == 'anom'
                                       ? const Color(0xFF232323)
@@ -213,35 +219,37 @@ class _HomeWidgetState extends State<HomeWidget> {
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.bold,
                                 ),
-                        elevation: 2.0,
-                        borderSide: BorderSide(
-                          color: _model.switchValue == 'anom'
-                              ? Colors.transparent
-                              : FlutterFlowTheme.of(context).primary,
-                          width: 2.0,
+                            elevation: 2.0,
+                            borderSide: BorderSide(
+                              color: _model.switchValue == 'anom'
+                                  ? Colors.transparent
+                                  : FlutterFlowTheme.of(context).primary,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(12.0),
                       ),
-                    ),
-                  ),
-                  Expanded(
-                    child: FFButtonWidget(
-                      onPressed: () async {
-                        _model.switchValue = 'kpi';
-                        setState(() {});
-                      },
-                      text: 'KPIs',
-                      options: FFButtonOptions(
-                        height: 48.0,
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(6.0, 0.0, 6.0, 0.0),
-                        iconPadding:
-                            const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                        color: _model.switchValue == 'kpi'
-                            ? FlutterFlowTheme.of(context).primary
-                            : FlutterFlowTheme.of(context).primaryBackground,
-                        textStyle:
-                            FlutterFlowTheme.of(context).titleSmall.override(
+                      Expanded(
+                        child: FFButtonWidget(
+                          onPressed: () async {
+                            _model.switchValue = 'kpi';
+                            setState(() {});
+                          },
+                          text: 'KPIs',
+                          options: FFButtonOptions(
+                            height: 48.0,
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                6.0, 0.0, 6.0, 0.0),
+                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 0.0, 0.0),
+                            color: _model.switchValue == 'kpi'
+                                ? FlutterFlowTheme.of(context).primary
+                                : FlutterFlowTheme.of(context)
+                                    .primaryBackground,
+                            textStyle: FlutterFlowTheme.of(context)
+                                .titleSmall
+                                .override(
                                   fontFamily: 'Montserrat',
                                   color: _model.switchValue == 'kpi'
                                       ? const Color(0xFF232323)
@@ -250,70 +258,73 @@ class _HomeWidgetState extends State<HomeWidget> {
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.bold,
                                 ),
-                        elevation: 2.0,
-                        borderSide: BorderSide(
-                          color: _model.switchValue == 'kpi'
-                              ? Colors.transparent
-                              : FlutterFlowTheme.of(context).primary,
-                          width: 2.0,
+                            elevation: 2.0,
+                            borderSide: BorderSide(
+                              color: _model.switchValue == 'kpi'
+                                  ? Colors.transparent
+                                  : FlutterFlowTheme.of(context).primary,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ].divide(const SizedBox(width: 16.0)),
+                  ),
+                ),
+                if (_model.isLoading)
+                  Padding(
+                    padding:
+                        const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 24.0),
+                    child: Lottie.asset(
+                      'assets/lottie_animations/Animation_-_1716841230423.json',
+                      width: MediaQuery.sizeOf(context).width * 0.5,
+                      height: MediaQuery.sizeOf(context).height * 0.25,
+                      fit: BoxFit.contain,
+                      animate: true,
+                    ),
+                  ),
+                if ((_model.switchValue == 'anom') && !_model.isLoading)
+                  Expanded(
+                    child: Padding(
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 24.0),
+                      child: wrapWithModel(
+                        model: _model.anomaliesListModel,
+                        updateCallback: () => setState(() {}),
+                        child: AnomaliesListWidget(
+                          anomaliesArray: FFAppState().anomaliesArray,
+                          anomaliesTotalRows: _model.anomaliesTotal!,
+                          toggleIsLoading: () async {
+                            _model.isLoading = !_model.isLoading;
+                            setState(() {});
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ].divide(const SizedBox(width: 16.0)),
-              ),
+                if ((_model.switchValue == 'kpi') && !_model.isLoading)
+                  Expanded(
+                    child: Padding(
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 24.0),
+                      child: wrapWithModel(
+                        model: _model.kpisListModel,
+                        updateCallback: () => setState(() {}),
+                        child: KpisListWidget(
+                          kpisTotalRows: _model.kpisTotal!,
+                          kpisArray: FFAppState().kpisArray,
+                          toggleIsLoading: () async {
+                            _model.isLoading = !_model.isLoading;
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            if (_model.isLoading)
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 24.0),
-                child: Lottie.asset(
-                  'assets/lottie_animations/Animation_-_1716841230423.json',
-                  width: MediaQuery.sizeOf(context).width * 0.5,
-                  height: MediaQuery.sizeOf(context).height * 0.25,
-                  fit: BoxFit.contain,
-                  animate: true,
-                ),
-              ),
-            if ((_model.switchValue == 'anom') && !_model.isLoading)
-              Expanded(
-                child: Padding(
-                  padding:
-                      const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 24.0),
-                  child: wrapWithModel(
-                    model: _model.anomaliesListModel,
-                    updateCallback: () => setState(() {}),
-                    child: AnomaliesListWidget(
-                      anomaliesArray: FFAppState().anomaliesArray,
-                      anomaliesTotalRows: _model.anomaliesTotal!,
-                      toggleIsLoading: () async {
-                        _model.isLoading = !_model.isLoading;
-                        setState(() {});
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            if ((_model.switchValue == 'kpi') && !_model.isLoading)
-              Expanded(
-                child: Padding(
-                  padding:
-                      const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 24.0),
-                  child: wrapWithModel(
-                    model: _model.kpisListModel,
-                    updateCallback: () => setState(() {}),
-                    child: KpisListWidget(
-                      kpisTotalRows: _model.kpisTotal!,
-                      kpisArray: FFAppState().kpisArray,
-                      toggleIsLoading: () async {
-                        _model.isLoading = !_model.isLoading;
-                        setState(() {});
-                      },
-                    ),
-                  ),
-                ),
-              ),
-          ],
+          ),
         ),
       ),
     );

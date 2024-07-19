@@ -176,306 +176,320 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget>
           centerTitle: false,
           elevation: 0.0,
         ),
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            color: FlutterFlowTheme.of(context).primaryBackground,
-            image: DecorationImage(
-              fit: BoxFit.contain,
-              alignment: const AlignmentDirectional(0.0, 1.0),
-              image: Image.asset(
-                Theme.of(context).brightness == Brightness.dark
-                    ? 'assets/images/Grupo_826.png'
-                    : 'assets/images/Grupo_836.png',
-              ).image,
+        body: SafeArea(
+          top: true,
+          child: Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              color: FlutterFlowTheme.of(context).primaryBackground,
+              image: DecorationImage(
+                fit: BoxFit.contain,
+                alignment: const AlignmentDirectional(0.0, 1.0),
+                image: Image.asset(
+                  Theme.of(context).brightness == Brightness.dark
+                      ? 'assets/images/Grupo_826.png'
+                      : 'assets/images/Grupo_836.png',
+                ).image,
+              ),
             ),
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 500.0,
-                  decoration: const BoxDecoration(),
-                  child: Align(
-                    alignment: const AlignmentDirectional(0.0, -1.0),
-                    child: Container(
-                      width: double.infinity,
-                      constraints: const BoxConstraints(
-                        maxWidth: 570.0,
-                      ),
-                      decoration: const BoxDecoration(),
-                      child: Form(
-                        key: _model.formKey,
-                        autovalidateMode: AutovalidateMode.disabled,
-                        child: Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              0.0, 0.0, 0.0, 72.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    24.0, 16.0, 24.0, 16.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        '¿No recuerdas tu contraseña? Introduce el correo electrónico asociado a tu cuenta y te enviaremos un enlace para actualizarla.',
-                                        textAlign: TextAlign.center,
-                                        style: FlutterFlowTheme.of(context)
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 500.0,
+                    decoration: const BoxDecoration(),
+                    child: Align(
+                      alignment: const AlignmentDirectional(0.0, -1.0),
+                      child: Container(
+                        width: double.infinity,
+                        constraints: const BoxConstraints(
+                          maxWidth: 570.0,
+                        ),
+                        decoration: const BoxDecoration(),
+                        child: Form(
+                          key: _model.formKey,
+                          autovalidateMode: AutovalidateMode.disabled,
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 0.0, 72.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                      24.0, 16.0, 24.0, 16.0),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          '¿No recuerdas tu contraseña? Introduce el correo electrónico asociado a tu cuenta y te enviaremos un enlace para actualizarla.',
+                                          textAlign: TextAlign.center,
+                                          style: FlutterFlowTheme.of(context)
+                                              .labelMedium
+                                              .override(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 14.0,
+                                                letterSpacing: 0.0,
+                                                fontWeight: FontWeight.w300,
+                                              ),
+                                        ),
+                                      ),
+                                    ],
+                                  ).animateOnPageLoad(
+                                      animationsMap['rowOnPageLoadAnimation']!),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                      24.0, 0.0, 24.0, 0.0),
+                                  child: Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    child: TextFormField(
+                                      controller:
+                                          _model.emailFieldTextController,
+                                      focusNode: _model.emailFieldFocusNode,
+                                      autofillHints: const [AutofillHints.email],
+                                      obscureText: false,
+                                      decoration: InputDecoration(
+                                        labelText: 'Correo electrónico',
+                                        labelStyle: FlutterFlowTheme.of(context)
                                             .labelMedium
                                             .override(
                                               fontFamily: 'Montserrat',
-                                              fontSize: 14.0,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
                                               letterSpacing: 0.0,
                                               fontWeight: FontWeight.w300,
                                             ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: FlutterFlowTheme.of(context)
+                                                .secondaryText,
+                                            width: 2.0,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: FlutterFlowTheme.of(context)
+                                                .primary,
+                                            width: 2.0,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: FlutterFlowTheme.of(context)
+                                                .error,
+                                            width: 2.0,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: FlutterFlowTheme.of(context)
+                                                .error,
+                                            width: 2.0,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsetsDirectional.fromSTEB(
+                                                20.0, 22.0, 20.0, 22.0),
                                       ),
-                                    ),
-                                  ],
-                                ).animateOnPageLoad(
-                                    animationsMap['rowOnPageLoadAnimation']!),
-                              ),
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    24.0, 0.0, 24.0, 0.0),
-                                child: Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  child: TextFormField(
-                                    controller: _model.emailFieldTextController,
-                                    focusNode: _model.emailFieldFocusNode,
-                                    autofillHints: const [AutofillHints.email],
-                                    obscureText: false,
-                                    decoration: InputDecoration(
-                                      labelText: 'Correo electrónico',
-                                      labelStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium
                                           .override(
                                             fontFamily: 'Montserrat',
                                             color: FlutterFlowTheme.of(context)
-                                                .secondaryText,
+                                                .primaryText,
                                             letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w300,
                                           ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          width: 2.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
+                                      keyboardType: TextInputType.emailAddress,
+                                      cursorColor:
+                                          FlutterFlowTheme.of(context).primary,
+                                      validator: _model
+                                          .emailFieldTextControllerValidator
+                                          .asValidator(context),
+                                    ),
+                                  ).animateOnPageLoad(animationsMap[
+                                      'containerOnPageLoadAnimation3']!),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                      24.0, 24.0, 24.0, 12.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      FFButtonWidget(
+                                        onPressed: () async {
+                                          var shouldSetState = false;
+                                          if (_model.formKey.currentState ==
+                                                  null ||
+                                              !_model.formKey.currentState!
+                                                  .validate()) {
+                                            return;
+                                          }
+                                          _model.recoverPassResp =
+                                              await UsersGroup.recoverPassCall
+                                                  .call(
+                                            email: _model
+                                                .emailFieldTextController.text,
+                                          );
+
+                                          shouldSetState = true;
+                                          if ((_model
+                                                  .recoverPassResp?.succeeded ??
+                                              true)) {
+                                            await showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              barrierColor:
+                                                  FlutterFlowTheme.of(context)
+                                                      .barrierColor,
+                                              context: context,
+                                              builder: (context) {
+                                                return GestureDetector(
+                                                  onTap: () => _model
+                                                          .unfocusNode
+                                                          .canRequestFocus
+                                                      ? FocusScope.of(context)
+                                                          .requestFocus(_model
+                                                              .unfocusNode)
+                                                      : FocusScope.of(context)
+                                                          .unfocus(),
+                                                  child: Padding(
+                                                    padding:
+                                                        MediaQuery.viewInsetsOf(
+                                                            context),
+                                                    child: const AlertMessageWidget(
+                                                      buttonText: 'Aceptar',
+                                                      title:
+                                                          'Solicitud enviada',
+                                                      message:
+                                                          'La solicitud de recuperación de contraseña ha sido enviada con éxito a su correo electrónico.',
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ).then(
+                                                (value) => safeSetState(() {}));
+                                          } else {
+                                            await showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              barrierColor:
+                                                  FlutterFlowTheme.of(context)
+                                                      .barrierColor,
+                                              context: context,
+                                              builder: (context) {
+                                                return GestureDetector(
+                                                  onTap: () => _model
+                                                          .unfocusNode
+                                                          .canRequestFocus
+                                                      ? FocusScope.of(context)
+                                                          .requestFocus(_model
+                                                              .unfocusNode)
+                                                      : FocusScope.of(context)
+                                                          .unfocus(),
+                                                  child: Padding(
+                                                    padding:
+                                                        MediaQuery.viewInsetsOf(
+                                                            context),
+                                                    child: AlertMessageWidget(
+                                                      buttonText: 'Aceptar',
+                                                      title:
+                                                          'Error: ${(_model.recoverPassResp?.statusCode ?? 200).toString()}',
+                                                      message: UsersGroup
+                                                          .recoverPassCall
+                                                          .message(
+                                                        (_model.recoverPassResp
+                                                                ?.jsonBody ??
+                                                            ''),
+                                                      )!,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ).then(
+                                                (value) => safeSetState(() {}));
+
+                                            if (shouldSetState) {
+                                              setState(() {});
+                                            }
+                                            return;
+                                          }
+
+                                          context.safePop();
+                                          if (shouldSetState) setState(() {});
+                                        },
+                                        text: 'Enviar correo',
+                                        options: FFButtonOptions(
+                                          width:
+                                              MediaQuery.sizeOf(context).width *
+                                                  1.0,
+                                          height: 48.0,
+                                          padding:
+                                              const EdgeInsetsDirectional.fromSTEB(
+                                                  32.0, 0.0, 32.0, 0.0),
+                                          iconPadding:
+                                              const EdgeInsetsDirectional.fromSTEB(
+                                                  0.0, 0.0, 0.0, 0.0),
                                           color: FlutterFlowTheme.of(context)
                                               .primary,
-                                          width: 2.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .error,
-                                          width: 2.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .error,
-                                          width: 2.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                      ),
-                                      contentPadding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              20.0, 22.0, 20.0, 22.0),
-                                    ),
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          fontFamily: 'Montserrat',
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryText,
-                                          letterSpacing: 0.0,
-                                        ),
-                                    keyboardType: TextInputType.emailAddress,
-                                    cursorColor:
-                                        FlutterFlowTheme.of(context).primary,
-                                    validator: _model
-                                        .emailFieldTextControllerValidator
-                                        .asValidator(context),
-                                  ),
-                                ).animateOnPageLoad(animationsMap[
-                                    'containerOnPageLoadAnimation3']!),
-                              ),
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    24.0, 24.0, 24.0, 12.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    FFButtonWidget(
-                                      onPressed: () async {
-                                        var shouldSetState = false;
-                                        if (_model.formKey.currentState ==
-                                                null ||
-                                            !_model.formKey.currentState!
-                                                .validate()) {
-                                          return;
-                                        }
-                                        _model.recoverPassResp =
-                                            await UsersGroup.recoverPassCall
-                                                .call(
-                                          email: _model
-                                              .emailFieldTextController.text,
-                                        );
-
-                                        shouldSetState = true;
-                                        if ((_model
-                                                .recoverPassResp?.succeeded ??
-                                            true)) {
-                                          await showModalBottomSheet(
-                                            isScrollControlled: true,
-                                            backgroundColor: Colors.transparent,
-                                            barrierColor:
-                                                FlutterFlowTheme.of(context)
-                                                    .barrierColor,
-                                            context: context,
-                                            builder: (context) {
-                                              return GestureDetector(
-                                                onTap: () => _model.unfocusNode
-                                                        .canRequestFocus
-                                                    ? FocusScope.of(context)
-                                                        .requestFocus(
-                                                            _model.unfocusNode)
-                                                    : FocusScope.of(context)
-                                                        .unfocus(),
-                                                child: Padding(
-                                                  padding:
-                                                      MediaQuery.viewInsetsOf(
-                                                          context),
-                                                  child: const AlertMessageWidget(
-                                                    buttonText: 'Aceptar',
-                                                    title: 'Solicitud enviada',
-                                                    message:
-                                                        'La solicitud de recuperación de contraseña ha sido enviada con éxito a su correo electrónico.',
+                                          textStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .titleSmall
+                                                  .override(
+                                                    fontFamily: 'Montserrat',
+                                                    color: const Color(0xFF232323),
+                                                    fontSize: 20.0,
+                                                    letterSpacing: 0.0,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
-                                                ),
-                                              );
-                                            },
-                                          ).then(
-                                              (value) => safeSetState(() {}));
-                                        } else {
-                                          await showModalBottomSheet(
-                                            isScrollControlled: true,
-                                            backgroundColor: Colors.transparent,
-                                            barrierColor:
-                                                FlutterFlowTheme.of(context)
-                                                    .barrierColor,
-                                            context: context,
-                                            builder: (context) {
-                                              return GestureDetector(
-                                                onTap: () => _model.unfocusNode
-                                                        .canRequestFocus
-                                                    ? FocusScope.of(context)
-                                                        .requestFocus(
-                                                            _model.unfocusNode)
-                                                    : FocusScope.of(context)
-                                                        .unfocus(),
-                                                child: Padding(
-                                                  padding:
-                                                      MediaQuery.viewInsetsOf(
-                                                          context),
-                                                  child: AlertMessageWidget(
-                                                    buttonText: 'Aceptar',
-                                                    title:
-                                                        'Error: ${(_model.recoverPassResp?.statusCode ?? 200).toString()}',
-                                                    message: UsersGroup
-                                                        .recoverPassCall
-                                                        .message(
-                                                      (_model.recoverPassResp
-                                                              ?.jsonBody ??
-                                                          ''),
-                                                    )!,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ).then(
-                                              (value) => safeSetState(() {}));
-
-                                          if (shouldSetState) setState(() {});
-                                          return;
-                                        }
-
-                                        context.safePop();
-                                        if (shouldSetState) setState(() {});
-                                      },
-                                      text: 'Enviar correo',
-                                      options: FFButtonOptions(
-                                        width:
-                                            MediaQuery.sizeOf(context).width *
-                                                1.0,
-                                        height: 48.0,
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            32.0, 0.0, 32.0, 0.0),
-                                        iconPadding:
-                                            const EdgeInsetsDirectional.fromSTEB(
-                                                0.0, 0.0, 0.0, 0.0),
-                                        color: FlutterFlowTheme.of(context)
-                                            .primary,
-                                        textStyle: FlutterFlowTheme.of(context)
-                                            .titleSmall
-                                            .override(
-                                              fontFamily: 'Montserrat',
-                                              color: const Color(0xFF232323),
-                                              fontSize: 20.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                        elevation: 2.0,
-                                        borderSide: const BorderSide(
-                                          color: Colors.transparent,
-                                          width: 1.0,
+                                          elevation: 2.0,
+                                          borderSide: const BorderSide(
+                                            color: Colors.transparent,
+                                            width: 1.0,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
                                         ),
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
                                       ),
-                                    ),
-                                  ].divide(const SizedBox(height: 16.0)),
-                                ).animateOnPageLoad(animationsMap[
-                                    'columnOnPageLoadAnimation']!),
-                              ),
-                            ],
+                                    ].divide(const SizedBox(height: 16.0)),
+                                  ).animateOnPageLoad(animationsMap[
+                                      'columnOnPageLoadAnimation']!),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ).animateOnPageLoad(
-                    animationsMap['containerOnPageLoadAnimation2']!),
-              ],
+                  ).animateOnPageLoad(
+                      animationsMap['containerOnPageLoadAnimation2']!),
+                ],
+              ),
             ),
-          ),
-        ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation1']!),
+          ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation1']!),
+        ),
       ),
     );
   }
