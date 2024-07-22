@@ -165,7 +165,7 @@ class _NavBarPageState extends State<NavBarPage> {
               FFIcons.kexclusin1,
               size: 40.0,
             ),
-            label: 'Comunicación',
+            label: 'Comunica',
             tooltip: '',
           ),
           BottomNavigationBarItem(
@@ -177,7 +177,7 @@ class _NavBarPageState extends State<NavBarPage> {
               FFIcons.kexclusin4,
               size: 40.0,
             ),
-            label: 'Autorizaciones',
+            label: 'Autorizar',
             tooltip: '',
           ),
           BottomNavigationBarItem(
@@ -189,7 +189,7 @@ class _NavBarPageState extends State<NavBarPage> {
               FFIcons.kexclusin3,
               size: 40.0,
             ),
-            label: 'Autorizaciones',
+            label: 'Reglas',
             tooltip: '',
           ),
           BottomNavigationBarItem(
@@ -201,7 +201,7 @@ class _NavBarPageState extends State<NavBarPage> {
               FFIcons.kexclusin2,
               size: 40.0,
             ),
-            label: 'Menú',
+            label: 'Más',
             tooltip: '',
           )
         ],
