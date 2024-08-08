@@ -5,9 +5,11 @@ import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import 'memorandum_list_model.dart';
 export 'memorandum_list_model.dart';
 
@@ -74,11 +76,34 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
           _model.updatePage(() {});
         } else {
           if ((_model.refreshMemorandumsResp?.statusCode ?? 200) == 401) {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
+            if (FFAppState().rememberMe) {
+              _model.refreshTokenResp1 =
+                  await AuthenticateGroup.refreshTokenCall.call(
+                token: currentAuthenticationToken,
+              );
 
-            navigate = () => context.goNamedAuth('Login', context.mounted);
+              if ((_model.refreshTokenResp1?.succeeded ?? true)) {
+                authManager.updateAuthUserData(
+                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
+                    (_model.refreshTokenResp1?.jsonBody ?? ''),
+                  ),
+                );
+
+                setState(() {});
+              } else {
+                GoRouter.of(context).prepareAuthEvent();
+                await authManager.signOut();
+                GoRouter.of(context).clearRedirectLocation();
+
+                navigate = () => context.goNamedAuth('Login', context.mounted);
+              }
+            } else {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            }
           } else {
             await showModalBottomSheet(
               isScrollControlled: true,
@@ -86,17 +111,19 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
               barrierColor: FlutterFlowTheme.of(context).barrierColor,
               context: context,
               builder: (context) {
-                return Padding(
-                  padding: MediaQuery.viewInsetsOf(context),
-                  child: AlertMessageWidget(
-                    buttonText: 'Aceptar',
-                    title:
-                        'Error: ${(_model.refreshMemorandumsResp?.statusCode ?? 200).toString()}',
-                    message: valueOrDefault<String>(
-                      MemorandumGroup.getMemorandumsCall.message(
-                        (_model.refreshMemorandumsResp?.jsonBody ?? ''),
+                return WebViewAware(
+                  child: Padding(
+                    padding: MediaQuery.viewInsetsOf(context),
+                    child: AlertMessageWidget(
+                      buttonText: 'Aceptar',
+                      title:
+                          'Error: ${(_model.refreshMemorandumsResp?.statusCode ?? 200).toString()}',
+                      message: valueOrDefault<String>(
+                        MemorandumGroup.getMemorandumsCall.message(
+                          (_model.refreshMemorandumsResp?.jsonBody ?? ''),
+                        ),
+                        'Ocurrió un error en el servidor.',
                       ),
-                      'Ocurrió un error en el servidor.',
                     ),
                   ),
                 );
@@ -180,6 +207,13 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                               _model.moreMemorandumsPerPage,
                               ParamType.int,
                             ),
+                            'isImagePath': serializeParam(
+                              functions.isImagePath(getJsonField(
+                                memorandumsItemItem,
+                                r'''$.url''',
+                              ).toString()),
+                              ParamType.bool,
+                            ),
                           }.withoutNulls,
                         );
                       },
@@ -189,10 +223,18 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                           image: DecorationImage(
                             fit: BoxFit.cover,
                             image: Image.network(
-                              getJsonField(
-                                memorandumsItemItem,
-                                r'''$.url''',
-                              ).toString(),
+                              valueOrDefault<String>(
+                                functions.isImagePath(getJsonField(
+                                  memorandumsItemItem,
+                                  r'''$.url''',
+                                ).toString())
+                                    ? getJsonField(
+                                        memorandumsItemItem,
+                                        r'''$.url''',
+                                      ).toString()
+                                    : 'https://res.cloudinary.com/dshn8thfr/image/upload/v1722968542/placeholder_rmzce5.png',
+                                'https://res.cloudinary.com/dshn8thfr/image/upload/v1722968542/placeholder_rmzce5.png',
+                              ),
                             ).image,
                           ),
                           boxShadow: const [
@@ -244,14 +286,39 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                     } else {
                       if ((_model.moreMemorandumResp?.statusCode ?? 200) ==
                           401) {
-                        GoRouter.of(context).prepareAuthEvent();
-                        await authManager.signOut();
-                        GoRouter.of(context).clearRedirectLocation();
+                        if (FFAppState().rememberMe) {
+                          _model.refreshTokenResp2 =
+                              await AuthenticateGroup.refreshTokenCall.call(
+                            token: currentAuthenticationToken,
+                          );
 
-                        navigate =
-                            () => context.goNamedAuth('Login', context.mounted);
+                          shouldSetState = true;
+                          if ((_model.refreshTokenResp2?.succeeded ?? true)) {
+                            authManager.updateAuthUserData(
+                              authenticationToken:
+                                  AuthenticateGroup.refreshTokenCall.token(
+                                (_model.refreshTokenResp2?.jsonBody ?? ''),
+                              ),
+                            );
 
-                        navigate();
+                            setState(() {});
+                          } else {
+                            GoRouter.of(context).prepareAuthEvent();
+                            await authManager.signOut();
+                            GoRouter.of(context).clearRedirectLocation();
+
+                            navigate = () =>
+                                context.goNamedAuth('Login', context.mounted);
+                          }
+                        } else {
+                          GoRouter.of(context).prepareAuthEvent();
+                          await authManager.signOut();
+                          GoRouter.of(context).clearRedirectLocation();
+
+                          navigate = () =>
+                              context.goNamedAuth('Login', context.mounted);
+                        }
+
                         if (shouldSetState) setState(() {});
                         return;
                       } else {
@@ -262,17 +329,20 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                               FlutterFlowTheme.of(context).barrierColor,
                           context: context,
                           builder: (context) {
-                            return Padding(
-                              padding: MediaQuery.viewInsetsOf(context),
-                              child: AlertMessageWidget(
-                                buttonText: 'Aceptar',
-                                title:
-                                    'Error: ${(_model.moreMemorandumResp?.statusCode ?? 200).toString()}',
-                                message: valueOrDefault<String>(
-                                  MemorandumGroup.getMemorandumsCall.message(
-                                    (_model.moreMemorandumResp?.jsonBody ?? ''),
+                            return WebViewAware(
+                              child: Padding(
+                                padding: MediaQuery.viewInsetsOf(context),
+                                child: AlertMessageWidget(
+                                  buttonText: 'Aceptar',
+                                  title:
+                                      'Error: ${(_model.moreMemorandumResp?.statusCode ?? 200).toString()}',
+                                  message: valueOrDefault<String>(
+                                    MemorandumGroup.getMemorandumsCall.message(
+                                      (_model.moreMemorandumResp?.jsonBody ??
+                                          ''),
+                                    ),
+                                    'Ocurrió un error en el servidor.',
                                   ),
-                                  'Ocurrió un error en el servidor.',
                                 ),
                               ),
                             );

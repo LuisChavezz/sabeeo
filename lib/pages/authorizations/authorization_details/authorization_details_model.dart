@@ -18,15 +18,20 @@ class AuthorizationDetailsModel
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Backend Call - API (Authorization Details)] action in Authorization_details widget.
   ApiCallResponse? authorizationResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Authorization_details widget.
+  ApiCallResponse? refreshTokenResp1;
   // Model for AuthorizationPdfList component.
   late AuthorizationPdfListModel authorizationPdfListModel;
   // Stores action output result for [Backend Call - API (Response Authorization)] action in Button widget.
   ApiCallResponse? rejectedAuthoResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Button widget.
+  ApiCallResponse? refreshTokenResp2;
   // Stores action output result for [Backend Call - API (Response Authorization)] action in Button widget.
   ApiCallResponse? approvedAuthResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Button widget.
+  ApiCallResponse? refreshTokenResp3;
 
   @override
   void initState(BuildContext context) {
@@ -36,7 +41,6 @@ class AuthorizationDetailsModel
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     authorizationPdfListModel.dispose();
   }
 }

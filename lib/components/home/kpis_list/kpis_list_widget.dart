@@ -8,6 +8,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import 'kpis_list_model.dart';
 export 'kpis_list_model.dart';
 
@@ -73,13 +74,35 @@ class _KpisListWidgetState extends State<KpisListWidget> {
           _model.updatePage(() {});
         } else {
           if ((_model.refreshKpisResp?.statusCode ?? 200) == 401) {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
+            if (FFAppState().rememberMe) {
+              _model.refreshTokenResp1 =
+                  await AuthenticateGroup.refreshTokenCall.call(
+                token: currentAuthenticationToken,
+              );
 
-            navigate = () => context.goNamedAuth('Login', context.mounted);
+              if ((_model.refreshTokenResp1?.succeeded ?? true)) {
+                authManager.updateAuthUserData(
+                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
+                    (_model.refreshTokenResp1?.jsonBody ?? ''),
+                  ),
+                );
 
-            navigate();
+                setState(() {});
+              } else {
+                GoRouter.of(context).prepareAuthEvent();
+                await authManager.signOut();
+                GoRouter.of(context).clearRedirectLocation();
+
+                navigate = () => context.goNamedAuth('Login', context.mounted);
+              }
+            } else {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            }
+
             return;
           } else {
             await showModalBottomSheet(
@@ -88,19 +111,21 @@ class _KpisListWidgetState extends State<KpisListWidget> {
               barrierColor: FlutterFlowTheme.of(context).barrierColor,
               context: context,
               builder: (context) {
-                return Padding(
-                  padding: MediaQuery.viewInsetsOf(context),
-                  child: AlertMessageWidget(
-                    buttonText: 'Aceptar',
-                    title:
-                        'Error: ${(_model.refreshKpisResp?.statusCode ?? 200).toString()}',
-                    message: valueOrDefault<String>(
-                      KpiGroup.getKpisCall
-                          .message(
-                            (_model.refreshKpisResp?.jsonBody ?? ''),
-                          )
-                          .toString(),
-                      'Ocurrió un error con el servidor.',
+                return WebViewAware(
+                  child: Padding(
+                    padding: MediaQuery.viewInsetsOf(context),
+                    child: AlertMessageWidget(
+                      buttonText: 'Aceptar',
+                      title:
+                          'Error: ${(_model.refreshKpisResp?.statusCode ?? 200).toString()}',
+                      message: valueOrDefault<String>(
+                        KpiGroup.getKpisCall
+                            .message(
+                              (_model.refreshKpisResp?.jsonBody ?? ''),
+                            )
+                            .toString(),
+                        'Ocurrió un error con el servidor.',
+                      ),
                     ),
                   ),
                 );
@@ -264,14 +289,39 @@ class _KpisListWidgetState extends State<KpisListWidget> {
                       _model.updatePage(() {});
                     } else {
                       if ((_model.moreKpisResp?.statusCode ?? 200) == 401) {
-                        GoRouter.of(context).prepareAuthEvent();
-                        await authManager.signOut();
-                        GoRouter.of(context).clearRedirectLocation();
+                        if (FFAppState().rememberMe) {
+                          _model.refreshTokenResp2 =
+                              await AuthenticateGroup.refreshTokenCall.call(
+                            token: currentAuthenticationToken,
+                          );
 
-                        navigate =
-                            () => context.goNamedAuth('Login', context.mounted);
+                          shouldSetState = true;
+                          if ((_model.refreshTokenResp2?.succeeded ?? true)) {
+                            authManager.updateAuthUserData(
+                              authenticationToken:
+                                  AuthenticateGroup.refreshTokenCall.token(
+                                (_model.refreshTokenResp2?.jsonBody ?? ''),
+                              ),
+                            );
 
-                        navigate();
+                            setState(() {});
+                          } else {
+                            GoRouter.of(context).prepareAuthEvent();
+                            await authManager.signOut();
+                            GoRouter.of(context).clearRedirectLocation();
+
+                            navigate = () =>
+                                context.goNamedAuth('Login', context.mounted);
+                          }
+                        } else {
+                          GoRouter.of(context).prepareAuthEvent();
+                          await authManager.signOut();
+                          GoRouter.of(context).clearRedirectLocation();
+
+                          navigate = () =>
+                              context.goNamedAuth('Login', context.mounted);
+                        }
+
                         if (shouldSetState) setState(() {});
                         return;
                       } else {
@@ -282,21 +332,24 @@ class _KpisListWidgetState extends State<KpisListWidget> {
                               FlutterFlowTheme.of(context).barrierColor,
                           context: context,
                           builder: (context) {
-                            return Padding(
-                              padding: MediaQuery.viewInsetsOf(context),
-                              child: AlertMessageWidget(
-                                buttonText: 'Aceptar',
-                                title:
-                                    'Error: ${KpiGroup.getKpisCall.statusCode(
+                            return WebViewAware(
+                              child: Padding(
+                                padding: MediaQuery.viewInsetsOf(context),
+                                child: AlertMessageWidget(
+                                  buttonText: 'Aceptar',
+                                  title:
+                                      'Error: ${KpiGroup.getKpisCall.statusCode(
+                                            (_model.moreKpisResp?.jsonBody ??
+                                                ''),
+                                          )?.toString()}',
+                                  message: valueOrDefault<String>(
+                                    KpiGroup.getKpisCall
+                                        .message(
                                           (_model.moreKpisResp?.jsonBody ?? ''),
-                                        )?.toString()}',
-                                message: valueOrDefault<String>(
-                                  KpiGroup.getKpisCall
-                                      .message(
-                                        (_model.moreKpisResp?.jsonBody ?? ''),
-                                      )
-                                      .toString(),
-                                  'Ocurrió un error con el servidor.',
+                                        )
+                                        .toString(),
+                                    'Ocurrió un error con el servidor.',
+                                  ),
                                 ),
                               ),
                             );

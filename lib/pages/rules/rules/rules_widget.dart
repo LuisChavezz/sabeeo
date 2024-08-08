@@ -61,13 +61,35 @@ class _RulesWidgetState extends State<RulesWidget> {
         setState(() {});
       } else {
         if ((_model.rulesResp?.statusCode ?? 200) == 401) {
-          GoRouter.of(context).prepareAuthEvent();
-          await authManager.signOut();
-          GoRouter.of(context).clearRedirectLocation();
+          if (FFAppState().rememberMe) {
+            _model.refreshTokenResp1 =
+                await AuthenticateGroup.refreshTokenCall.call(
+              token: currentAuthenticationToken,
+            );
 
-          navigate = () => context.goNamedAuth('Login', context.mounted);
+            if ((_model.refreshTokenResp1?.succeeded ?? true)) {
+              authManager.updateAuthUserData(
+                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
+                  (_model.refreshTokenResp1?.jsonBody ?? ''),
+                ),
+              );
 
-          navigate();
+              setState(() {});
+            } else {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            }
+          } else {
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
+
+            navigate = () => context.goNamedAuth('Login', context.mounted);
+          }
+
           return;
         }
       }
@@ -94,9 +116,7 @@ class _RulesWidgetState extends State<RulesWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
@@ -396,12 +416,44 @@ class _RulesWidgetState extends State<RulesWidget> {
                             } else {
                               if ((_model.reloadRulesResp?.statusCode ?? 200) ==
                                   401) {
-                                GoRouter.of(context).prepareAuthEvent();
-                                await authManager.signOut();
-                                GoRouter.of(context).clearRedirectLocation();
+                                if (FFAppState().rememberMe) {
+                                  _model.refreshTokenResp2 =
+                                      await AuthenticateGroup.refreshTokenCall
+                                          .call(
+                                    token: currentAuthenticationToken,
+                                  );
 
-                                navigate = () => context.goNamedAuth(
-                                    'Login', context.mounted);
+                                  shouldSetState = true;
+                                  if ((_model.refreshTokenResp2?.succeeded ??
+                                      true)) {
+                                    authManager.updateAuthUserData(
+                                      authenticationToken: AuthenticateGroup
+                                          .refreshTokenCall
+                                          .token(
+                                        (_model.refreshTokenResp2?.jsonBody ??
+                                            ''),
+                                      ),
+                                    );
+
+                                    setState(() {});
+                                  } else {
+                                    GoRouter.of(context).prepareAuthEvent();
+                                    await authManager.signOut();
+                                    GoRouter.of(context)
+                                        .clearRedirectLocation();
+
+                                    navigate = () => context.goNamedAuth(
+                                        'Login', context.mounted);
+                                  }
+                                } else {
+                                  GoRouter.of(context).prepareAuthEvent();
+                                  await authManager.signOut();
+                                  GoRouter.of(context).clearRedirectLocation();
+
+                                  navigate = () => context.goNamedAuth(
+                                      'Login', context.mounted);
+                                }
+
                                 if (shouldSetState) setState(() {});
                                 return;
                               }

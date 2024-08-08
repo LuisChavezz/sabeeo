@@ -22,11 +22,14 @@ class HomeModel extends FlutterFlowModel<HomeWidget> {
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Backend Call - API (Get Anomalies)] action in Home widget.
   ApiCallResponse? anomaliesResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Home widget.
+  ApiCallResponse? refreshTokenResp1;
   // Stores action output result for [Backend Call - API (Get Kpis)] action in Home widget.
   ApiCallResponse? kpisResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Home widget.
+  ApiCallResponse? refreshTokenResp2;
   // Model for AnomaliesList component.
   late AnomaliesListModel anomaliesListModel;
   // Model for KpisList component.
@@ -40,7 +43,6 @@ class HomeModel extends FlutterFlowModel<HomeWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     anomaliesListModel.dispose();
     kpisListModel.dispose();
   }

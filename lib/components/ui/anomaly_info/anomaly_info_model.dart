@@ -1,8 +1,8 @@
 import '/flutter_flow/flutter_flow_util.dart';
-import 'p_d_f_viewer_widget.dart' show PDFViewerWidget;
+import 'anomaly_info_widget.dart' show AnomalyInfoWidget;
 import 'package:flutter/material.dart';
 
-class PDFViewerModel extends FlutterFlowModel<PDFViewerWidget> {
+class AnomalyInfoModel extends FlutterFlowModel<AnomalyInfoWidget> {
   @override
   void initState(BuildContext context) {}
 

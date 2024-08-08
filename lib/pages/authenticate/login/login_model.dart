@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 class LoginModel extends FlutterFlowModel<LoginWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
   // State field(s) for emailField widget.
   FocusNode? emailFieldFocusNode;
@@ -42,6 +41,8 @@ class LoginModel extends FlutterFlowModel<LoginWidget> {
     return null;
   }
 
+  // State field(s) for RememberMeCheck widget.
+  bool? rememberMeCheckValue;
   // Stores action output result for [Backend Call - API (Login)] action in Button widget.
   ApiCallResponse? loginResp;
 
@@ -55,7 +56,6 @@ class LoginModel extends FlutterFlowModel<LoginWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     emailFieldFocusNode?.dispose();
     emailFieldTextController?.dispose();
 

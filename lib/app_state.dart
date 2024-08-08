@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FFAppState extends ChangeNotifier {
   static FFAppState _instance = FFAppState._internal();
@@ -13,11 +14,25 @@ class FFAppState extends ChangeNotifier {
     _instance = FFAppState._internal();
   }
 
-  Future initializePersistedState() async {}
+  Future initializePersistedState() async {
+    prefs = await SharedPreferences.getInstance();
+    _safeInit(() {
+      _rememberMe = prefs.getBool('ff_rememberMe') ?? _rememberMe;
+    });
+  }
 
   void update(VoidCallback callback) {
     callback();
     notifyListeners();
+  }
+
+  late SharedPreferences prefs;
+
+  bool _rememberMe = false;
+  bool get rememberMe => _rememberMe;
+  set rememberMe(bool value) {
+    _rememberMe = value;
+    prefs.setBool('ff_rememberMe', value);
   }
 
   List<dynamic> _anomaliesArray = [];
@@ -251,4 +266,16 @@ class FFAppState extends ChangeNotifier {
   void insertAtIndexInRulesDocumentsArray(int index, dynamic value) {
     rulesDocumentsArray.insert(index, value);
   }
+}
+
+void _safeInit(Function() initializeField) {
+  try {
+    initializeField();
+  } catch (_) {}
+}
+
+Future _safeInitAsync(Function() initializeField) async {
+  try {
+    await initializeField();
+  } catch (_) {}
 }

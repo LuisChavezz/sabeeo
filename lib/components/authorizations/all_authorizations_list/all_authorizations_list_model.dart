@@ -9,12 +9,18 @@ class AllAuthorizationsListModel
 
   int moreAuthorizationsPerPage = 10;
 
+  String? searchValueCS;
+
   ///  State fields for stateful widgets in this component.
 
   // Stores action output result for [Backend Call - API (Get History Auths)] action in Column widget.
   ApiCallResponse? refreshReqAuthsResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Column widget.
+  ApiCallResponse? refreshTokenResp1;
   // Stores action output result for [Backend Call - API (Get History Auths)] action in Button widget.
   ApiCallResponse? moreAuthorizationsResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Button widget.
+  ApiCallResponse? refreshTokenResp2;
 
   @override
   void initState(BuildContext context) {}

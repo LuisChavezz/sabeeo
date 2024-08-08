@@ -10,17 +10,18 @@ class MemorandumModel extends FlutterFlowModel<MemorandumWidget> {
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Backend Call - API (Confirm Memorandum)] action in Memorandum widget.
   ApiCallResponse? confirmMemoResp;
   // Stores action output result for [Backend Call - API (Get Memorandums)] action in Memorandum widget.
   ApiCallResponse? memorandumsResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Memorandum widget.
+  ApiCallResponse? refreshTokenResp2;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Memorandum widget.
+  ApiCallResponse? refreshTokenResp3;
 
   @override
   void initState(BuildContext context) {}
 
   @override
-  void dispose() {
-    unfocusNode.dispose();
-  }
+  void dispose() {}
 }

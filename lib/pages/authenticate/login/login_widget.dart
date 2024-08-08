@@ -5,8 +5,12 @@ import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import 'login_model.dart';
 export 'login_model.dart';
 
@@ -22,6 +26,8 @@ class _LoginWidgetState extends State<LoginWidget>
   late LoginModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  late StreamSubscription<bool> _keyboardVisibilitySubscription;
+  bool _isKeyboardVisible = false;
 
   final animationsMap = <String, AnimationInfo>{};
 
@@ -29,6 +35,15 @@ class _LoginWidgetState extends State<LoginWidget>
   void initState() {
     super.initState();
     _model = createModel(context, () => LoginModel());
+
+    if (!isWeb) {
+      _keyboardVisibilitySubscription =
+          KeyboardVisibilityController().onChange.listen((bool visible) {
+        setState(() {
+          _isKeyboardVisible = visible;
+        });
+      });
+    }
 
     _model.emailFieldTextController ??= TextEditingController();
     _model.emailFieldFocusNode ??= FocusNode();
@@ -211,15 +226,18 @@ class _LoginWidgetState extends State<LoginWidget>
   void dispose() {
     _model.dispose();
 
+    if (!isWeb) {
+      _keyboardVisibilitySubscription.cancel();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -526,7 +544,74 @@ class _LoginWidgetState extends State<LoginWidget>
                                     ),
                                     Padding(
                                       padding: const EdgeInsetsDirectional.fromSTEB(
-                                          24.0, 24.0, 24.0, 12.0),
+                                          24.0, 8.0, 24.0, 0.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Theme(
+                                            data: ThemeData(
+                                              checkboxTheme: CheckboxThemeData(
+                                                visualDensity:
+                                                    VisualDensity.compact,
+                                                materialTapTargetSize:
+                                                    MaterialTapTargetSize
+                                                        .shrinkWrap,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          4.0),
+                                                ),
+                                              ),
+                                              unselectedWidgetColor:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                            ),
+                                            child: Checkbox(
+                                              value: _model
+                                                      .rememberMeCheckValue ??=
+                                                  FFAppState().rememberMe,
+                                              onChanged: (newValue) async {
+                                                setState(() => _model
+                                                        .rememberMeCheckValue =
+                                                    newValue!);
+                                                if (newValue!) {
+                                                  FFAppState().rememberMe =
+                                                      true;
+                                                  setState(() {});
+                                                } else {
+                                                  FFAppState().rememberMe =
+                                                      false;
+                                                  setState(() {});
+                                                }
+                                              },
+                                              side: BorderSide(
+                                                width: 2,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .secondaryText,
+                                              ),
+                                              activeColor:
+                                                  FlutterFlowTheme.of(context)
+                                                      .primary,
+                                              checkColor: Colors.white,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Recordarme',
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Montserrat',
+                                                  color: const Color(0xFF8788A5),
+                                                  letterSpacing: 0.0,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          24.0, 12.0, 24.0, 12.0),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
@@ -565,6 +650,16 @@ class _LoginWidgetState extends State<LoginWidget>
                                                             ?.jsonBody ??
                                                         ''),
                                                   ),
+                                                  authUid: getJsonField(
+                                                    AuthenticateGroup.loginCall
+                                                        .user(
+                                                          (_model.loginResp
+                                                                  ?.jsonBody ??
+                                                              ''),
+                                                        )
+                                                        ?.toMap(),
+                                                    r'''$.id''',
+                                                  ).toString(),
                                                   userData: AuthenticateGroup
                                                       .loginCall
                                                       .user(
@@ -587,34 +682,31 @@ class _LoginWidgetState extends State<LoginWidget>
                                                           .barrierColor,
                                                   context: context,
                                                   builder: (context) {
-                                                    return GestureDetector(
-                                                      onTap: () => _model
-                                                              .unfocusNode
-                                                              .canRequestFocus
-                                                          ? FocusScope.of(
-                                                                  context)
-                                                              .requestFocus(_model
-                                                                  .unfocusNode)
-                                                          : FocusScope.of(
-                                                                  context)
-                                                              .unfocus(),
-                                                      child: Padding(
-                                                        padding: MediaQuery
-                                                            .viewInsetsOf(
-                                                                context),
-                                                        child:
-                                                            AlertMessageWidget(
-                                                          buttonText: 'Aceptar',
-                                                          title:
-                                                              'Error: ${(_model.loginResp?.statusCode ?? 200).toString()}',
-                                                          message:
-                                                              AuthenticateGroup
-                                                                  .loginCall
-                                                                  .message(
-                                                            (_model.loginResp
-                                                                    ?.jsonBody ??
-                                                                ''),
-                                                          )!,
+                                                    return WebViewAware(
+                                                      child: GestureDetector(
+                                                        onTap: () =>
+                                                            FocusScope.of(
+                                                                    context)
+                                                                .unfocus(),
+                                                        child: Padding(
+                                                          padding: MediaQuery
+                                                              .viewInsetsOf(
+                                                                  context),
+                                                          child:
+                                                              AlertMessageWidget(
+                                                            buttonText:
+                                                                'Aceptar',
+                                                            title:
+                                                                'Error: ${(_model.loginResp?.statusCode ?? 200).toString()}',
+                                                            message:
+                                                                AuthenticateGroup
+                                                                    .loginCall
+                                                                    .message(
+                                                              (_model.loginResp
+                                                                      ?.jsonBody ??
+                                                                  ''),
+                                                            )!,
+                                                          ),
                                                         ),
                                                       ),
                                                     );
@@ -753,7 +845,10 @@ class _LoginWidgetState extends State<LoginWidget>
                 ),
               ).animateOnPageLoad(
                   animationsMap['containerOnPageLoadAnimation1']!),
-              if (Theme.of(context).brightness == Brightness.light)
+              if ((Theme.of(context).brightness == Brightness.light) &&
+                  !(isWeb
+                      ? MediaQuery.viewInsetsOf(context).bottom > 0
+                      : _isKeyboardVisible))
                 Align(
                   alignment: const AlignmentDirectional(0.0, 1.0),
                   child: ClipRRect(
@@ -766,7 +861,10 @@ class _LoginWidgetState extends State<LoginWidget>
                     ),
                   ),
                 ),
-              if (Theme.of(context).brightness == Brightness.dark)
+              if ((Theme.of(context).brightness == Brightness.dark) &&
+                  !(isWeb
+                      ? MediaQuery.viewInsetsOf(context).bottom > 0
+                      : _isKeyboardVisible))
                 Align(
                   alignment: const AlignmentDirectional(0.0, 1.0),
                   child: ClipRRect(

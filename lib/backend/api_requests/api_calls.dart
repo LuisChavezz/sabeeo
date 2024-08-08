@@ -16,10 +16,12 @@ class AuthenticateGroup {
   static String getBaseUrl() => 'https://apiv2.menita.cloud/api/authenticate';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
+    'ignore-inactivity-check': 'true',
   };
   static LoginCall loginCall = LoginCall();
   static LoginOTPCall loginOTPCall = LoginOTPCall();
   static ValidateLoginOTPCall validateLoginOTPCall = ValidateLoginOTPCall();
+  static RefreshTokenCall refreshTokenCall = RefreshTokenCall();
 }
 
 class LoginCall {
@@ -40,6 +42,7 @@ class LoginCall {
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
       },
       params: {},
       body: ffApiRequestBody,
@@ -87,6 +90,7 @@ class LoginOTPCall {
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
       },
       params: {},
       body: ffApiRequestBody,
@@ -134,6 +138,7 @@ class ValidateLoginOTPCall {
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
       },
       params: {},
       body: ffApiRequestBody,
@@ -165,6 +170,47 @@ class ValidateLoginOTPCall {
       ));
 }
 
+class RefreshTokenCall {
+  Future<ApiCallResponse> call({
+    String? token = '',
+  }) async {
+    final baseUrl = AuthenticateGroup.getBaseUrl();
+
+    final ffApiRequestBody = '''
+{
+  "token": "$token"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'Refresh Token',
+      apiUrl: '$baseUrl/refresh_token',
+      callType: ApiCallType.POST,
+      headers: {
+        'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
+        'Authorization': 'Bearer $token',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  String? token(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.data.token''',
+      ));
+  int? statusCode(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.statusCode''',
+      ));
+}
+
 /// End Authenticate Group Code
 
 /// Start Users Group Code
@@ -173,6 +219,7 @@ class UsersGroup {
   static String getBaseUrl() => 'https://apiv2.menita.cloud/api/users';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
+    'ignore-inactivity-check': 'true',
   };
   static RecoverPassCall recoverPassCall = RecoverPassCall();
   static ProfileCall profileCall = ProfileCall();
@@ -194,6 +241,7 @@ class RecoverPassCall {
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
       },
       params: {},
       body: ffApiRequestBody,
@@ -229,6 +277,7 @@ class ProfileCall {
       callType: ApiCallType.GET,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {},
@@ -253,6 +302,22 @@ class ProfileCall {
         response,
         r'''$.message''',
       ));
+  String? firstname(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.data.firstname''',
+      ));
+  String? email(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.data.email''',
+      ));
+  String? lastname(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.data.lastname''',
+      ));
+  String? phone(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.data.phone''',
+      ));
 }
 
 /// End Users Group Code
@@ -263,6 +328,7 @@ class AnomaliesGroup {
   static String getBaseUrl() => 'https://apiv2.menita.cloud/api/anomalies';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
+    'ignore-inactivity-check': 'true',
   };
   static GetAnomaliesCall getAnomaliesCall = GetAnomaliesCall();
 }
@@ -281,6 +347,7 @@ class GetAnomaliesCall {
       callType: ApiCallType.GET,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {
@@ -327,6 +394,7 @@ class KpiGroup {
   static String getBaseUrl() => 'https://apiv2.menita.cloud/api/kpi';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
+    'ignore-inactivity-check': 'true',
   };
   static GetKpisCall getKpisCall = GetKpisCall();
 }
@@ -345,6 +413,7 @@ class GetKpisCall {
       callType: ApiCallType.GET,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {
@@ -387,6 +456,7 @@ class MemorandumGroup {
   static String getBaseUrl() => 'https://apiv2.menita.cloud/api/memorandum';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
+    'ignore-inactivity-check': 'true',
   };
   static GetMemorandumsCall getMemorandumsCall = GetMemorandumsCall();
   static ConfirmMemorandumCall confirmMemorandumCall = ConfirmMemorandumCall();
@@ -406,6 +476,7 @@ class GetMemorandumsCall {
       callType: ApiCallType.GET,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {
@@ -453,6 +524,7 @@ class ConfirmMemorandumCall {
       callType: ApiCallType.PATCH,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {},
@@ -476,6 +548,7 @@ class NotificationsGroup {
       'https://apiv2.menita.cloud/api/broadcast-messages';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
+    'ignore-inactivity-check': 'true',
   };
   static GetNotificationsCall getNotificationsCall = GetNotificationsCall();
   static ReadNotificactionCall readNotificactionCall = ReadNotificactionCall();
@@ -486,6 +559,7 @@ class GetNotificationsCall {
     String? token = '',
     int? page = 1,
     int? perPage = 10,
+    String? read = '',
   }) async {
     final baseUrl = NotificationsGroup.getBaseUrl();
 
@@ -495,11 +569,13 @@ class GetNotificationsCall {
       callType: ApiCallType.GET,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {
         'page': page,
         'perPage': perPage,
+        'read': read,
       },
       returnBody: true,
       encodeBodyUtf8: false,
@@ -546,6 +622,7 @@ class ReadNotificactionCall {
       callType: ApiCallType.PATCH,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {},
@@ -569,6 +646,7 @@ class AuthorizationsGroup {
   static String getBaseUrl() => 'https://apiv2.menita.cloud/api/authorization';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
+    'ignore-inactivity-check': 'true',
   };
   static GetRequestedAuthsCall getRequestedAuthsCall = GetRequestedAuthsCall();
   static GetReceivedAuthsCall getReceivedAuthsCall = GetReceivedAuthsCall();
@@ -584,8 +662,10 @@ class GetRequestedAuthsCall {
     String? token = '',
     int? page = 1,
     int? perPage = 10,
-    String? searchKeys = 'subject',
+    String? searchKeys = 'subject,id',
     String? searchValue = '',
+    String? emitterId = '',
+    String? status = 'pendant',
   }) async {
     final baseUrl = AuthorizationsGroup.getBaseUrl();
 
@@ -595,6 +675,7 @@ class GetRequestedAuthsCall {
       callType: ApiCallType.GET,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {
@@ -602,6 +683,8 @@ class GetRequestedAuthsCall {
         'perPage': perPage,
         'searchKeys': searchKeys,
         'searchValue': searchValue,
+        'status': status,
+        'emitterId': emitterId,
       },
       returnBody: true,
       encodeBodyUtf8: false,
@@ -636,8 +719,9 @@ class GetReceivedAuthsCall {
     String? token = '',
     int? page = 1,
     int? perPage = 10,
-    String? searchKeys = 'subject',
+    String? searchKeys = 'subject,id',
     String? searchValue = '',
+    String? status = 'pendant',
   }) async {
     final baseUrl = AuthorizationsGroup.getBaseUrl();
 
@@ -647,6 +731,7 @@ class GetReceivedAuthsCall {
       callType: ApiCallType.GET,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {
@@ -654,6 +739,7 @@ class GetReceivedAuthsCall {
         'perPage': perPage,
         'searchKeys': searchKeys,
         'searchValue': searchValue,
+        'status': status,
       },
       returnBody: true,
       encodeBodyUtf8: false,
@@ -677,10 +763,10 @@ class GetReceivedAuthsCall {
         response,
         r'''$.statusCode''',
       ));
-  dynamic message(dynamic response) => getJsonField(
+  String? message(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.message''',
-      );
+      ));
 }
 
 class AuthorizationDetailsCall {
@@ -696,6 +782,7 @@ class AuthorizationDetailsCall {
       callType: ApiCallType.GET,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {},
@@ -751,10 +838,14 @@ class AuthorizationDetailsCall {
         r'''$.data.pdfResource''',
         true,
       ) as List?;
-  dynamic message(dynamic response) => getJsonField(
+  String? message(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.message''',
-      );
+      ));
+  bool? isAuthorizer(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.data.isAuthorizer''',
+      ));
 }
 
 class ResponseAuthorizationCall {
@@ -775,6 +866,7 @@ class ResponseAuthorizationCall {
       callType: ApiCallType.PATCH,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {},
@@ -816,7 +908,7 @@ class GetHistoryAuthsCall {
     String? token = '',
     int? page = 1,
     int? perPage = 10,
-    String? searchKeys = 'subject',
+    String? searchKeys = 'subject,id',
     String? searchValue = '',
   }) async {
     final baseUrl = AuthorizationsGroup.getBaseUrl();
@@ -827,6 +919,7 @@ class GetHistoryAuthsCall {
       callType: ApiCallType.GET,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {
@@ -871,6 +964,7 @@ class OriginalAPIEndpointsGroup {
   static String getBaseUrl() => 'https://apiv2.menita.cloud/api';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
+    'ignore-inactivity-check': 'true',
   };
   static GetDocumentsCall getDocumentsCall = GetDocumentsCall();
   static ConfirmDocumentCall confirmDocumentCall = ConfirmDocumentCall();
@@ -891,6 +985,7 @@ class GetDocumentsCall {
       callType: ApiCallType.GET,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {
@@ -944,6 +1039,7 @@ class ConfirmDocumentCall {
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
         'Authorization': 'Bearer $token',
       },
       params: {},
