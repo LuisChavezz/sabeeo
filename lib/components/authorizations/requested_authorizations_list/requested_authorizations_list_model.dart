@@ -10,6 +10,8 @@ class RequestedAuthorizationsListModel
 
   int moreAuthorizationsPerPage = 10;
 
+  String? searchValueCS;
+
   ///  State fields for stateful widgets in this component.
 
   // Stores action output result for [Backend Call - API (Get Requested Auths)] action in Column widget.

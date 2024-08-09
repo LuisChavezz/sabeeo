@@ -5,6 +5,7 @@ import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +49,12 @@ class _RequestedAuthorizationsListWidgetState
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.moreAuthorizationsPerPage = 10;
+      if (!((widget.searchValue == _model.searchValueCS) ||
+          functions.stringIsNull(_model.searchValueCS))) {
+        _model.moreAuthorizationsPerPage = 10;
+        setState(() {});
+      }
+      _model.searchValueCS = widget.searchValue;
       setState(() {});
     });
   }
