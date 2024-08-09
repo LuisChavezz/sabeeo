@@ -5,8 +5,11 @@ import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import 'received_authorizations_list_model.dart';
 export 'received_authorizations_list_model.dart';
 
@@ -43,6 +46,17 @@ class _ReceivedAuthorizationsListWidgetState
   void initState() {
     super.initState();
     _model = createModel(context, () => ReceivedAuthorizationsListModel());
+
+    // On component load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      if (!((widget.searchValue == _model.searchValueCS) ||
+          functions.stringIsNull(_model.searchValueCS))) {
+        _model.moreAuthorizationsPerPage = 10;
+        setState(() {});
+      }
+      _model.searchValueCS = widget.searchValue;
+      setState(() {});
+    });
   }
 
   @override
@@ -79,13 +93,35 @@ class _ReceivedAuthorizationsListWidgetState
           _model.updatePage(() {});
         } else {
           if ((_model.refreshRecAuthsResp?.statusCode ?? 200) == 401) {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
+            if (FFAppState().rememberMe) {
+              _model.refreshTokenResp1 =
+                  await AuthenticateGroup.refreshTokenCall.call(
+                token: currentAuthenticationToken,
+              );
 
-            navigate = () => context.goNamedAuth('Login', context.mounted);
+              if ((_model.refreshTokenResp1?.succeeded ?? true)) {
+                authManager.updateAuthUserData(
+                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
+                    (_model.refreshTokenResp1?.jsonBody ?? ''),
+                  ),
+                );
 
-            navigate();
+                setState(() {});
+              } else {
+                GoRouter.of(context).prepareAuthEvent();
+                await authManager.signOut();
+                GoRouter.of(context).clearRedirectLocation();
+
+                navigate = () => context.goNamedAuth('Login', context.mounted);
+              }
+            } else {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            }
+
             return;
           } else {
             await showModalBottomSheet(
@@ -94,19 +130,19 @@ class _ReceivedAuthorizationsListWidgetState
               barrierColor: FlutterFlowTheme.of(context).barrierColor,
               context: context,
               builder: (context) {
-                return Padding(
-                  padding: MediaQuery.viewInsetsOf(context),
-                  child: AlertMessageWidget(
-                    buttonText: 'Aceptar',
-                    title:
-                        'Error: ${(_model.refreshRecAuthsResp?.statusCode ?? 200).toString()}',
-                    message: valueOrDefault<String>(
-                      AuthorizationsGroup.getReceivedAuthsCall
-                          .message(
-                            (_model.refreshRecAuthsResp?.jsonBody ?? ''),
-                          )
-                          .toString(),
-                      'Ocurrió un erro en el servidor',
+                return WebViewAware(
+                  child: Padding(
+                    padding: MediaQuery.viewInsetsOf(context),
+                    child: AlertMessageWidget(
+                      buttonText: 'Aceptar',
+                      title:
+                          'Error: ${(_model.refreshRecAuthsResp?.statusCode ?? 200).toString()}',
+                      message: valueOrDefault<String>(
+                        AuthorizationsGroup.getReceivedAuthsCall.message(
+                          (_model.refreshRecAuthsResp?.jsonBody ?? ''),
+                        ),
+                        'Ocurrió un erro en el servidor',
+                      ),
                     ),
                   ),
                 );
@@ -269,10 +305,13 @@ class _ReceivedAuthorizationsListWidgetState
                                         borderRadius:
                                             BorderRadius.circular(24.0),
                                         child: Image.network(
-                                          getJsonField(
-                                            authorizationsItemItem,
-                                            r'''$.emitter_profile_picture''',
-                                          ).toString(),
+                                          valueOrDefault<String>(
+                                            getJsonField(
+                                              authorizationsItemItem,
+                                              r'''$.emitter_profile_picture''',
+                                            )?.toString(),
+                                            'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                          ),
                                           width: 35.0,
                                           height: 35.0,
                                           fit: BoxFit.cover,
@@ -298,10 +337,13 @@ class _ReceivedAuthorizationsListWidgetState
                                         borderRadius:
                                             BorderRadius.circular(24.0),
                                         child: Image.network(
-                                          getJsonField(
-                                            authorizationsItemItem,
-                                            r'''$.originalAuthorizer_profile_picture''',
-                                          ).toString(),
+                                          valueOrDefault<String>(
+                                            getJsonField(
+                                              authorizationsItemItem,
+                                              r'''$.originalAuthorizer_profile_picture''',
+                                            )?.toString(),
+                                            'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                          ),
                                           width: 35.0,
                                           height: 35.0,
                                           fit: BoxFit.cover,
@@ -363,14 +405,39 @@ class _ReceivedAuthorizationsListWidgetState
                     } else {
                       if ((_model.moreAuthorizationsResp?.statusCode ?? 200) ==
                           401) {
-                        GoRouter.of(context).prepareAuthEvent();
-                        await authManager.signOut();
-                        GoRouter.of(context).clearRedirectLocation();
+                        if (FFAppState().rememberMe) {
+                          _model.refreshTokenResp2 =
+                              await AuthenticateGroup.refreshTokenCall.call(
+                            token: currentAuthenticationToken,
+                          );
 
-                        navigate =
-                            () => context.goNamedAuth('Login', context.mounted);
+                          shouldSetState = true;
+                          if ((_model.refreshTokenResp2?.succeeded ?? true)) {
+                            authManager.updateAuthUserData(
+                              authenticationToken:
+                                  AuthenticateGroup.refreshTokenCall.token(
+                                (_model.refreshTokenResp2?.jsonBody ?? ''),
+                              ),
+                            );
 
-                        navigate();
+                            setState(() {});
+                          } else {
+                            GoRouter.of(context).prepareAuthEvent();
+                            await authManager.signOut();
+                            GoRouter.of(context).clearRedirectLocation();
+
+                            navigate = () =>
+                                context.goNamedAuth('Login', context.mounted);
+                          }
+                        } else {
+                          GoRouter.of(context).prepareAuthEvent();
+                          await authManager.signOut();
+                          GoRouter.of(context).clearRedirectLocation();
+
+                          navigate = () =>
+                              context.goNamedAuth('Login', context.mounted);
+                        }
+
                         if (shouldSetState) setState(() {});
                         return;
                       } else {
@@ -381,23 +448,24 @@ class _ReceivedAuthorizationsListWidgetState
                               FlutterFlowTheme.of(context).barrierColor,
                           context: context,
                           builder: (context) {
-                            return Padding(
-                              padding: MediaQuery.viewInsetsOf(context),
-                              child: AlertMessageWidget(
-                                buttonText: 'Aceptar',
-                                title: (_model.moreAuthorizationsResp
-                                            ?.statusCode ??
-                                        200)
-                                    .toString(),
-                                message: valueOrDefault<String>(
-                                  AuthorizationsGroup.getReceivedAuthsCall
-                                      .message(
-                                        (_model.moreAuthorizationsResp
-                                                ?.jsonBody ??
-                                            ''),
-                                      )
+                            return WebViewAware(
+                              child: Padding(
+                                padding: MediaQuery.viewInsetsOf(context),
+                                child: AlertMessageWidget(
+                                  buttonText: 'Aceptar',
+                                  title: (_model.moreAuthorizationsResp
+                                              ?.statusCode ??
+                                          200)
                                       .toString(),
-                                  'Ocurrió un error en el servidor.',
+                                  message: valueOrDefault<String>(
+                                    AuthorizationsGroup.getReceivedAuthsCall
+                                        .message(
+                                      (_model.moreAuthorizationsResp
+                                              ?.jsonBody ??
+                                          ''),
+                                    ),
+                                    'Ocurrió un error en el servidor.',
+                                  ),
                                 ),
                               ),
                             );

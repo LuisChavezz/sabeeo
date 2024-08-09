@@ -18,17 +18,14 @@ class RuleDetailsModel extends FlutterFlowModel<RuleDetailsWidget> {
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
-  // Stores action output result for [Backend Call - API (Authorization Details)] action in Rule_details widget.
-  ApiCallResponse? authorizationResp;
   // Stores action output result for [Backend Call - API (Confirm Document)] action in Button widget.
   ApiCallResponse? ruleDocConfirmResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Button widget.
+  ApiCallResponse? refreshTokenResp1;
 
   @override
   void initState(BuildContext context) {}
 
   @override
-  void dispose() {
-    unfocusNode.dispose();
-  }
+  void dispose() {}
 }

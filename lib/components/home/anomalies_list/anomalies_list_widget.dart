@@ -1,14 +1,17 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/components/ui/alert_message/alert_message_widget.dart';
+import '/components/ui/anomaly_info/anomaly_info_widget.dart';
 import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import 'anomalies_list_model.dart';
 export 'anomalies_list_model.dart';
 
@@ -75,13 +78,35 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
           _model.updatePage(() {});
         } else {
           if ((_model.refreshAnomaliesResp?.statusCode ?? 200) == 401) {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
+            if (FFAppState().rememberMe) {
+              _model.refreshTokenResp1 =
+                  await AuthenticateGroup.refreshTokenCall.call(
+                token: currentAuthenticationToken,
+              );
 
-            navigate = () => context.goNamedAuth('Login', context.mounted);
+              if ((_model.refreshTokenResp1?.succeeded ?? true)) {
+                authManager.updateAuthUserData(
+                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
+                    (_model.refreshTokenResp1?.jsonBody ?? ''),
+                  ),
+                );
 
-            navigate();
+                setState(() {});
+              } else {
+                GoRouter.of(context).prepareAuthEvent();
+                await authManager.signOut();
+                GoRouter.of(context).clearRedirectLocation();
+
+                navigate = () => context.goNamedAuth('Login', context.mounted);
+              }
+            } else {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            }
+
             return;
           } else {
             await showModalBottomSheet(
@@ -90,17 +115,19 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
               barrierColor: FlutterFlowTheme.of(context).barrierColor,
               context: context,
               builder: (context) {
-                return Padding(
-                  padding: MediaQuery.viewInsetsOf(context),
-                  child: AlertMessageWidget(
-                    buttonText: 'Aceptar',
-                    title:
-                        'Error: ${(_model.refreshAnomaliesResp?.statusCode ?? 200).toString()}',
-                    message: valueOrDefault<String>(
-                      AnomaliesGroup.getAnomaliesCall.message(
-                        (_model.refreshAnomaliesResp?.jsonBody ?? ''),
+                return WebViewAware(
+                  child: Padding(
+                    padding: MediaQuery.viewInsetsOf(context),
+                    child: AlertMessageWidget(
+                      buttonText: 'Aceptar',
+                      title:
+                          'Error: ${(_model.refreshAnomaliesResp?.statusCode ?? 200).toString()}',
+                      message: valueOrDefault<String>(
+                        AnomaliesGroup.getAnomaliesCall.message(
+                          (_model.refreshAnomaliesResp?.jsonBody ?? ''),
+                        ),
+                        'Ocurrió un error con el servidor.',
                       ),
-                      'Ocurrió un error con el servidor.',
                     ),
                   ),
                 );
@@ -177,8 +204,65 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                                           .bodyMedium
                                           .override(
                                             fontFamily: 'Montserrat',
-                                            color: FlutterFlowTheme.of(context)
-                                                .error,
+                                            color: valueOrDefault<Color>(
+                                              () {
+                                                if (functions
+                                                        .objectStringValueToString(
+                                                            getJsonField(
+                                                      anomaliesItemItem,
+                                                      r'''$.category.name''',
+                                                    ).toString()) ==
+                                                    'Desarrollo') {
+                                                  return const Color(0xFF5086DC);
+                                                } else if (functions
+                                                        .objectStringValueToString(
+                                                            getJsonField(
+                                                      anomaliesItemItem,
+                                                      r'''$.category.name''',
+                                                    ).toString()) ==
+                                                    'Inventarios') {
+                                                  return const Color(0xFF91A2E8);
+                                                } else if (functions
+                                                        .objectStringValueToString(
+                                                            getJsonField(
+                                                      anomaliesItemItem,
+                                                      r'''$.category.name''',
+                                                    ).toString()) ==
+                                                    'Compras') {
+                                                  return const Color(0xFF8A8A8A);
+                                                } else if (functions
+                                                        .objectStringValueToString(
+                                                            getJsonField(
+                                                      anomaliesItemItem,
+                                                      r'''$.category.name''',
+                                                    ).toString()) ==
+                                                    'Cuentas por Cobrar') {
+                                                  return const Color(0xFFA1A1A1);
+                                                } else if (functions
+                                                        .objectStringValueToString(
+                                                            getJsonField(
+                                                      anomaliesItemItem,
+                                                      r'''$.category.name''',
+                                                    ).toString()) ==
+                                                    'RR.HH.') {
+                                                  return const Color(0xFF3C47D7);
+                                                } else if (functions
+                                                        .objectStringValueToString(
+                                                            getJsonField(
+                                                      anomaliesItemItem,
+                                                      r'''$.category.name''',
+                                                    ).toString()) ==
+                                                    'Direccion') {
+                                                  return const Color(0xFF2660A4);
+                                                } else {
+                                                  return FlutterFlowTheme.of(
+                                                          context)
+                                                      .error;
+                                                }
+                                              }(),
+                                              FlutterFlowTheme.of(context)
+                                                  .error,
+                                            ),
                                             fontSize: 60.0,
                                             letterSpacing: 0.0,
                                             fontWeight: FontWeight.bold,
@@ -218,11 +302,56 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                             child: Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(
                                   0.0, 12.0, 12.0, 0.0),
-                              child: Icon(
-                                Icons.info_outline,
-                                color:
-                                    FlutterFlowTheme.of(context).secondaryText,
-                                size: 20.0,
+                              child: InkWell(
+                                splashColor: Colors.transparent,
+                                focusColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onTap: () async {
+                                  await showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    barrierColor: FlutterFlowTheme.of(context)
+                                        .barrierColor,
+                                    context: context,
+                                    builder: (context) {
+                                      return WebViewAware(
+                                        child: Padding(
+                                          padding:
+                                              MediaQuery.viewInsetsOf(context),
+                                          child: AnomalyInfoWidget(
+                                            ownerPositionName: getJsonField(
+                                              anomaliesItemItem,
+                                              r'''$.ownerPosition.name''',
+                                            ).toString(),
+                                            ownerPositionUserName:
+                                                '${getJsonField(
+                                              anomaliesItemItem,
+                                              r'''$.ownerPosition.users[0].firstname''',
+                                            ).toString()} ${getJsonField(
+                                              anomaliesItemItem,
+                                              r'''$.ownerPosition.users[0].lastname''',
+                                            ).toString()}',
+                                            categoryName: getJsonField(
+                                              anomaliesItemItem,
+                                              r'''$.category.name''',
+                                            ).toString(),
+                                            description: getJsonField(
+                                              anomaliesItemItem,
+                                              r'''$.body''',
+                                            ).toString(),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ).then((value) => safeSetState(() {}));
+                                },
+                                child: Icon(
+                                  Icons.info_outline,
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryText,
+                                  size: 20.0,
+                                ),
                               ),
                             ),
                           ),
@@ -264,14 +393,39 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                     } else {
                       if ((_model.moreAnomaliesResp?.statusCode ?? 200) ==
                           401) {
-                        GoRouter.of(context).prepareAuthEvent();
-                        await authManager.signOut();
-                        GoRouter.of(context).clearRedirectLocation();
+                        if (FFAppState().rememberMe) {
+                          _model.refreshTokenResp2 =
+                              await AuthenticateGroup.refreshTokenCall.call(
+                            token: currentAuthenticationToken,
+                          );
 
-                        navigate =
-                            () => context.goNamedAuth('Login', context.mounted);
+                          shouldSetState = true;
+                          if ((_model.refreshTokenResp2?.succeeded ?? true)) {
+                            authManager.updateAuthUserData(
+                              authenticationToken:
+                                  AuthenticateGroup.refreshTokenCall.token(
+                                (_model.refreshTokenResp2?.jsonBody ?? ''),
+                              ),
+                            );
 
-                        navigate();
+                            setState(() {});
+                          } else {
+                            GoRouter.of(context).prepareAuthEvent();
+                            await authManager.signOut();
+                            GoRouter.of(context).clearRedirectLocation();
+
+                            navigate = () =>
+                                context.goNamedAuth('Login', context.mounted);
+                          }
+                        } else {
+                          GoRouter.of(context).prepareAuthEvent();
+                          await authManager.signOut();
+                          GoRouter.of(context).clearRedirectLocation();
+
+                          navigate = () =>
+                              context.goNamedAuth('Login', context.mounted);
+                        }
+
                         if (shouldSetState) setState(() {});
                         return;
                       } else {
@@ -282,17 +436,20 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                               FlutterFlowTheme.of(context).barrierColor,
                           context: context,
                           builder: (context) {
-                            return Padding(
-                              padding: MediaQuery.viewInsetsOf(context),
-                              child: AlertMessageWidget(
-                                buttonText: 'Aceptar',
-                                title:
-                                    'Error: ${(_model.moreAnomaliesResp?.statusCode ?? 200).toString()}',
-                                message: valueOrDefault<String>(
-                                  AnomaliesGroup.getAnomaliesCall.message(
-                                    (_model.moreAnomaliesResp?.jsonBody ?? ''),
+                            return WebViewAware(
+                              child: Padding(
+                                padding: MediaQuery.viewInsetsOf(context),
+                                child: AlertMessageWidget(
+                                  buttonText: 'Aceptar',
+                                  title:
+                                      'Error: ${(_model.moreAnomaliesResp?.statusCode ?? 200).toString()}',
+                                  message: valueOrDefault<String>(
+                                    AnomaliesGroup.getAnomaliesCall.message(
+                                      (_model.moreAnomaliesResp?.jsonBody ??
+                                          ''),
+                                    ),
+                                    'Ocurrió un error con el servidor.',
                                   ),
-                                  'Ocurrió un error con el servidor.',
                                 ),
                               ),
                             );

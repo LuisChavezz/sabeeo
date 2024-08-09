@@ -6,8 +6,11 @@ import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import 'notifications_list_model.dart';
 export 'notifications_list_model.dart';
 
@@ -17,11 +20,13 @@ class NotificationsListWidget extends StatefulWidget {
     required this.notificationsArray,
     required this.notificationsTotalRows,
     required this.toggleIsLoading,
-  });
+    String? readValue,
+  }) : readValue = readValue ?? 'false';
 
   final List<dynamic>? notificationsArray;
   final int? notificationsTotalRows;
   final Future Function()? toggleIsLoading;
+  final String readValue;
 
   @override
   State<NotificationsListWidget> createState() =>
@@ -41,6 +46,17 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => NotificationsListModel());
+
+    // On component load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      if (!((widget.readValue == _model.readCS) ||
+          functions.stringIsNull(_model.readCS))) {
+        _model.moreNotificationsPerPage = 10;
+        setState(() {});
+      }
+      _model.readCS = widget.readValue;
+      setState(() {});
+    });
   }
 
   @override
@@ -63,6 +79,7 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
             await NotificationsGroup.getNotificationsCall.call(
           token: currentAuthenticationToken,
           perPage: _model.moreNotificationsPerPage,
+          read: widget.readValue,
         );
 
         if ((_model.refreshNotificationsResp?.succeeded ?? true)) {
@@ -76,13 +93,35 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
           _model.updatePage(() {});
         } else {
           if ((_model.refreshNotificationsResp?.statusCode ?? 200) == 401) {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
+            if (FFAppState().rememberMe) {
+              _model.refreshTokenResp1 =
+                  await AuthenticateGroup.refreshTokenCall.call(
+                token: currentAuthenticationToken,
+              );
 
-            navigate = () => context.goNamedAuth('Login', context.mounted);
+              if ((_model.refreshTokenResp1?.succeeded ?? true)) {
+                authManager.updateAuthUserData(
+                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
+                    (_model.refreshTokenResp1?.jsonBody ?? ''),
+                  ),
+                );
 
-            navigate();
+                setState(() {});
+              } else {
+                GoRouter.of(context).prepareAuthEvent();
+                await authManager.signOut();
+                GoRouter.of(context).clearRedirectLocation();
+
+                navigate = () => context.goNamedAuth('Login', context.mounted);
+              }
+            } else {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            }
+
             return;
           } else {
             if ((_model.refreshNotificationsResp?.statusCode ?? 200) == 401) {
@@ -98,19 +137,22 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                 barrierColor: FlutterFlowTheme.of(context).barrierColor,
                 context: context,
                 builder: (context) {
-                  return Padding(
-                    padding: MediaQuery.viewInsetsOf(context),
-                    child: AlertMessageWidget(
-                      buttonText: 'Aceptar',
-                      title:
-                          'Error: ${(_model.refreshNotificationsResp?.statusCode ?? 200).toString()}',
-                      message: valueOrDefault<String>(
-                        NotificationsGroup.getNotificationsCall
-                            .message(
-                              (_model.refreshNotificationsResp?.jsonBody ?? ''),
-                            )
-                            .toString(),
-                        'Ocurrió un error en el servidor.',
+                  return WebViewAware(
+                    child: Padding(
+                      padding: MediaQuery.viewInsetsOf(context),
+                      child: AlertMessageWidget(
+                        buttonText: 'Aceptar',
+                        title:
+                            'Error: ${(_model.refreshNotificationsResp?.statusCode ?? 200).toString()}',
+                        message: valueOrDefault<String>(
+                          NotificationsGroup.getNotificationsCall
+                              .message(
+                                (_model.refreshNotificationsResp?.jsonBody ??
+                                    ''),
+                              )
+                              .toString(),
+                          'Ocurrió un error en el servidor.',
+                        ),
                       ),
                     ),
                   );
@@ -155,82 +197,95 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                       hoverColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       onTap: () async {
-                        await showModalBottomSheet(
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          isDismissible: false,
-                          enableDrag: false,
-                          context: context,
-                          builder: (context) {
-                            return Padding(
-                              padding: MediaQuery.viewInsetsOf(context),
-                              child: SizedBox(
-                                height: MediaQuery.sizeOf(context).height * 0.3,
-                                child: ConfirmActionWidget(
-                                  confirmButtonText: 'Marcar como leída',
-                                  cancelButtonText: 'Cancelar',
-                                  mainAction: () async {
-                                    var shouldSetState = false;
-                                    navigate() {}
-                                    _model.readNotiResp =
-                                        await NotificationsGroup
-                                            .readNotificactionCall
-                                            .call(
-                                      token: currentAuthenticationToken,
-                                      id: getJsonField(
-                                        notificationsItemItem,
-                                        r'''$.id''',
-                                      ).toString(),
-                                    );
+                        if (!getJsonField(
+                          notificationsItemItem,
+                          r'''$.read''',
+                        )) {
+                          await showModalBottomSheet(
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            barrierColor:
+                                FlutterFlowTheme.of(context).barrierColor,
+                            isDismissible: false,
+                            enableDrag: false,
+                            context: context,
+                            builder: (context) {
+                              return WebViewAware(
+                                child: Padding(
+                                  padding: MediaQuery.viewInsetsOf(context),
+                                  child: SizedBox(
+                                    height:
+                                        MediaQuery.sizeOf(context).height * 0.3,
+                                    child: ConfirmActionWidget(
+                                      confirmButtonText: 'Marcar como leída',
+                                      cancelButtonText: 'Cancelar',
+                                      mainAction: () async {
+                                        var shouldSetState = false;
+                                        navigate() {}
+                                        _model.readNotiResp =
+                                            await NotificationsGroup
+                                                .readNotificactionCall
+                                                .call(
+                                          token: currentAuthenticationToken,
+                                          id: getJsonField(
+                                            notificationsItemItem,
+                                            r'''$.id''',
+                                          ).toString(),
+                                        );
 
-                                    shouldSetState = true;
-                                    if (!(_model.readNotiResp?.succeeded ??
-                                        true)) {
-                                      if ((_model.readNotiResp?.statusCode ??
-                                              200) ==
-                                          401) {}
-                                    }
-                                    Navigator.pop(context);
-                                    await widget.toggleIsLoading?.call();
-                                    _model.readNotificationsResp =
-                                        await NotificationsGroup
-                                            .getNotificationsCall
-                                            .call(
-                                      token: currentAuthenticationToken,
-                                      perPage: _model.moreNotificationsPerPage,
-                                    );
+                                        shouldSetState = true;
+                                        if (!(_model.readNotiResp?.succeeded ??
+                                            true)) {
+                                          if ((_model.readNotiResp
+                                                      ?.statusCode ??
+                                                  200) ==
+                                              401) {}
+                                        }
+                                        Navigator.pop(context);
+                                        await widget.toggleIsLoading?.call();
+                                        _model.readNotificationsResp =
+                                            await NotificationsGroup
+                                                .getNotificationsCall
+                                                .call(
+                                          token: currentAuthenticationToken,
+                                          perPage:
+                                              _model.moreNotificationsPerPage,
+                                          read: 'false',
+                                        );
 
-                                    shouldSetState = true;
-                                    if ((_model
-                                            .readNotificationsResp?.succeeded ??
-                                        true)) {
-                                      FFAppState().notificationsArray =
-                                          NotificationsGroup
-                                              .getNotificationsCall
-                                              .rows(
-                                                (_model.readNotificationsResp
-                                                        ?.jsonBody ??
-                                                    ''),
-                                              )!
-                                              .toList()
-                                              .cast<dynamic>();
-                                      _model.updatePage(() {});
-                                    } else {
-                                      if ((_model.readNotificationsResp
-                                                  ?.statusCode ??
-                                              200) ==
-                                          401) {
-                                        return;
-                                      }
-                                    }
+                                        shouldSetState = true;
+                                        if ((_model.readNotificationsResp
+                                                ?.succeeded ??
+                                            true)) {
+                                          FFAppState().notificationsArray =
+                                              NotificationsGroup
+                                                  .getNotificationsCall
+                                                  .rows(
+                                                    (_model.readNotificationsResp
+                                                            ?.jsonBody ??
+                                                        ''),
+                                                  )!
+                                                  .toList()
+                                                  .cast<dynamic>();
+                                          _model.updatePage(() {});
+                                        } else {
+                                          if ((_model.readNotificationsResp
+                                                      ?.statusCode ??
+                                                  200) ==
+                                              401) {
+                                            return;
+                                          }
+                                        }
 
-                                    await widget.toggleIsLoading?.call();
-                                  },
+                                        await widget.toggleIsLoading?.call();
+                                      },
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        ).then((value) => safeSetState(() {}));
+                              );
+                            },
+                          ).then((value) => safeSetState(() {}));
+                        }
 
                         setState(() {});
                       },
@@ -349,6 +404,7 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                         await NotificationsGroup.getNotificationsCall.call(
                       token: currentAuthenticationToken,
                       perPage: _model.moreNotificationsPerPage,
+                      read: widget.readValue,
                     );
 
                     shouldSetState = true;
@@ -364,14 +420,39 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                     } else {
                       if ((_model.moreNotificationsResp?.statusCode ?? 200) ==
                           401) {
-                        GoRouter.of(context).prepareAuthEvent();
-                        await authManager.signOut();
-                        GoRouter.of(context).clearRedirectLocation();
+                        if (FFAppState().rememberMe) {
+                          _model.refreshTokenResp2 =
+                              await AuthenticateGroup.refreshTokenCall.call(
+                            token: currentAuthenticationToken,
+                          );
 
-                        navigate =
-                            () => context.goNamedAuth('Login', context.mounted);
+                          shouldSetState = true;
+                          if ((_model.refreshTokenResp2?.succeeded ?? true)) {
+                            authManager.updateAuthUserData(
+                              authenticationToken:
+                                  AuthenticateGroup.refreshTokenCall.token(
+                                (_model.refreshTokenResp2?.jsonBody ?? ''),
+                              ),
+                            );
 
-                        navigate();
+                            setState(() {});
+                          } else {
+                            GoRouter.of(context).prepareAuthEvent();
+                            await authManager.signOut();
+                            GoRouter.of(context).clearRedirectLocation();
+
+                            navigate = () =>
+                                context.goNamedAuth('Login', context.mounted);
+                          }
+                        } else {
+                          GoRouter.of(context).prepareAuthEvent();
+                          await authManager.signOut();
+                          GoRouter.of(context).clearRedirectLocation();
+
+                          navigate = () =>
+                              context.goNamedAuth('Login', context.mounted);
+                        }
+
                         if (shouldSetState) setState(() {});
                         return;
                       } else {
@@ -382,21 +463,23 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                               FlutterFlowTheme.of(context).barrierColor,
                           context: context,
                           builder: (context) {
-                            return Padding(
-                              padding: MediaQuery.viewInsetsOf(context),
-                              child: AlertMessageWidget(
-                                buttonText: 'Aceptar',
-                                title:
-                                    'Error: ${(_model.moreNotificationsResp?.statusCode ?? 200).toString()}',
-                                message: valueOrDefault<String>(
-                                  NotificationsGroup.getNotificationsCall
-                                      .message(
-                                        (_model.moreNotificationsResp
-                                                ?.jsonBody ??
-                                            ''),
-                                      )
-                                      .toString(),
-                                  'Ocurrió un error en el servidor.',
+                            return WebViewAware(
+                              child: Padding(
+                                padding: MediaQuery.viewInsetsOf(context),
+                                child: AlertMessageWidget(
+                                  buttonText: 'Aceptar',
+                                  title:
+                                      'Error: ${(_model.moreNotificationsResp?.statusCode ?? 200).toString()}',
+                                  message: valueOrDefault<String>(
+                                    NotificationsGroup.getNotificationsCall
+                                        .message(
+                                          (_model.moreNotificationsResp
+                                                  ?.jsonBody ??
+                                              ''),
+                                        )
+                                        .toString(),
+                                    'Ocurrió un error en el servidor.',
+                                  ),
                                 ),
                               ),
                             );

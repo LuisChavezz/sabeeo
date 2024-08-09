@@ -101,12 +101,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Home',
           path: '/home',
+          requireAuth: true,
           builder: (context, params) =>
               params.isEmpty ? const NavBarPage(initialPage: 'Home') : const HomeWidget(),
         ),
         FFRoute(
           name: 'Dev',
           path: '/dev',
+          requireAuth: true,
           builder: (context, params) => const DevWidget(),
         ),
         FFRoute(
@@ -122,6 +124,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Communication',
           path: '/communication',
+          requireAuth: true,
           builder: (context, params) => params.isEmpty
               ? const NavBarPage(initialPage: 'Communication')
               : const CommunicationWidget(),
@@ -129,6 +132,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Menu_main',
           path: '/menuMain',
+          requireAuth: true,
           builder: (context, params) => params.isEmpty
               ? const NavBarPage(initialPage: 'Menu_main')
               : const MenuMainWidget(),
@@ -136,6 +140,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Authorizations',
           path: '/authorizations',
+          requireAuth: true,
           builder: (context, params) => params.isEmpty
               ? const NavBarPage(initialPage: 'Authorizations')
               : const AuthorizationsWidget(),
@@ -143,6 +148,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Memorandum',
           path: '/memorandum',
+          requireAuth: true,
           builder: (context, params) => MemorandumWidget(
             id: params.getParam(
               'id',
@@ -160,11 +166,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'perPage',
               ParamType.int,
             ),
+            isImagePath: params.getParam(
+              'isImagePath',
+              ParamType.bool,
+            ),
           ),
         ),
         FFRoute(
           name: 'Authorization_details',
           path: '/authorizationDetails',
+          requireAuth: true,
           builder: (context, params) => AuthorizationDetailsWidget(
             authorizationId: params.getParam(
               'authorizationId',
@@ -175,11 +186,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Authorizations_history',
           path: '/authorizationsHistory',
+          requireAuth: true,
           builder: (context, params) => const AuthorizationsHistoryWidget(),
         ),
         FFRoute(
           name: 'PDF_viewer',
           path: '/pDFViewer',
+          requireAuth: true,
           builder: (context, params) => PDFViewerWidget(
             pdfUrl: params.getParam(
               'pdfUrl',
@@ -190,20 +203,18 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Rules',
           path: '/rules',
+          requireAuth: true,
           builder: (context, params) =>
               params.isEmpty ? const NavBarPage(initialPage: 'Rules') : const RulesWidget(),
         ),
         FFRoute(
           name: 'Rule_details',
           path: '/ruleDetails',
+          requireAuth: true,
           builder: (context, params) => RuleDetailsWidget(
             rulesDocument: params.getParam(
               'rulesDocument',
               ParamType.JSON,
-            ),
-            authorizationId: params.getParam(
-              'authorizationId',
-              ParamType.String,
             ),
           ),
         )

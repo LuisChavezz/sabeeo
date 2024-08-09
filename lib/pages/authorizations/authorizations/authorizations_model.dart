@@ -26,23 +26,34 @@ class AuthorizationsModel extends FlutterFlowModel<AuthorizationsWidget> {
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Backend Call - API (Get Requested Auths)] action in Authorizations widget.
   ApiCallResponse? reqAuthsResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Authorizations widget.
+  ApiCallResponse? refreshTokenResp1;
   // Stores action output result for [Backend Call - API (Get Received Auths)] action in Authorizations widget.
   ApiCallResponse? recAuthsResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Authorizations widget.
+  ApiCallResponse? refreshTokenResp2;
   // State field(s) for searchField widget.
   FocusNode? searchFieldFocusNode;
   TextEditingController? searchFieldTextController;
   String? Function(BuildContext, String?)? searchFieldTextControllerValidator;
   // Stores action output result for [Backend Call - API (Get Requested Auths)] action in Container widget.
   ApiCallResponse? reqSearchAuthsResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Container widget.
+  ApiCallResponse? refreshTokenResp3;
   // Stores action output result for [Backend Call - API (Get Received Auths)] action in Container widget.
   ApiCallResponse? recSearchAuthsResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Container widget.
+  ApiCallResponse? refreshTokenResp4;
   // Stores action output result for [Backend Call - API (Get Requested Auths)] action in Container widget.
   ApiCallResponse? reqClearSearchAuthsResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Container widget.
+  ApiCallResponse? refreshTokenResp5;
   // Stores action output result for [Backend Call - API (Get Received Auths)] action in Container widget.
   ApiCallResponse? recClearSearchAuthsResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Container widget.
+  ApiCallResponse? refreshTokenResp6;
   // Model for RequestedAuthorizationsList component.
   late RequestedAuthorizationsListModel requestedAuthorizationsListModel;
   // Model for ReceivedAuthorizationsList component.
@@ -58,7 +69,6 @@ class AuthorizationsModel extends FlutterFlowModel<AuthorizationsWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     searchFieldFocusNode?.dispose();
     searchFieldTextController?.dispose();
 

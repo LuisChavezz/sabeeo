@@ -17,12 +17,14 @@ class MemorandumWidget extends StatefulWidget {
     required this.status,
     required this.imageUrl,
     required this.perPage,
-  });
+    bool? isImagePath,
+  }) : isImagePath = isImagePath ?? false;
 
   final String? id;
   final String? status;
   final String? imageUrl;
   final int? perPage;
+  final bool isImagePath;
 
   @override
   State<MemorandumWidget> createState() => _MemorandumWidgetState();
@@ -40,6 +42,7 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
+      Function() navigate = () {};
       if (widget.status == 'UNVIEWED') {
         _model.confirmMemoResp =
             await MemorandumGroup.confirmMemorandumCall.call(
@@ -67,11 +70,36 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
             return;
           } else {
             if ((_model.memorandumsResp?.statusCode ?? 200) == 401) {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
+              if (FFAppState().rememberMe) {
+                _model.refreshTokenResp2 =
+                    await AuthenticateGroup.refreshTokenCall.call(
+                  token: currentAuthenticationToken,
+                );
 
-              context.goNamedAuth('Login', context.mounted);
+                if ((_model.refreshTokenResp2?.succeeded ?? true)) {
+                  authManager.updateAuthUserData(
+                    authenticationToken:
+                        AuthenticateGroup.refreshTokenCall.token(
+                      (_model.refreshTokenResp2?.jsonBody ?? ''),
+                    ),
+                  );
+
+                  setState(() {});
+                } else {
+                  GoRouter.of(context).prepareAuthEvent();
+                  await authManager.signOut();
+                  GoRouter.of(context).clearRedirectLocation();
+
+                  navigate =
+                      () => context.goNamedAuth('Login', context.mounted);
+                }
+              } else {
+                GoRouter.of(context).prepareAuthEvent();
+                await authManager.signOut();
+                GoRouter.of(context).clearRedirectLocation();
+
+                navigate = () => context.goNamedAuth('Login', context.mounted);
+              }
 
               return;
             } else {
@@ -80,11 +108,34 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
           }
         } else {
           if ((_model.confirmMemoResp?.statusCode ?? 200) == 401) {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
+            if (FFAppState().rememberMe) {
+              _model.refreshTokenResp3 =
+                  await AuthenticateGroup.refreshTokenCall.call(
+                token: currentAuthenticationToken,
+              );
 
-            context.goNamedAuth('Login', context.mounted);
+              if ((_model.refreshTokenResp3?.succeeded ?? true)) {
+                authManager.updateAuthUserData(
+                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
+                    (_model.refreshTokenResp3?.jsonBody ?? ''),
+                  ),
+                );
+
+                setState(() {});
+              } else {
+                GoRouter.of(context).prepareAuthEvent();
+                await authManager.signOut();
+                GoRouter.of(context).clearRedirectLocation();
+
+                navigate = () => context.goNamedAuth('Login', context.mounted);
+              }
+            } else {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            }
 
             return;
           } else {
@@ -95,7 +146,7 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
         return;
       }
 
-      context.goNamedAuth('Login', context.mounted);
+      navigate();
     });
   }
 
@@ -111,9 +162,7 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -143,41 +192,77 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () async {
-                  await Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.fade,
-                      child: FlutterFlowExpandedImageView(
-                        image: Image.network(
-                          widget.imageUrl!,
-                          fit: BoxFit.contain,
+              if (widget.isImagePath)
+                InkWell(
+                  splashColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        child: FlutterFlowExpandedImageView(
+                          image: Image.network(
+                            widget.imageUrl!,
+                            fit: BoxFit.contain,
+                          ),
+                          allowRotation: false,
+                          tag: widget.imageUrl!,
+                          useHeroAnimation: true,
                         ),
-                        allowRotation: false,
-                        tag: widget.imageUrl!,
-                        useHeroAnimation: true,
                       ),
-                    ),
-                  );
-                },
-                child: Hero(
-                  tag: widget.imageUrl!,
-                  transitionOnUserGestures: true,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(0.0),
-                    child: Image.network(
-                      widget.imageUrl!,
-                      width: MediaQuery.sizeOf(context).width * 1.0,
-                      fit: BoxFit.contain,
+                    );
+                  },
+                  child: Hero(
+                    tag: widget.imageUrl!,
+                    transitionOnUserGestures: true,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(0.0),
+                      child: Image.network(
+                        widget.imageUrl!,
+                        width: MediaQuery.sizeOf(context).width * 1.0,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
                 ),
-              ),
+              if (!widget.isImagePath)
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Icon(
+                        Icons.airplay,
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                        size: 72.0,
+                      ),
+                      Text(
+                        'No disponible',
+                        textAlign: TextAlign.center,
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              fontFamily: 'Montserrat',
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              fontSize: 16.0,
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      Text(
+                        'La visualización de este comunicado no está disponible por el momento.',
+                        textAlign: TextAlign.center,
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              fontFamily: 'Montserrat',
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              fontSize: 12.0,
+                              letterSpacing: 0.0,
+                            ),
+                      ),
+                    ].divide(const SizedBox(height: 4.0)),
+                  ),
+                ),
             ],
           ),
         ),

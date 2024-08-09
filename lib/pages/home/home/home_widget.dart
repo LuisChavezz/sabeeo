@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import 'home_model.dart';
 export 'home_model.dart';
 
@@ -54,13 +55,35 @@ class _HomeWidgetState extends State<HomeWidget> {
         setState(() {});
       } else {
         if ((_model.anomaliesResp?.statusCode ?? 200) == 401) {
-          GoRouter.of(context).prepareAuthEvent();
-          await authManager.signOut();
-          GoRouter.of(context).clearRedirectLocation();
+          if (FFAppState().rememberMe) {
+            _model.refreshTokenResp1 =
+                await AuthenticateGroup.refreshTokenCall.call(
+              token: currentAuthenticationToken,
+            );
 
-          navigate = () => context.goNamedAuth('Login', context.mounted);
+            if ((_model.refreshTokenResp1?.succeeded ?? true)) {
+              authManager.updateAuthUserData(
+                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
+                  (_model.refreshTokenResp1?.jsonBody ?? ''),
+                ),
+              );
 
-          navigate();
+              setState(() {});
+            } else {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            }
+          } else {
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
+
+            navigate = () => context.goNamedAuth('Login', context.mounted);
+          }
+
           return;
         } else {
           await showModalBottomSheet(
@@ -69,21 +92,21 @@ class _HomeWidgetState extends State<HomeWidget> {
             barrierColor: FlutterFlowTheme.of(context).barrierColor,
             context: context,
             builder: (context) {
-              return GestureDetector(
-                onTap: () => _model.unfocusNode.canRequestFocus
-                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-                    : FocusScope.of(context).unfocus(),
-                child: Padding(
-                  padding: MediaQuery.viewInsetsOf(context),
-                  child: AlertMessageWidget(
-                    buttonText: 'Aceptar',
-                    title:
-                        'Error: ${(_model.anomaliesResp?.statusCode ?? 200).toString()}',
-                    message: valueOrDefault<String>(
-                      AnomaliesGroup.getAnomaliesCall.message(
-                        (_model.anomaliesResp?.jsonBody ?? ''),
+              return WebViewAware(
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: Padding(
+                    padding: MediaQuery.viewInsetsOf(context),
+                    child: AlertMessageWidget(
+                      buttonText: 'Aceptar',
+                      title:
+                          'Error: ${(_model.anomaliesResp?.statusCode ?? 200).toString()}',
+                      message: valueOrDefault<String>(
+                        AnomaliesGroup.getAnomaliesCall.message(
+                          (_model.anomaliesResp?.jsonBody ?? ''),
+                        ),
+                        'Ocurrió un error con el servidor.',
                       ),
-                      'Ocurrió un error con el servidor.',
                     ),
                   ),
                 ),
@@ -112,13 +135,35 @@ class _HomeWidgetState extends State<HomeWidget> {
         setState(() {});
       } else {
         if ((_model.kpisResp?.statusCode ?? 200) == 401) {
-          GoRouter.of(context).prepareAuthEvent();
-          await authManager.signOut();
-          GoRouter.of(context).clearRedirectLocation();
+          if (FFAppState().rememberMe) {
+            _model.refreshTokenResp2 =
+                await AuthenticateGroup.refreshTokenCall.call(
+              token: currentAuthenticationToken,
+            );
 
-          navigate = () => context.goNamedAuth('Login', context.mounted);
+            if ((_model.refreshTokenResp2?.succeeded ?? true)) {
+              authManager.updateAuthUserData(
+                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
+                  (_model.refreshTokenResp2?.jsonBody ?? ''),
+                ),
+              );
 
-          navigate();
+              setState(() {});
+            } else {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            }
+          } else {
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
+
+            navigate = () => context.goNamedAuth('Login', context.mounted);
+          }
+
           return;
         } else {
           await showModalBottomSheet(
@@ -127,23 +172,23 @@ class _HomeWidgetState extends State<HomeWidget> {
             barrierColor: FlutterFlowTheme.of(context).barrierColor,
             context: context,
             builder: (context) {
-              return GestureDetector(
-                onTap: () => _model.unfocusNode.canRequestFocus
-                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-                    : FocusScope.of(context).unfocus(),
-                child: Padding(
-                  padding: MediaQuery.viewInsetsOf(context),
-                  child: AlertMessageWidget(
-                    buttonText: 'Aceptar',
-                    title:
-                        'Error: ${(_model.kpisResp?.statusCode ?? 200).toString()}',
-                    message: valueOrDefault<String>(
-                      KpiGroup.getKpisCall
-                          .message(
-                            (_model.kpisResp?.jsonBody ?? ''),
-                          )
-                          .toString(),
-                      'Ocurrió un error con el servidor.',
+              return WebViewAware(
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: Padding(
+                    padding: MediaQuery.viewInsetsOf(context),
+                    child: AlertMessageWidget(
+                      buttonText: 'Aceptar',
+                      title:
+                          'Error: ${(_model.kpisResp?.statusCode ?? 200).toString()}',
+                      message: valueOrDefault<String>(
+                        KpiGroup.getKpisCall
+                            .message(
+                              (_model.kpisResp?.jsonBody ?? ''),
+                            )
+                            .toString(),
+                        'Ocurrió un error con el servidor.',
+                      ),
                     ),
                   ),
                 ),
@@ -172,9 +217,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(

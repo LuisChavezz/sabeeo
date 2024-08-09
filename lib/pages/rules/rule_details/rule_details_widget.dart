@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import 'rule_details_model.dart';
 export 'rule_details_model.dart';
 
@@ -19,11 +21,9 @@ class RuleDetailsWidget extends StatefulWidget {
   const RuleDetailsWidget({
     super.key,
     required this.rulesDocument,
-    this.authorizationId,
   });
 
   final dynamic rulesDocument;
-  final String? authorizationId;
 
   @override
   State<RuleDetailsWidget> createState() => _RuleDetailsWidgetState();
@@ -41,72 +41,10 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      Function() navigate = () {};
       _model.isLoading = true;
       setState(() {});
-      _model.authorizationResp =
-          await AuthorizationsGroup.authorizationDetailsCall.call(
-        token: currentAuthenticationToken,
-        id: widget.authorizationId,
-      );
-
-      if ((_model.authorizationResp?.succeeded ?? true)) {
-        _model.authorizationStatusValue =
-            AuthorizationsGroup.authorizationDetailsCall.statusValue(
-          (_model.authorizationResp?.jsonBody ?? ''),
-        );
-        _model.authorizationStatusLabel =
-            AuthorizationsGroup.authorizationDetailsCall.statusLabel(
-          (_model.authorizationResp?.jsonBody ?? ''),
-        );
-        setState(() {});
-      } else {
-        if ((_model.authorizationResp?.statusCode ?? 200) == 401) {
-          GoRouter.of(context).prepareAuthEvent();
-          await authManager.signOut();
-          GoRouter.of(context).clearRedirectLocation();
-
-          navigate = () => context.goNamedAuth('Login', context.mounted);
-
-          navigate();
-          return;
-        } else {
-          await showModalBottomSheet(
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            barrierColor: FlutterFlowTheme.of(context).barrierColor,
-            context: context,
-            builder: (context) {
-              return GestureDetector(
-                onTap: () => _model.unfocusNode.canRequestFocus
-                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-                    : FocusScope.of(context).unfocus(),
-                child: Padding(
-                  padding: MediaQuery.viewInsetsOf(context),
-                  child: AlertMessageWidget(
-                    buttonText: 'Aceptar',
-                    title:
-                        'Error: ${(_model.authorizationResp?.statusCode ?? 200).toString()}',
-                    message: valueOrDefault<String>(
-                      AuthorizationsGroup.authorizationDetailsCall
-                          .message(
-                            (_model.authorizationResp?.jsonBody ?? ''),
-                          )
-                          .toString(),
-                      'Ocurrió un error en el servidor.',
-                    ),
-                  ),
-                ),
-              );
-            },
-          ).then((value) => safeSetState(() {}));
-        }
-      }
-
       _model.isLoading = false;
       setState(() {});
-
-      navigate();
     });
   }
 
@@ -119,10 +57,10 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
@@ -196,111 +134,102 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(24.0),
-                                          child: Image.network(
-                                            'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
-                                            width: 35.0,
-                                            height: 35.0,
-                                            fit: BoxFit.cover,
+                              Column(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(24.0),
+                                        child: Image.network(
+                                          'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                          width: 35.0,
+                                          height: 35.0,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            getJsonField(
+                                              widget.rulesDocument,
+                                              r'''$.document.version.creator.name''',
+                                            ).toString(),
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Montserrat',
+                                                  fontSize: 12.0,
+                                                  letterSpacing: 0.0,
+                                                ),
                                           ),
-                                        ),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              getJsonField(
-                                                widget.rulesDocument,
-                                                r'''$.document.version.creator.name''',
-                                              ).toString(),
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily:
-                                                            'Montserrat',
-                                                        fontSize: 12.0,
-                                                        letterSpacing: 0.0,
-                                                      ),
-                                            ),
-                                            Text(
-                                              'Creador',
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    fontFamily: 'Montserrat',
-                                                    fontSize: 12.0,
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.w300,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ].divide(const SizedBox(width: 6.0)),
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(24.0),
-                                          child: Image.network(
-                                            'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
-                                            width: 35.0,
-                                            height: 35.0,
-                                            fit: BoxFit.cover,
+                                          Text(
+                                            'Creador',
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Montserrat',
+                                                  fontSize: 12.0,
+                                                  letterSpacing: 0.0,
+                                                  fontWeight: FontWeight.w300,
+                                                ),
                                           ),
+                                        ],
+                                      ),
+                                    ].divide(const SizedBox(width: 6.0)),
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(24.0),
+                                        child: Image.network(
+                                          'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                          width: 35.0,
+                                          height: 35.0,
+                                          fit: BoxFit.cover,
                                         ),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              getJsonField(
-                                                widget.rulesDocument,
-                                                r'''$.document.owners[0].name''',
-                                              ).toString(),
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily:
-                                                            'Montserrat',
-                                                        fontSize: 12.0,
-                                                        letterSpacing: 0.0,
-                                                      ),
-                                            ),
-                                            Text(
-                                              'Propietario',
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    fontFamily: 'Montserrat',
-                                                    fontSize: 12.0,
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.w300,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ].divide(const SizedBox(width: 6.0)),
-                                    ),
-                                  ].divide(const SizedBox(width: 16.0)),
-                                ),
+                                      ),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            getJsonField(
+                                              widget.rulesDocument,
+                                              r'''$.document.owners[0].name''',
+                                            ).toString(),
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Montserrat',
+                                                  fontSize: 12.0,
+                                                  letterSpacing: 0.0,
+                                                ),
+                                          ),
+                                          Text(
+                                            'Propietario',
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Montserrat',
+                                                  fontSize: 12.0,
+                                                  letterSpacing: 0.0,
+                                                  fontWeight: FontWeight.w300,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ].divide(const SizedBox(width: 6.0)),
+                                  ),
+                                ].divide(const SizedBox(height: 8.0)),
                               ),
                               Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(
@@ -415,27 +344,26 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                                                     .barrierColor,
                                             context: context,
                                             builder: (context) {
-                                              return GestureDetector(
-                                                onTap: () => _model.unfocusNode
-                                                        .canRequestFocus
-                                                    ? FocusScope.of(context)
-                                                        .requestFocus(
-                                                            _model.unfocusNode)
-                                                    : FocusScope.of(context)
-                                                        .unfocus(),
-                                                child: Padding(
-                                                  padding:
-                                                      MediaQuery.viewInsetsOf(
-                                                          context),
-                                                  child: TagsBottomSheetWidget(
-                                                    title: 'Posiciones',
-                                                    tagsArray: functions
-                                                        .keywordsArrayNameKey(
-                                                            getJsonField(
-                                                      widget.rulesDocument,
-                                                      r'''$.document.version.keywords''',
-                                                      true,
-                                                    )!),
+                                              return WebViewAware(
+                                                child: GestureDetector(
+                                                  onTap: () =>
+                                                      FocusScope.of(context)
+                                                          .unfocus(),
+                                                  child: Padding(
+                                                    padding:
+                                                        MediaQuery.viewInsetsOf(
+                                                            context),
+                                                    child:
+                                                        TagsBottomSheetWidget(
+                                                      title: 'Palabras clave',
+                                                      tagsArray: functions
+                                                          .keywordsArrayNameKey(
+                                                              getJsonField(
+                                                        widget.rulesDocument,
+                                                        r'''$.document.version.keywords''',
+                                                        true,
+                                                      )!),
+                                                    ),
                                                   ),
                                                 ),
                                               );
@@ -490,25 +418,24 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                                                     .barrierColor,
                                             context: context,
                                             builder: (context) {
-                                              return GestureDetector(
-                                                onTap: () => _model.unfocusNode
-                                                        .canRequestFocus
-                                                    ? FocusScope.of(context)
-                                                        .requestFocus(
-                                                            _model.unfocusNode)
-                                                    : FocusScope.of(context)
-                                                        .unfocus(),
-                                                child: Padding(
-                                                  padding:
-                                                      MediaQuery.viewInsetsOf(
-                                                          context),
-                                                  child: TagsBottomSheetWidget(
-                                                    title: 'Departamentos',
-                                                    tagsArray: getJsonField(
-                                                      widget.rulesDocument,
-                                                      r'''$.document.version.departments''',
-                                                      true,
-                                                    )!,
+                                              return WebViewAware(
+                                                child: GestureDetector(
+                                                  onTap: () =>
+                                                      FocusScope.of(context)
+                                                          .unfocus(),
+                                                  child: Padding(
+                                                    padding:
+                                                        MediaQuery.viewInsetsOf(
+                                                            context),
+                                                    child:
+                                                        TagsBottomSheetWidget(
+                                                      title: 'Departamentos',
+                                                      tagsArray: getJsonField(
+                                                        widget.rulesDocument,
+                                                        r'''$.document.version.departments''',
+                                                        true,
+                                                      )!,
+                                                    ),
                                                   ),
                                                 ),
                                               );
@@ -563,25 +490,24 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                                                     .barrierColor,
                                             context: context,
                                             builder: (context) {
-                                              return GestureDetector(
-                                                onTap: () => _model.unfocusNode
-                                                        .canRequestFocus
-                                                    ? FocusScope.of(context)
-                                                        .requestFocus(
-                                                            _model.unfocusNode)
-                                                    : FocusScope.of(context)
-                                                        .unfocus(),
-                                                child: Padding(
-                                                  padding:
-                                                      MediaQuery.viewInsetsOf(
-                                                          context),
-                                                  child: TagsBottomSheetWidget(
-                                                    title: 'Posiciones',
-                                                    tagsArray: getJsonField(
-                                                      widget.rulesDocument,
-                                                      r'''$.document.version.positions''',
-                                                      true,
-                                                    )!,
+                                              return WebViewAware(
+                                                child: GestureDetector(
+                                                  onTap: () =>
+                                                      FocusScope.of(context)
+                                                          .unfocus(),
+                                                  child: Padding(
+                                                    padding:
+                                                        MediaQuery.viewInsetsOf(
+                                                            context),
+                                                    child:
+                                                        TagsBottomSheetWidget(
+                                                      title: 'Posiciones',
+                                                      tagsArray: getJsonField(
+                                                        widget.rulesDocument,
+                                                        r'''$.document.version.positions''',
+                                                        true,
+                                                      )!,
+                                                    ),
                                                   ),
                                                 ),
                                               );
@@ -805,161 +731,176 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                                       FlutterFlowTheme.of(context).barrierColor,
                                   context: context,
                                   builder: (context) {
-                                    return GestureDetector(
-                                      onTap: () => _model
-                                              .unfocusNode.canRequestFocus
-                                          ? FocusScope.of(context)
-                                              .requestFocus(_model.unfocusNode)
-                                          : FocusScope.of(context).unfocus(),
-                                      child: Padding(
-                                        padding:
-                                            MediaQuery.viewInsetsOf(context),
-                                        child: ConfirmRuleDocActionWidget(
-                                          mainAction: () async {
-                                            var shouldSetState = false;
-                                            navigate() {}
-                                            _model.ruleDocConfirmResp =
-                                                await OriginalAPIEndpointsGroup
-                                                    .confirmDocumentCall
-                                                    .call(
-                                              token: currentAuthenticationToken,
-                                              documentId: getJsonField(
-                                                widget.rulesDocument,
-                                                r'''$.document.id''',
-                                              ),
-                                              versionId: getJsonField(
-                                                widget.rulesDocument,
-                                                r'''$.document.version.id''',
-                                              ),
-                                              status: true,
-                                              nip: _model.userNip,
-                                            );
-
-                                            shouldSetState = true;
-                                            if ((_model.ruleDocConfirmResp
-                                                    ?.succeeded ??
-                                                true)) {
-                                              await showDialog(
-                                                context: context,
-                                                builder: (alertDialogContext) {
-                                                  return AlertDialog(
-                                                    title: const Text(
-                                                        'Lectura confirmada'),
-                                                    content: const Text(
-                                                        'La lectura del documento ha sido confirmada con éxito.'),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                alertDialogContext),
-                                                        child: const Text('Ok'),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
+                                    return WebViewAware(
+                                      child: GestureDetector(
+                                        onTap: () =>
+                                            FocusScope.of(context).unfocus(),
+                                        child: Padding(
+                                          padding:
+                                              MediaQuery.viewInsetsOf(context),
+                                          child: ConfirmRuleDocActionWidget(
+                                            mainAction: () async {
+                                              var shouldSetState = false;
+                                              navigate() {}
+                                              _model.ruleDocConfirmResp =
+                                                  await OriginalAPIEndpointsGroup
+                                                      .confirmDocumentCall
+                                                      .call(
+                                                token:
+                                                    currentAuthenticationToken,
+                                                documentId: getJsonField(
+                                                  widget.rulesDocument,
+                                                  r'''$.document.id''',
+                                                ),
+                                                versionId: getJsonField(
+                                                  widget.rulesDocument,
+                                                  r'''$.document.version.id''',
+                                                ),
+                                                status: true,
+                                                nip: _model.userNip,
                                               );
-                                              return;
-                                            } else {
+
+                                              shouldSetState = true;
                                               if ((_model.ruleDocConfirmResp
-                                                          ?.statusCode ??
-                                                      200) ==
-                                                  401) {
-                                                await showModalBottomSheet(
-                                                  isScrollControlled: true,
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  barrierColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .barrierColor,
+                                                      ?.succeeded ??
+                                                  true)) {
+                                                await showDialog(
                                                   context: context,
-                                                  builder: (context) {
-                                                    return GestureDetector(
-                                                      onTap: () => _model
-                                                              .unfocusNode
-                                                              .canRequestFocus
-                                                          ? FocusScope.of(
-                                                                  context)
-                                                              .requestFocus(_model
-                                                                  .unfocusNode)
-                                                          : FocusScope.of(
-                                                                  context)
-                                                              .unfocus(),
-                                                      child: Padding(
-                                                        padding: MediaQuery
-                                                            .viewInsetsOf(
-                                                                context),
-                                                        child:
-                                                            const AlertMessageWidget(
-                                                          buttonText: 'Aceptar',
-                                                          title:
-                                                              'Lectura confirmada.',
-                                                          message:
-                                                              'La lectura del documento ha sido confirmada con éxito.',
-                                                        ),
+                                                  builder:
+                                                      (alertDialogContext) {
+                                                    return WebViewAware(
+                                                      child: AlertDialog(
+                                                        title: const Text(
+                                                            'Lectura confirmada'),
+                                                        content: const Text(
+                                                            'La lectura del documento ha sido confirmada con éxito.'),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    alertDialogContext),
+                                                            child: const Text('Ok'),
+                                                          ),
+                                                        ],
                                                       ),
                                                     );
                                                   },
-                                                ).then((value) =>
-                                                    safeSetState(() {}));
+                                                );
+                                                return;
                                               } else {
-                                                await showModalBottomSheet(
-                                                  isScrollControlled: true,
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  barrierColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .barrierColor,
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return GestureDetector(
-                                                      onTap: () => _model
-                                                              .unfocusNode
-                                                              .canRequestFocus
-                                                          ? FocusScope.of(
-                                                                  context)
-                                                              .requestFocus(_model
-                                                                  .unfocusNode)
-                                                          : FocusScope.of(
-                                                                  context)
-                                                              .unfocus(),
-                                                      child: Padding(
-                                                        padding: MediaQuery
-                                                            .viewInsetsOf(
-                                                                context),
-                                                        child:
-                                                            AlertMessageWidget(
-                                                          buttonText: 'Aceptar',
-                                                          title:
-                                                              'Error: ${(_model.ruleDocConfirmResp?.statusCode ?? 200).toString()}',
-                                                          message:
-                                                              valueOrDefault<
-                                                                  String>(
-                                                            OriginalAPIEndpointsGroup
-                                                                .confirmDocumentCall
-                                                                .message(
-                                                              (_model.ruleDocConfirmResp
-                                                                      ?.jsonBody ??
-                                                                  ''),
+                                                if ((_model.ruleDocConfirmResp
+                                                            ?.statusCode ??
+                                                        200) ==
+                                                    401) {
+                                                  await showModalBottomSheet(
+                                                    isScrollControlled: true,
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    barrierColor:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .barrierColor,
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return WebViewAware(
+                                                        child: GestureDetector(
+                                                          onTap: () =>
+                                                              FocusScope.of(
+                                                                      context)
+                                                                  .unfocus(),
+                                                          child: Padding(
+                                                            padding: MediaQuery
+                                                                .viewInsetsOf(
+                                                                    context),
+                                                            child:
+                                                                const AlertMessageWidget(
+                                                              buttonText:
+                                                                  'Aceptar',
+                                                              title:
+                                                                  'Lectura confirmada.',
+                                                              message:
+                                                                  'La lectura del documento ha sido confirmada con éxito.',
                                                             ),
-                                                            'Ocurrió un error en el servidor.',
                                                           ),
                                                         ),
-                                                      ),
-                                                    );
-                                                  },
-                                                ).then((value) =>
-                                                    safeSetState(() {}));
-                                              }
+                                                      );
+                                                    },
+                                                  ).then((value) =>
+                                                      safeSetState(() {}));
 
-                                              return;
-                                            }
-                                          },
-                                          setNipAction: (nip) async {
-                                            _model.userNip = nip;
-                                            setState(() {});
-                                          },
+                                                  if (FFAppState().rememberMe) {
+                                                    _model.refreshTokenResp1 =
+                                                        await AuthenticateGroup
+                                                            .refreshTokenCall
+                                                            .call(
+                                                      token:
+                                                          currentAuthenticationToken,
+                                                    );
+
+                                                    shouldSetState = true;
+                                                    if ((_model
+                                                            .refreshTokenResp1
+                                                            ?.succeeded ??
+                                                        true)) {
+                                                      setState(() {});
+                                                    }
+                                                  }
+                                                } else {
+                                                  await showModalBottomSheet(
+                                                    isScrollControlled: true,
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    barrierColor:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .barrierColor,
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return WebViewAware(
+                                                        child: GestureDetector(
+                                                          onTap: () =>
+                                                              FocusScope.of(
+                                                                      context)
+                                                                  .unfocus(),
+                                                          child: Padding(
+                                                            padding: MediaQuery
+                                                                .viewInsetsOf(
+                                                                    context),
+                                                            child:
+                                                                AlertMessageWidget(
+                                                              buttonText:
+                                                                  'Aceptar',
+                                                              title:
+                                                                  'Error: ${(_model.ruleDocConfirmResp?.statusCode ?? 200).toString()}',
+                                                              message:
+                                                                  valueOrDefault<
+                                                                      String>(
+                                                                OriginalAPIEndpointsGroup
+                                                                    .confirmDocumentCall
+                                                                    .message(
+                                                                  (_model.ruleDocConfirmResp
+                                                                          ?.jsonBody ??
+                                                                      ''),
+                                                                ),
+                                                                'Ocurrió un error en el servidor.',
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ).then((value) =>
+                                                      safeSetState(() {}));
+                                                }
+
+                                                return;
+                                              }
+                                            },
+                                            setNipAction: (nip) async {
+                                              _model.userNip = nip;
+                                              setState(() {});
+                                            },
+                                          ),
                                         ),
                                       ),
                                     );

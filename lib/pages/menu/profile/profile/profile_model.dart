@@ -8,10 +8,14 @@ class ProfileModel extends FlutterFlowModel<ProfileWidget> {
 
   dynamic profileData;
 
+  bool isLoading = false;
+
   ///  State fields for stateful widgets in this page.
 
   // Stores action output result for [Backend Call - API (Profile)] action in Profile widget.
   ApiCallResponse? profileResp;
+  // Stores action output result for [Backend Call - API (Refresh Token)] action in Profile widget.
+  ApiCallResponse? refreshTokenResp1;
 
   @override
   void initState(BuildContext context) {}

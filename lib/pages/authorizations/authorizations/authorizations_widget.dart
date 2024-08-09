@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import 'authorizations_model.dart';
 export 'authorizations_model.dart';
 
@@ -40,6 +41,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
           await AuthorizationsGroup.getRequestedAuthsCall.call(
         token: currentAuthenticationToken,
         perPage: _model.reqAuthorizationsPerPage,
+        emitterId: currentUserUid,
       );
 
       if ((_model.reqAuthsResp?.succeeded ?? true)) {
@@ -58,13 +60,35 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
         setState(() {});
       } else {
         if ((_model.reqAuthsResp?.statusCode ?? 200) == 401) {
-          GoRouter.of(context).prepareAuthEvent();
-          await authManager.signOut();
-          GoRouter.of(context).clearRedirectLocation();
+          if (FFAppState().rememberMe) {
+            _model.refreshTokenResp1 =
+                await AuthenticateGroup.refreshTokenCall.call(
+              token: currentAuthenticationToken,
+            );
 
-          navigate = () => context.goNamedAuth('Login', context.mounted);
+            if ((_model.refreshTokenResp1?.succeeded ?? true)) {
+              authManager.updateAuthUserData(
+                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
+                  (_model.refreshTokenResp1?.jsonBody ?? ''),
+                ),
+              );
 
-          navigate();
+              setState(() {});
+            } else {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            }
+          } else {
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
+
+            navigate = () => context.goNamedAuth('Login', context.mounted);
+          }
+
           return;
         } else {
           await showModalBottomSheet(
@@ -73,23 +97,23 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
             barrierColor: FlutterFlowTheme.of(context).barrierColor,
             context: context,
             builder: (context) {
-              return GestureDetector(
-                onTap: () => _model.unfocusNode.canRequestFocus
-                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-                    : FocusScope.of(context).unfocus(),
-                child: Padding(
-                  padding: MediaQuery.viewInsetsOf(context),
-                  child: AlertMessageWidget(
-                    buttonText: 'Aceptar',
-                    title:
-                        'Error: ${(_model.reqAuthsResp?.statusCode ?? 200).toString()}',
-                    message: valueOrDefault<String>(
-                      AuthorizationsGroup.getRequestedAuthsCall
-                          .message(
-                            (_model.reqAuthsResp?.jsonBody ?? ''),
-                          )
-                          .toString(),
-                      'Ocurrió un error en el servidor.',
+              return WebViewAware(
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: Padding(
+                    padding: MediaQuery.viewInsetsOf(context),
+                    child: AlertMessageWidget(
+                      buttonText: 'Aceptar',
+                      title:
+                          'Error: ${(_model.reqAuthsResp?.statusCode ?? 200).toString()}',
+                      message: valueOrDefault<String>(
+                        AuthorizationsGroup.getRequestedAuthsCall
+                            .message(
+                              (_model.reqAuthsResp?.jsonBody ?? ''),
+                            )
+                            .toString(),
+                        'Ocurrió un error en el servidor.',
+                      ),
                     ),
                   ),
                 ),
@@ -120,13 +144,35 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
         setState(() {});
       } else {
         if ((_model.recAuthsResp?.statusCode ?? 200) == 401) {
-          GoRouter.of(context).prepareAuthEvent();
-          await authManager.signOut();
-          GoRouter.of(context).clearRedirectLocation();
+          if (FFAppState().rememberMe) {
+            _model.refreshTokenResp2 =
+                await AuthenticateGroup.refreshTokenCall.call(
+              token: currentAuthenticationToken,
+            );
 
-          navigate = () => context.goNamedAuth('Login', context.mounted);
+            if ((_model.refreshTokenResp2?.succeeded ?? true)) {
+              authManager.updateAuthUserData(
+                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
+                  (_model.refreshTokenResp2?.jsonBody ?? ''),
+                ),
+              );
 
-          navigate();
+              setState(() {});
+            } else {
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
+
+              navigate = () => context.goNamedAuth('Login', context.mounted);
+            }
+          } else {
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
+
+            navigate = () => context.goNamedAuth('Login', context.mounted);
+          }
+
           return;
         } else {
           await showModalBottomSheet(
@@ -135,23 +181,21 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
             barrierColor: FlutterFlowTheme.of(context).barrierColor,
             context: context,
             builder: (context) {
-              return GestureDetector(
-                onTap: () => _model.unfocusNode.canRequestFocus
-                    ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-                    : FocusScope.of(context).unfocus(),
-                child: Padding(
-                  padding: MediaQuery.viewInsetsOf(context),
-                  child: AlertMessageWidget(
-                    buttonText: 'Aceptar',
-                    title:
-                        'Error: ${(_model.recAuthsResp?.statusCode ?? 200).toString()}',
-                    message: valueOrDefault<String>(
-                      AuthorizationsGroup.getReceivedAuthsCall
-                          .message(
-                            (_model.recAuthsResp?.jsonBody ?? ''),
-                          )
-                          .toString(),
-                      'Ocurrió un erro en el servidor.',
+              return WebViewAware(
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: Padding(
+                    padding: MediaQuery.viewInsetsOf(context),
+                    child: AlertMessageWidget(
+                      buttonText: 'Aceptar',
+                      title:
+                          'Error: ${(_model.recAuthsResp?.statusCode ?? 200).toString()}',
+                      message: valueOrDefault<String>(
+                        AuthorizationsGroup.getReceivedAuthsCall.message(
+                          (_model.recAuthsResp?.jsonBody ?? ''),
+                        ),
+                        'Ocurrió un erro en el servidor.',
+                      ),
                     ),
                   ),
                 ),
@@ -183,9 +227,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
@@ -408,6 +450,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                   perPage: _model.reqAuthorizationsPerPage,
                                   searchValue:
                                       _model.searchFieldTextController.text,
+                                  emitterId: currentUserUid,
                                 );
 
                                 shouldSetState = true;
@@ -433,15 +476,48 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                   if ((_model.reqSearchAuthsResp?.statusCode ??
                                           200) ==
                                       401) {
-                                    GoRouter.of(context).prepareAuthEvent();
-                                    await authManager.signOut();
-                                    GoRouter.of(context)
-                                        .clearRedirectLocation();
+                                    if (FFAppState().rememberMe) {
+                                      _model.refreshTokenResp3 =
+                                          await AuthenticateGroup
+                                              .refreshTokenCall
+                                              .call(
+                                        token: currentAuthenticationToken,
+                                      );
 
-                                    navigate = () => context.goNamedAuth(
-                                        'Login', context.mounted);
+                                      shouldSetState = true;
+                                      if ((_model
+                                              .refreshTokenResp3?.succeeded ??
+                                          true)) {
+                                        authManager.updateAuthUserData(
+                                          authenticationToken: AuthenticateGroup
+                                              .refreshTokenCall
+                                              .token(
+                                            (_model.refreshTokenResp3
+                                                    ?.jsonBody ??
+                                                ''),
+                                          ),
+                                        );
 
-                                    navigate();
+                                        setState(() {});
+                                      } else {
+                                        GoRouter.of(context).prepareAuthEvent();
+                                        await authManager.signOut();
+                                        GoRouter.of(context)
+                                            .clearRedirectLocation();
+
+                                        navigate = () => context.goNamedAuth(
+                                            'Login', context.mounted);
+                                      }
+                                    } else {
+                                      GoRouter.of(context).prepareAuthEvent();
+                                      await authManager.signOut();
+                                      GoRouter.of(context)
+                                          .clearRedirectLocation();
+
+                                      navigate = () => context.goNamedAuth(
+                                          'Login', context.mounted);
+                                    }
+
                                     if (shouldSetState) setState(() {});
                                     return;
                                   } else {
@@ -452,31 +528,28 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                           .barrierColor,
                                       context: context,
                                       builder: (context) {
-                                        return GestureDetector(
-                                          onTap: () => _model
-                                                  .unfocusNode.canRequestFocus
-                                              ? FocusScope.of(context)
-                                                  .requestFocus(
-                                                      _model.unfocusNode)
-                                              : FocusScope.of(context)
-                                                  .unfocus(),
-                                          child: Padding(
-                                            padding: MediaQuery.viewInsetsOf(
-                                                context),
-                                            child: AlertMessageWidget(
-                                              buttonText: 'Aceptar',
-                                              title:
-                                                  'Error: ${(_model.reqSearchAuthsResp?.statusCode ?? 200).toString()}',
-                                              message: valueOrDefault<String>(
-                                                AuthorizationsGroup
-                                                    .getRequestedAuthsCall
-                                                    .message(
-                                                      (_model.reqSearchAuthsResp
-                                                              ?.jsonBody ??
-                                                          ''),
-                                                    )
-                                                    .toString(),
-                                                'Ocurrió un erro en el servidor.',
+                                        return WebViewAware(
+                                          child: GestureDetector(
+                                            onTap: () => FocusScope.of(context)
+                                                .unfocus(),
+                                            child: Padding(
+                                              padding: MediaQuery.viewInsetsOf(
+                                                  context),
+                                              child: AlertMessageWidget(
+                                                buttonText: 'Aceptar',
+                                                title:
+                                                    'Error: ${(_model.reqSearchAuthsResp?.statusCode ?? 200).toString()}',
+                                                message: valueOrDefault<String>(
+                                                  AuthorizationsGroup
+                                                      .getRequestedAuthsCall
+                                                      .message(
+                                                        (_model.reqSearchAuthsResp
+                                                                ?.jsonBody ??
+                                                            ''),
+                                                      )
+                                                      .toString(),
+                                                  'Ocurrió un erro en el servidor.',
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -522,15 +595,48 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                   if ((_model.recSearchAuthsResp?.statusCode ??
                                           200) ==
                                       401) {
-                                    GoRouter.of(context).prepareAuthEvent();
-                                    await authManager.signOut();
-                                    GoRouter.of(context)
-                                        .clearRedirectLocation();
+                                    if (FFAppState().rememberMe) {
+                                      _model.refreshTokenResp4 =
+                                          await AuthenticateGroup
+                                              .refreshTokenCall
+                                              .call(
+                                        token: currentAuthenticationToken,
+                                      );
 
-                                    navigate = () => context.goNamedAuth(
-                                        'Login', context.mounted);
+                                      shouldSetState = true;
+                                      if ((_model
+                                              .refreshTokenResp4?.succeeded ??
+                                          true)) {
+                                        authManager.updateAuthUserData(
+                                          authenticationToken: AuthenticateGroup
+                                              .refreshTokenCall
+                                              .token(
+                                            (_model.refreshTokenResp4
+                                                    ?.jsonBody ??
+                                                ''),
+                                          ),
+                                        );
 
-                                    navigate();
+                                        setState(() {});
+                                      } else {
+                                        GoRouter.of(context).prepareAuthEvent();
+                                        await authManager.signOut();
+                                        GoRouter.of(context)
+                                            .clearRedirectLocation();
+
+                                        navigate = () => context.goNamedAuth(
+                                            'Login', context.mounted);
+                                      }
+                                    } else {
+                                      GoRouter.of(context).prepareAuthEvent();
+                                      await authManager.signOut();
+                                      GoRouter.of(context)
+                                          .clearRedirectLocation();
+
+                                      navigate = () => context.goNamedAuth(
+                                          'Login', context.mounted);
+                                    }
+
                                     if (shouldSetState) setState(() {});
                                     return;
                                   } else {
@@ -541,31 +647,27 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                           .barrierColor,
                                       context: context,
                                       builder: (context) {
-                                        return GestureDetector(
-                                          onTap: () => _model
-                                                  .unfocusNode.canRequestFocus
-                                              ? FocusScope.of(context)
-                                                  .requestFocus(
-                                                      _model.unfocusNode)
-                                              : FocusScope.of(context)
-                                                  .unfocus(),
-                                          child: Padding(
-                                            padding: MediaQuery.viewInsetsOf(
-                                                context),
-                                            child: AlertMessageWidget(
-                                              buttonText: 'Aceptar',
-                                              title:
-                                                  'Error: ${(_model.recSearchAuthsResp?.statusCode ?? 200).toString()}',
-                                              message: valueOrDefault<String>(
-                                                AuthorizationsGroup
-                                                    .getReceivedAuthsCall
-                                                    .message(
-                                                      (_model.recSearchAuthsResp
-                                                              ?.jsonBody ??
-                                                          ''),
-                                                    )
-                                                    .toString(),
-                                                'Ocurrió un error en el servidor.',
+                                        return WebViewAware(
+                                          child: GestureDetector(
+                                            onTap: () => FocusScope.of(context)
+                                                .unfocus(),
+                                            child: Padding(
+                                              padding: MediaQuery.viewInsetsOf(
+                                                  context),
+                                              child: AlertMessageWidget(
+                                                buttonText: 'Aceptar',
+                                                title:
+                                                    'Error: ${(_model.recSearchAuthsResp?.statusCode ?? 200).toString()}',
+                                                message: valueOrDefault<String>(
+                                                  AuthorizationsGroup
+                                                      .getReceivedAuthsCall
+                                                      .message(
+                                                    (_model.recSearchAuthsResp
+                                                            ?.jsonBody ??
+                                                        ''),
+                                                  ),
+                                                  'Ocurrió un error en el servidor.',
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -642,6 +744,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                           .call(
                                     token: currentAuthenticationToken,
                                     perPage: _model.reqAuthorizationsPerPage,
+                                    emitterId: currentUserUid,
                                   );
 
                                   shouldSetState = true;
@@ -673,15 +776,50 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                                 ?.statusCode ??
                                             200) ==
                                         401) {
-                                      GoRouter.of(context).prepareAuthEvent();
-                                      await authManager.signOut();
-                                      GoRouter.of(context)
-                                          .clearRedirectLocation();
+                                      if (FFAppState().rememberMe) {
+                                        _model.refreshTokenResp5 =
+                                            await AuthenticateGroup
+                                                .refreshTokenCall
+                                                .call(
+                                          token: currentAuthenticationToken,
+                                        );
 
-                                      navigate = () => context.goNamedAuth(
-                                          'Login', context.mounted);
+                                        shouldSetState = true;
+                                        if ((_model
+                                                .refreshTokenResp5?.succeeded ??
+                                            true)) {
+                                          authManager.updateAuthUserData(
+                                            authenticationToken:
+                                                AuthenticateGroup
+                                                    .refreshTokenCall
+                                                    .token(
+                                              (_model.refreshTokenResp5
+                                                      ?.jsonBody ??
+                                                  ''),
+                                            ),
+                                          );
 
-                                      navigate();
+                                          setState(() {});
+                                        } else {
+                                          GoRouter.of(context)
+                                              .prepareAuthEvent();
+                                          await authManager.signOut();
+                                          GoRouter.of(context)
+                                              .clearRedirectLocation();
+
+                                          navigate = () => context.goNamedAuth(
+                                              'Login', context.mounted);
+                                        }
+                                      } else {
+                                        GoRouter.of(context).prepareAuthEvent();
+                                        await authManager.signOut();
+                                        GoRouter.of(context)
+                                            .clearRedirectLocation();
+
+                                        navigate = () => context.goNamedAuth(
+                                            'Login', context.mounted);
+                                      }
+
                                       if (shouldSetState) setState(() {});
                                       return;
                                     } else {
@@ -693,31 +831,31 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                                 .barrierColor,
                                         context: context,
                                         builder: (context) {
-                                          return GestureDetector(
-                                            onTap: () => _model
-                                                    .unfocusNode.canRequestFocus
-                                                ? FocusScope.of(context)
-                                                    .requestFocus(
-                                                        _model.unfocusNode)
-                                                : FocusScope.of(context)
-                                                    .unfocus(),
-                                            child: Padding(
-                                              padding: MediaQuery.viewInsetsOf(
-                                                  context),
-                                              child: AlertMessageWidget(
-                                                buttonText: 'Aceptar',
-                                                title:
-                                                    'Error: ${(_model.reqClearSearchAuthsResp?.statusCode ?? 200).toString()}',
-                                                message: valueOrDefault<String>(
-                                                  AuthorizationsGroup
-                                                      .getRequestedAuthsCall
-                                                      .message(
-                                                        (_model.reqClearSearchAuthsResp
-                                                                ?.jsonBody ??
-                                                            ''),
-                                                      )
-                                                      .toString(),
-                                                  'Ocurrió un error en el servidor.',
+                                          return WebViewAware(
+                                            child: GestureDetector(
+                                              onTap: () =>
+                                                  FocusScope.of(context)
+                                                      .unfocus(),
+                                              child: Padding(
+                                                padding:
+                                                    MediaQuery.viewInsetsOf(
+                                                        context),
+                                                child: AlertMessageWidget(
+                                                  buttonText: 'Aceptar',
+                                                  title:
+                                                      'Error: ${(_model.reqClearSearchAuthsResp?.statusCode ?? 200).toString()}',
+                                                  message:
+                                                      valueOrDefault<String>(
+                                                    AuthorizationsGroup
+                                                        .getRequestedAuthsCall
+                                                        .message(
+                                                          (_model.reqClearSearchAuthsResp
+                                                                  ?.jsonBody ??
+                                                              ''),
+                                                        )
+                                                        .toString(),
+                                                    'Ocurrió un error en el servidor.',
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -764,15 +902,50 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                                 ?.statusCode ??
                                             200) ==
                                         401) {
-                                      GoRouter.of(context).prepareAuthEvent();
-                                      await authManager.signOut();
-                                      GoRouter.of(context)
-                                          .clearRedirectLocation();
+                                      if (FFAppState().rememberMe) {
+                                        _model.refreshTokenResp6 =
+                                            await AuthenticateGroup
+                                                .refreshTokenCall
+                                                .call(
+                                          token: currentAuthenticationToken,
+                                        );
 
-                                      navigate = () => context.goNamedAuth(
-                                          'Login', context.mounted);
+                                        shouldSetState = true;
+                                        if ((_model
+                                                .refreshTokenResp6?.succeeded ??
+                                            true)) {
+                                          authManager.updateAuthUserData(
+                                            authenticationToken:
+                                                AuthenticateGroup
+                                                    .refreshTokenCall
+                                                    .token(
+                                              (_model.refreshTokenResp6
+                                                      ?.jsonBody ??
+                                                  ''),
+                                            ),
+                                          );
 
-                                      navigate();
+                                          setState(() {});
+                                        } else {
+                                          GoRouter.of(context)
+                                              .prepareAuthEvent();
+                                          await authManager.signOut();
+                                          GoRouter.of(context)
+                                              .clearRedirectLocation();
+
+                                          navigate = () => context.goNamedAuth(
+                                              'Login', context.mounted);
+                                        }
+                                      } else {
+                                        GoRouter.of(context).prepareAuthEvent();
+                                        await authManager.signOut();
+                                        GoRouter.of(context)
+                                            .clearRedirectLocation();
+
+                                        navigate = () => context.goNamedAuth(
+                                            'Login', context.mounted);
+                                      }
+
                                       if (shouldSetState) setState(() {});
                                       return;
                                     } else {
@@ -784,31 +957,30 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                                 .barrierColor,
                                         context: context,
                                         builder: (context) {
-                                          return GestureDetector(
-                                            onTap: () => _model
-                                                    .unfocusNode.canRequestFocus
-                                                ? FocusScope.of(context)
-                                                    .requestFocus(
-                                                        _model.unfocusNode)
-                                                : FocusScope.of(context)
-                                                    .unfocus(),
-                                            child: Padding(
-                                              padding: MediaQuery.viewInsetsOf(
-                                                  context),
-                                              child: AlertMessageWidget(
-                                                buttonText: 'Aceptar',
-                                                title:
-                                                    'Error: ${(_model.recClearSearchAuthsResp?.statusCode ?? 200).toString()}',
-                                                message: valueOrDefault<String>(
-                                                  AuthorizationsGroup
-                                                      .getReceivedAuthsCall
-                                                      .message(
-                                                        (_model.recClearSearchAuthsResp
-                                                                ?.jsonBody ??
-                                                            ''),
-                                                      )
-                                                      .toString(),
-                                                  'Ocurrió un error en el servidor.',
+                                          return WebViewAware(
+                                            child: GestureDetector(
+                                              onTap: () =>
+                                                  FocusScope.of(context)
+                                                      .unfocus(),
+                                              child: Padding(
+                                                padding:
+                                                    MediaQuery.viewInsetsOf(
+                                                        context),
+                                                child: AlertMessageWidget(
+                                                  buttonText: 'Aceptar',
+                                                  title:
+                                                      'Error: ${(_model.recClearSearchAuthsResp?.statusCode ?? 200).toString()}',
+                                                  message:
+                                                      valueOrDefault<String>(
+                                                    AuthorizationsGroup
+                                                        .getReceivedAuthsCall
+                                                        .message(
+                                                      (_model.recClearSearchAuthsResp
+                                                              ?.jsonBody ??
+                                                          ''),
+                                                    ),
+                                                    'Ocurrió un error en el servidor.',
+                                                  ),
                                                 ),
                                               ),
                                             ),

@@ -7,6 +7,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import 'login_sms_model.dart';
 export 'login_sms_model.dart';
 
@@ -140,9 +141,7 @@ class _LoginSmsWidgetState extends State<LoginSmsWidget>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -372,31 +371,29 @@ class _LoginSmsWidgetState extends State<LoginSmsWidget>
                                                       .barrierColor,
                                               context: context,
                                               builder: (context) {
-                                                return GestureDetector(
-                                                  onTap: () => _model
-                                                          .unfocusNode
-                                                          .canRequestFocus
-                                                      ? FocusScope.of(context)
-                                                          .requestFocus(_model
-                                                              .unfocusNode)
-                                                      : FocusScope.of(context)
-                                                          .unfocus(),
-                                                  child: Padding(
-                                                    padding:
-                                                        MediaQuery.viewInsetsOf(
-                                                            context),
-                                                    child: AlertMessageWidget(
-                                                      buttonText: 'Aceptar',
-                                                      title:
-                                                          'Error: ${(_model.loginOtpResp?.statusCode ?? 200).toString()}',
-                                                      message: AuthenticateGroup
-                                                          .loginOTPCall
-                                                          .message(
-                                                            (_model.loginOtpResp
-                                                                    ?.jsonBody ??
-                                                                ''),
-                                                          )
-                                                          .toString(),
+                                                return WebViewAware(
+                                                  child: GestureDetector(
+                                                    onTap: () =>
+                                                        FocusScope.of(context)
+                                                            .unfocus(),
+                                                    child: Padding(
+                                                      padding: MediaQuery
+                                                          .viewInsetsOf(
+                                                              context),
+                                                      child: AlertMessageWidget(
+                                                        buttonText: 'Aceptar',
+                                                        title:
+                                                            'Error: ${(_model.loginOtpResp?.statusCode ?? 200).toString()}',
+                                                        message:
+                                                            AuthenticateGroup
+                                                                .loginOTPCall
+                                                                .message(
+                                                                  (_model.loginOtpResp
+                                                                          ?.jsonBody ??
+                                                                      ''),
+                                                                )
+                                                                .toString(),
+                                                      ),
                                                     ),
                                                   ),
                                                 );

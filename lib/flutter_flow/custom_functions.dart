@@ -121,3 +121,32 @@ bool? isSameText(
   }
   return false;
 }
+
+String objectStringValueToString(String status) {
+  return status;
+}
+
+bool stringIsNull(String? value) {
+  if (value == null) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool isImagePath(String imagePath) {
+  final imageExtensions = [
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'bmp',
+    'webp',
+    'tiff',
+    'svg'
+  ];
+
+  final extension = imagePath.split('.').last.toLowerCase();
+
+  return imageExtensions.contains(extension);
+}
