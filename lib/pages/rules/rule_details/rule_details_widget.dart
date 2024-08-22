@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 import 'rule_details_model.dart';
 export 'rule_details_model.dart';
@@ -57,8 +56,6 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: WillPopScope(
@@ -118,7 +115,7 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                           padding: const EdgeInsetsDirectional.fromSTEB(
                               0.0, 0.0, 0.0, 24.0),
                           child: Lottie.asset(
-                            'assets/lottie_animations/Animation_-_1716841230423.json',
+                            'assets/lottie_animations/loading_sabeeo.json',
                             width: MediaQuery.sizeOf(context).width * 0.5,
                             height: MediaQuery.sizeOf(context).height * 0.25,
                             fit: BoxFit.contain,
@@ -828,23 +825,7 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                                                   ).then((value) =>
                                                       safeSetState(() {}));
 
-                                                  if (FFAppState().rememberMe) {
-                                                    _model.refreshTokenResp1 =
-                                                        await AuthenticateGroup
-                                                            .refreshTokenCall
-                                                            .call(
-                                                      token:
-                                                          currentAuthenticationToken,
-                                                    );
-
-                                                    shouldSetState = true;
-                                                    if ((_model
-                                                            .refreshTokenResp1
-                                                            ?.succeeded ??
-                                                        true)) {
-                                                      setState(() {});
-                                                    }
-                                                  }
+                                                  return;
                                                 } else {
                                                   await showModalBottomSheet(
                                                     isScrollControlled: true,

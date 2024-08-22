@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import '/backend/schema/structs/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'flutter_flow/flutter_flow_util.dart';
+import 'dart:convert';
 
 class FFAppState extends ChangeNotifier {
   static FFAppState _instance = FFAppState._internal();
@@ -17,6 +20,17 @@ class FFAppState extends ChangeNotifier {
   Future initializePersistedState() async {
     prefs = await SharedPreferences.getInstance();
     _safeInit(() {
+      if (prefs.containsKey('ff_userAuthData')) {
+        try {
+          final serializedData = prefs.getString('ff_userAuthData') ?? '{}';
+          _userAuthData = UserAuthDataStruct.fromSerializableMap(
+              jsonDecode(serializedData));
+        } catch (e) {
+          print("Can't decode persisted data type. Error: $e.");
+        }
+      }
+    });
+    _safeInit(() {
       _rememberMe = prefs.getBool('ff_rememberMe') ?? _rememberMe;
     });
   }
@@ -27,6 +41,19 @@ class FFAppState extends ChangeNotifier {
   }
 
   late SharedPreferences prefs;
+
+  UserAuthDataStruct _userAuthData =
+      UserAuthDataStruct.fromSerializableMap(jsonDecode('{}'));
+  UserAuthDataStruct get userAuthData => _userAuthData;
+  set userAuthData(UserAuthDataStruct value) {
+    _userAuthData = value;
+    prefs.setString('ff_userAuthData', value.serialize());
+  }
+
+  void updateUserAuthDataStruct(Function(UserAuthDataStruct) updateFn) {
+    updateFn(_userAuthData);
+    prefs.setString('ff_userAuthData', _userAuthData.serialize());
+  }
 
   bool _rememberMe = false;
   bool get rememberMe => _rememberMe;
@@ -265,6 +292,12 @@ class FFAppState extends ChangeNotifier {
 
   void insertAtIndexInRulesDocumentsArray(int index, dynamic value) {
     rulesDocumentsArray.insert(index, value);
+  }
+
+  int _tempIntValue = 0;
+  int get tempIntValue => _tempIntValue;
+  set tempIntValue(int value) {
+    _tempIntValue = value;
   }
 }
 

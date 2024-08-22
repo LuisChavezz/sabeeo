@@ -20,8 +20,6 @@ class RuleDetailsModel extends FlutterFlowModel<RuleDetailsWidget> {
 
   // Stores action output result for [Backend Call - API (Confirm Document)] action in Button widget.
   ApiCallResponse? ruleDocConfirmResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Button widget.
-  ApiCallResponse? refreshTokenResp1;
 
   @override
   void initState(BuildContext context) {}

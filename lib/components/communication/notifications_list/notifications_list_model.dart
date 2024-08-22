@@ -14,16 +14,12 @@ class NotificationsListModel extends FlutterFlowModel<NotificationsListWidget> {
 
   // Stores action output result for [Backend Call - API (Get Notifications)] action in Column widget.
   ApiCallResponse? refreshNotificationsResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Column widget.
-  ApiCallResponse? refreshTokenResp1;
   // Stores action output result for [Backend Call - API (Read Notificaction)] action in Row widget.
   ApiCallResponse? readNotiResp;
   // Stores action output result for [Backend Call - API (Get Notifications)] action in Row widget.
   ApiCallResponse? readNotificationsResp;
   // Stores action output result for [Backend Call - API (Get Notifications)] action in Button widget.
   ApiCallResponse? moreNotificationsResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Button widget.
-  ApiCallResponse? refreshTokenResp2;
 
   @override
   void initState(BuildContext context) {}

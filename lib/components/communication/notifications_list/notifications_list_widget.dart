@@ -21,12 +21,14 @@ class NotificationsListWidget extends StatefulWidget {
     required this.notificationsTotalRows,
     required this.toggleIsLoading,
     String? readValue,
+    required this.setNotificationsTotal,
   }) : readValue = readValue ?? 'false';
 
   final List<dynamic>? notificationsArray;
   final int? notificationsTotalRows;
   final Future Function()? toggleIsLoading;
   final String readValue;
+  final Future Function(int totalRows)? setNotificationsTotal;
 
   @override
   State<NotificationsListWidget> createState() =>
@@ -91,74 +93,48 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                   .toList()
                   .cast<dynamic>();
           _model.updatePage(() {});
+          await widget.setNotificationsTotal?.call(
+            NotificationsGroup.getNotificationsCall.totalRows(
+              (_model.refreshNotificationsResp?.jsonBody ?? ''),
+            )!,
+          );
         } else {
           if ((_model.refreshNotificationsResp?.statusCode ?? 200) == 401) {
-            if (FFAppState().rememberMe) {
-              _model.refreshTokenResp1 =
-                  await AuthenticateGroup.refreshTokenCall.call(
-                token: currentAuthenticationToken,
-              );
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
 
-              if ((_model.refreshTokenResp1?.succeeded ?? true)) {
-                authManager.updateAuthUserData(
-                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                    (_model.refreshTokenResp1?.jsonBody ?? ''),
-                  ),
-                );
+            navigate = () => context.goNamedAuth('Login', context.mounted);
 
-                setState(() {});
-              } else {
-                GoRouter.of(context).prepareAuthEvent();
-                await authManager.signOut();
-                GoRouter.of(context).clearRedirectLocation();
-
-                navigate = () => context.goNamedAuth('Login', context.mounted);
-              }
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
-
+            navigate();
             return;
           } else {
-            if ((_model.refreshNotificationsResp?.statusCode ?? 200) == 401) {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            } else {
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                barrierColor: FlutterFlowTheme.of(context).barrierColor,
-                context: context,
-                builder: (context) {
-                  return WebViewAware(
-                    child: Padding(
-                      padding: MediaQuery.viewInsetsOf(context),
-                      child: AlertMessageWidget(
-                        buttonText: 'Aceptar',
-                        title:
-                            'Error: ${(_model.refreshNotificationsResp?.statusCode ?? 200).toString()}',
-                        message: valueOrDefault<String>(
-                          NotificationsGroup.getNotificationsCall
-                              .message(
-                                (_model.refreshNotificationsResp?.jsonBody ??
-                                    ''),
-                              )
-                              .toString(),
-                          'Ocurrió un error en el servidor.',
-                        ),
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              barrierColor: FlutterFlowTheme.of(context).barrierColor,
+              context: context,
+              builder: (context) {
+                return WebViewAware(
+                  child: Padding(
+                    padding: MediaQuery.viewInsetsOf(context),
+                    child: AlertMessageWidget(
+                      buttonText: 'Aceptar',
+                      title:
+                          'Error: ${(_model.refreshNotificationsResp?.statusCode ?? 200).toString()}',
+                      message: valueOrDefault<String>(
+                        NotificationsGroup.getNotificationsCall
+                            .message(
+                              (_model.refreshNotificationsResp?.jsonBody ?? ''),
+                            )
+                            .toString(),
+                        'Ocurrió un error en el servidor.',
                       ),
                     ),
-                  );
-                },
-              ).then((value) => safeSetState(() {}));
-            }
+                  ),
+                );
+              },
+            ).then((value) => safeSetState(() {}));
           }
         }
 
@@ -219,7 +195,7 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                                     child: ConfirmActionWidget(
                                       confirmButtonText: 'Marcar como leída',
                                       cancelButtonText: 'Cancelar',
-                                      mainAction: () async {
+                                      mainAction: (textValue) async {
                                         var shouldSetState = false;
                                         navigate() {}
                                         _model.readNotiResp =
@@ -268,6 +244,16 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                                                   .toList()
                                                   .cast<dynamic>();
                                           _model.updatePage(() {});
+                                          await widget.setNotificationsTotal
+                                              ?.call(
+                                            NotificationsGroup
+                                                .getNotificationsCall
+                                                .totalRows(
+                                              (_model.readNotificationsResp
+                                                      ?.jsonBody ??
+                                                  ''),
+                                            )!,
+                                          );
                                         } else {
                                           if ((_model.readNotificationsResp
                                                       ?.statusCode ??
@@ -279,6 +265,7 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
 
                                         await widget.toggleIsLoading?.call();
                                       },
+                                      setPageState: (intValue) async {},
                                     ),
                                   ),
                                 ),
@@ -417,42 +404,22 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                               .toList()
                               .cast<dynamic>();
                       _model.updatePage(() {});
+                      await widget.setNotificationsTotal?.call(
+                        NotificationsGroup.getNotificationsCall.totalRows(
+                          (_model.moreNotificationsResp?.jsonBody ?? ''),
+                        )!,
+                      );
                     } else {
                       if ((_model.moreNotificationsResp?.statusCode ?? 200) ==
                           401) {
-                        if (FFAppState().rememberMe) {
-                          _model.refreshTokenResp2 =
-                              await AuthenticateGroup.refreshTokenCall.call(
-                            token: currentAuthenticationToken,
-                          );
+                        GoRouter.of(context).prepareAuthEvent();
+                        await authManager.signOut();
+                        GoRouter.of(context).clearRedirectLocation();
 
-                          shouldSetState = true;
-                          if ((_model.refreshTokenResp2?.succeeded ?? true)) {
-                            authManager.updateAuthUserData(
-                              authenticationToken:
-                                  AuthenticateGroup.refreshTokenCall.token(
-                                (_model.refreshTokenResp2?.jsonBody ?? ''),
-                              ),
-                            );
+                        navigate =
+                            () => context.goNamedAuth('Login', context.mounted);
 
-                            setState(() {});
-                          } else {
-                            GoRouter.of(context).prepareAuthEvent();
-                            await authManager.signOut();
-                            GoRouter.of(context).clearRedirectLocation();
-
-                            navigate = () =>
-                                context.goNamedAuth('Login', context.mounted);
-                          }
-                        } else {
-                          GoRouter.of(context).prepareAuthEvent();
-                          await authManager.signOut();
-                          GoRouter.of(context).clearRedirectLocation();
-
-                          navigate = () =>
-                              context.goNamedAuth('Login', context.mounted);
-                        }
-
+                        navigate();
                         if (shouldSetState) setState(() {});
                         return;
                       } else {

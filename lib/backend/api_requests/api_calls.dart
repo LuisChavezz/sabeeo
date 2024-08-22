@@ -21,13 +21,13 @@ class AuthenticateGroup {
   static LoginCall loginCall = LoginCall();
   static LoginOTPCall loginOTPCall = LoginOTPCall();
   static ValidateLoginOTPCall validateLoginOTPCall = ValidateLoginOTPCall();
-  static RefreshTokenCall refreshTokenCall = RefreshTokenCall();
 }
 
 class LoginCall {
   Future<ApiCallResponse> call({
     String? email = '',
     String? password = '',
+    String? noExpiry = 'false',
   }) async {
     final baseUrl = AuthenticateGroup.getBaseUrl();
 
@@ -43,6 +43,7 @@ class LoginCall {
       headers: {
         'Content-Type': 'application/json',
         'ignore-inactivity-check': 'true',
+        'x-no-expiry': '$noExpiry',
       },
       params: {},
       body: ffApiRequestBody,
@@ -167,47 +168,6 @@ class ValidateLoginOTPCall {
   String? message(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.data.message''',
-      ));
-}
-
-class RefreshTokenCall {
-  Future<ApiCallResponse> call({
-    String? token = '',
-  }) async {
-    final baseUrl = AuthenticateGroup.getBaseUrl();
-
-    final ffApiRequestBody = '''
-{
-  "token": "$token"
-}''';
-    return ApiManager.instance.makeApiCall(
-      callName: 'Refresh Token',
-      apiUrl: '$baseUrl/refresh_token',
-      callType: ApiCallType.POST,
-      headers: {
-        'Content-Type': 'application/json',
-        'ignore-inactivity-check': 'true',
-        'Authorization': 'Bearer $token',
-      },
-      params: {},
-      body: ffApiRequestBody,
-      bodyType: BodyType.JSON,
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-
-  String? token(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.data.token''',
-      ));
-  int? statusCode(dynamic response) => castToType<int>(getJsonField(
-        response,
-        r'''$.statusCode''',
       ));
 }
 
@@ -467,6 +427,7 @@ class GetMemorandumsCall {
     int? page = 1,
     int? perPage = 10,
     String? token = '',
+    String? status = '',
   }) async {
     final baseUrl = MemorandumGroup.getBaseUrl();
 
@@ -482,6 +443,7 @@ class GetMemorandumsCall {
       params: {
         'page': page,
         'perPage': perPage,
+        'status': status,
       },
       returnBody: true,
       encodeBodyUtf8: false,
@@ -846,6 +808,10 @@ class AuthorizationDetailsCall {
         response,
         r'''$.data.isAuthorizer''',
       ));
+  dynamic authorizerRemarks(dynamic response) => getJsonField(
+        response,
+        r'''$.data.authorizerRemarks''',
+      );
 }
 
 class ResponseAuthorizationCall {
@@ -853,12 +819,14 @@ class ResponseAuthorizationCall {
     String? token = '',
     String? id = '',
     String? status = '',
+    String? authorizerRemarks = '',
   }) async {
     final baseUrl = AuthorizationsGroup.getBaseUrl();
 
     final ffApiRequestBody = '''
 {
-  "status": "$status"
+  "status": "$status",
+  "authorizerRemarks": "$authorizerRemarks"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'Response Authorization',
@@ -901,6 +869,10 @@ class ResponseAuthorizationCall {
         response,
         r'''$.message''',
       ));
+  dynamic authorizerRemarks(dynamic response) => getJsonField(
+        response,
+        r'''$.data.authorizerRemarks''',
+      );
 }
 
 class GetHistoryAuthsCall {

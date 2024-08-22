@@ -132,7 +132,37 @@ class _RulesDocumentsListWidgetState extends State<RulesDocumentsListWidget> {
                               width: MediaQuery.sizeOf(context).width * 0.03,
                               height: MediaQuery.sizeOf(context).height * 1.0,
                               decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context).error,
+                                color: valueOrDefault<Color>(
+                                  () {
+                                    if (functions.objectStringValueToString(
+                                            getJsonField(
+                                          rulesItem,
+                                          r'''$.confirmationData.status''',
+                                        ).toString()) ==
+                                        'pending') {
+                                      return FlutterFlowTheme.of(context)
+                                          .pendant;
+                                    } else if (functions
+                                        .stringIsNull(getJsonField(
+                                      rulesItem,
+                                      r'''$.document.version.date_implementation''',
+                                    ).toString())) {
+                                      return FlutterFlowTheme.of(context)
+                                          .rejected;
+                                    } else if (!functions
+                                        .stringIsNull(getJsonField(
+                                      rulesItem,
+                                      r'''$.document.version.date_implementation''',
+                                    ).toString())) {
+                                      return FlutterFlowTheme.of(context)
+                                          .approved;
+                                    } else {
+                                      return FlutterFlowTheme.of(context)
+                                          .barrierColor;
+                                    }
+                                  }(),
+                                  FlutterFlowTheme.of(context).pendant,
+                                ),
                                 borderRadius: const BorderRadius.only(
                                   bottomLeft: Radius.circular(16.0),
                                   bottomRight: Radius.circular(0.0),

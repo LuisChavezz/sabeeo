@@ -8,16 +8,14 @@ class MemorandumListModel extends FlutterFlowModel<MemorandumListWidget> {
 
   int moreMemorandumsPerPage = 10;
 
+  String? viewedCS;
+
   ///  State fields for stateful widgets in this component.
 
   // Stores action output result for [Backend Call - API (Get Memorandums)] action in Column widget.
   ApiCallResponse? refreshMemorandumsResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Column widget.
-  ApiCallResponse? refreshTokenResp1;
   // Stores action output result for [Backend Call - API (Get Memorandums)] action in Button widget.
   ApiCallResponse? moreMemorandumResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Button widget.
-  ApiCallResponse? refreshTokenResp2;
 
   @override
   void initState(BuildContext context) {}

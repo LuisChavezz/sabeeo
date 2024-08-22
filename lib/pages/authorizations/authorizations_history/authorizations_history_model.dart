@@ -20,20 +20,14 @@ class AuthorizationsHistoryModel
 
   // Stores action output result for [Backend Call - API (Get History Auths)] action in Authorizations_history widget.
   ApiCallResponse? allAuthsResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Authorizations_history widget.
-  ApiCallResponse? refreshTokenResp1;
   // State field(s) for searchField widget.
   FocusNode? searchFieldFocusNode;
   TextEditingController? searchFieldTextController;
   String? Function(BuildContext, String?)? searchFieldTextControllerValidator;
   // Stores action output result for [Backend Call - API (Get History Auths)] action in Container widget.
   ApiCallResponse? searchAuthsResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Container widget.
-  ApiCallResponse? refreshTokenResp2;
   // Stores action output result for [Backend Call - API (Get History Auths)] action in Container widget.
   ApiCallResponse? clearSearchAuthsResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Container widget.
-  ApiCallResponse? refreshTokenResp3;
   // Model for AllAuthorizationsList component.
   late AllAuthorizationsListModel allAuthorizationsListModel;
 

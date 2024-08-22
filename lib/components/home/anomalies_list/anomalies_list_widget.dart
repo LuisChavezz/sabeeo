@@ -1,7 +1,7 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/components/home/anomaly_info/anomaly_info_widget.dart';
 import '/components/ui/alert_message/alert_message_widget.dart';
-import '/components/ui/anomaly_info/anomaly_info_widget.dart';
 import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -78,35 +78,13 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
           _model.updatePage(() {});
         } else {
           if ((_model.refreshAnomaliesResp?.statusCode ?? 200) == 401) {
-            if (FFAppState().rememberMe) {
-              _model.refreshTokenResp1 =
-                  await AuthenticateGroup.refreshTokenCall.call(
-                token: currentAuthenticationToken,
-              );
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
 
-              if ((_model.refreshTokenResp1?.succeeded ?? true)) {
-                authManager.updateAuthUserData(
-                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                    (_model.refreshTokenResp1?.jsonBody ?? ''),
-                  ),
-                );
+            navigate = () => context.goNamedAuth('Login', context.mounted);
 
-                setState(() {});
-              } else {
-                GoRouter.of(context).prepareAuthEvent();
-                await authManager.signOut();
-                GoRouter.of(context).clearRedirectLocation();
-
-                navigate = () => context.goNamedAuth('Login', context.mounted);
-              }
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
-
+            navigate();
             return;
           } else {
             await showModalBottomSheet(
@@ -393,39 +371,14 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                     } else {
                       if ((_model.moreAnomaliesResp?.statusCode ?? 200) ==
                           401) {
-                        if (FFAppState().rememberMe) {
-                          _model.refreshTokenResp2 =
-                              await AuthenticateGroup.refreshTokenCall.call(
-                            token: currentAuthenticationToken,
-                          );
+                        GoRouter.of(context).prepareAuthEvent();
+                        await authManager.signOut();
+                        GoRouter.of(context).clearRedirectLocation();
 
-                          shouldSetState = true;
-                          if ((_model.refreshTokenResp2?.succeeded ?? true)) {
-                            authManager.updateAuthUserData(
-                              authenticationToken:
-                                  AuthenticateGroup.refreshTokenCall.token(
-                                (_model.refreshTokenResp2?.jsonBody ?? ''),
-                              ),
-                            );
+                        navigate =
+                            () => context.goNamedAuth('Login', context.mounted);
 
-                            setState(() {});
-                          } else {
-                            GoRouter.of(context).prepareAuthEvent();
-                            await authManager.signOut();
-                            GoRouter.of(context).clearRedirectLocation();
-
-                            navigate = () =>
-                                context.goNamedAuth('Login', context.mounted);
-                          }
-                        } else {
-                          GoRouter.of(context).prepareAuthEvent();
-                          await authManager.signOut();
-                          GoRouter.of(context).clearRedirectLocation();
-
-                          navigate = () =>
-                              context.goNamedAuth('Login', context.mounted);
-                        }
-
+                        navigate();
                         if (shouldSetState) setState(() {});
                         return;
                       } else {

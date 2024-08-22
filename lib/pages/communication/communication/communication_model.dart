@@ -22,22 +22,24 @@ class CommunicationModel extends FlutterFlowModel<CommunicationWidget> {
 
   String notificationsSwitchValue = 'unread';
 
+  String memorandumsSwitchValue = 'UNVIEWED';
+
   ///  State fields for stateful widgets in this page.
 
   // Stores action output result for [Backend Call - API (Get Memorandums)] action in Communication widget.
   ApiCallResponse? memorandumsResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Communication widget.
-  ApiCallResponse? refreshTokenResp1;
   // Stores action output result for [Backend Call - API (Get Notifications)] action in Communication widget.
   ApiCallResponse? notificationsResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Communication widget.
-  ApiCallResponse? refreshTokenResp2;
   // Model for MemorandumList component.
   late MemorandumListModel memorandumListModel;
   // Model for NotificationsList component.
   late NotificationsListModel notificationsListModel;
+  // Stores action output result for [Backend Call - API (Get Memorandums)] action in unreadedButton widget.
+  ApiCallResponse? readedMemorandumsResp;
   // Stores action output result for [Backend Call - API (Get Notifications)] action in unreadedButton widget.
   ApiCallResponse? readedNotificationsResp;
+  // Stores action output result for [Backend Call - API (Get Memorandums)] action in readedButton widget.
+  ApiCallResponse? unreadedMemorandumsResp;
   // Stores action output result for [Backend Call - API (Get Notifications)] action in readedButton widget.
   ApiCallResponse? unreadedNotificationsResp;
 

@@ -58,6 +58,7 @@ abstract class FlutterFlowTheme {
   late Color approved;
   late Color rejected;
   late Color barrierColor;
+  late Color canceled;
 
   @Deprecated('Use displaySmallFamily instead')
   String get title1Family => displaySmallFamily;
@@ -151,6 +152,7 @@ class LightModeTheme extends FlutterFlowTheme {
   late Color approved = const Color(0xFF198754);
   late Color rejected = const Color(0xFFDC3545);
   late Color barrierColor = const Color(0x981D2428);
+  late Color canceled = const Color(0xFFFD7E14);
 }
 
 abstract class Typography {
@@ -327,6 +329,7 @@ class DarkModeTheme extends FlutterFlowTheme {
   late Color approved = const Color(0xFF198754);
   late Color rejected = const Color(0xFFDC3545);
   late Color barrierColor = const Color(0x981D2428);
+  late Color canceled = const Color(0xFFFD7E14);
 }
 
 extension TextStyleHelper on TextStyle {

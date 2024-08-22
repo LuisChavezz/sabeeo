@@ -7,6 +7,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
@@ -19,11 +20,15 @@ class MemorandumListWidget extends StatefulWidget {
     required this.memorandumsArray,
     required this.memorandumsTotalRows,
     required this.toggleIsLoading,
+    required this.viewedValue,
+    required this.setMemorandumsTotal,
   });
 
   final List<dynamic>? memorandumsArray;
   final int? memorandumsTotalRows;
   final Future Function()? toggleIsLoading;
+  final String? viewedValue;
+  final Future Function(int totalRows)? setMemorandumsTotal;
 
   @override
   State<MemorandumListWidget> createState() => _MemorandumListWidgetState();
@@ -42,6 +47,17 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => MemorandumListModel());
+
+    // On component load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      if (!((widget.viewedValue == _model.viewedCS) ||
+          functions.stringIsNull(_model.viewedCS))) {
+        _model.moreMemorandumsPerPage = 10;
+        setState(() {});
+      }
+      _model.viewedCS = widget.viewedValue;
+      setState(() {});
+    });
   }
 
   @override
@@ -64,6 +80,7 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
             await MemorandumGroup.getMemorandumsCall.call(
           token: currentAuthenticationToken,
           perPage: _model.moreMemorandumsPerPage,
+          status: widget.viewedValue,
         );
 
         if ((_model.refreshMemorandumsResp?.succeeded ?? true)) {
@@ -73,37 +90,23 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
               )!
               .toList()
               .cast<dynamic>();
+          FFAppState().tempIntValue = 0;
           _model.updatePage(() {});
+          await widget.setMemorandumsTotal?.call(
+            MemorandumGroup.getMemorandumsCall.totalRows(
+              (_model.refreshMemorandumsResp?.jsonBody ?? ''),
+            )!,
+          );
         } else {
           if ((_model.refreshMemorandumsResp?.statusCode ?? 200) == 401) {
-            if (FFAppState().rememberMe) {
-              _model.refreshTokenResp1 =
-                  await AuthenticateGroup.refreshTokenCall.call(
-                token: currentAuthenticationToken,
-              );
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
 
-              if ((_model.refreshTokenResp1?.succeeded ?? true)) {
-                authManager.updateAuthUserData(
-                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                    (_model.refreshTokenResp1?.jsonBody ?? ''),
-                  ),
-                );
+            navigate = () => context.goNamedAuth('Login', context.mounted);
 
-                setState(() {});
-              } else {
-                GoRouter.of(context).prepareAuthEvent();
-                await authManager.signOut();
-                GoRouter.of(context).clearRedirectLocation();
-
-                navigate = () => context.goNamedAuth('Login', context.mounted);
-              }
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
+            navigate();
+            return;
           } else {
             await showModalBottomSheet(
               isScrollControlled: true,
@@ -214,6 +217,10 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                               ).toString()),
                               ParamType.bool,
                             ),
+                            'viewedValue': serializeParam(
+                              widget.viewedValue,
+                              ParamType.String,
+                            ),
                           }.withoutNulls,
                         );
                       },
@@ -271,6 +278,7 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                         await MemorandumGroup.getMemorandumsCall.call(
                       token: currentAuthenticationToken,
                       perPage: _model.moreMemorandumsPerPage,
+                      status: widget.viewedValue,
                     );
 
                     shouldSetState = true;
@@ -282,43 +290,24 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                               )!
                               .toList()
                               .cast<dynamic>();
+                      FFAppState().tempIntValue = 0;
                       _model.updatePage(() {});
+                      await widget.setMemorandumsTotal?.call(
+                        MemorandumGroup.getMemorandumsCall.totalRows(
+                          (_model.moreMemorandumResp?.jsonBody ?? ''),
+                        )!,
+                      );
                     } else {
                       if ((_model.moreMemorandumResp?.statusCode ?? 200) ==
                           401) {
-                        if (FFAppState().rememberMe) {
-                          _model.refreshTokenResp2 =
-                              await AuthenticateGroup.refreshTokenCall.call(
-                            token: currentAuthenticationToken,
-                          );
+                        GoRouter.of(context).prepareAuthEvent();
+                        await authManager.signOut();
+                        GoRouter.of(context).clearRedirectLocation();
 
-                          shouldSetState = true;
-                          if ((_model.refreshTokenResp2?.succeeded ?? true)) {
-                            authManager.updateAuthUserData(
-                              authenticationToken:
-                                  AuthenticateGroup.refreshTokenCall.token(
-                                (_model.refreshTokenResp2?.jsonBody ?? ''),
-                              ),
-                            );
+                        navigate =
+                            () => context.goNamedAuth('Login', context.mounted);
 
-                            setState(() {});
-                          } else {
-                            GoRouter.of(context).prepareAuthEvent();
-                            await authManager.signOut();
-                            GoRouter.of(context).clearRedirectLocation();
-
-                            navigate = () =>
-                                context.goNamedAuth('Login', context.mounted);
-                          }
-                        } else {
-                          GoRouter.of(context).prepareAuthEvent();
-                          await authManager.signOut();
-                          GoRouter.of(context).clearRedirectLocation();
-
-                          navigate = () =>
-                              context.goNamedAuth('Login', context.mounted);
-                        }
-
+                        navigate();
                         if (shouldSetState) setState(() {});
                         return;
                       } else {

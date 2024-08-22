@@ -18,6 +18,7 @@ class MemorandumWidget extends StatefulWidget {
     required this.imageUrl,
     required this.perPage,
     bool? isImagePath,
+    required this.viewedValue,
   }) : isImagePath = isImagePath ?? false;
 
   final String? id;
@@ -25,6 +26,7 @@ class MemorandumWidget extends StatefulWidget {
   final String? imageUrl;
   final int? perPage;
   final bool isImagePath;
+  final String? viewedValue;
 
   @override
   State<MemorandumWidget> createState() => _MemorandumWidgetState();
@@ -42,7 +44,6 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      Function() navigate = () {};
       if (widget.status == 'UNVIEWED') {
         _model.confirmMemoResp =
             await MemorandumGroup.confirmMemorandumCall.call(
@@ -55,6 +56,7 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
               await MemorandumGroup.getMemorandumsCall.call(
             token: currentAuthenticationToken,
             perPage: widget.perPage,
+            status: widget.viewedValue,
           );
 
           if ((_model.memorandumsResp?.succeeded ?? true)) {
@@ -64,42 +66,21 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
                 )!
                 .toList()
                 .cast<dynamic>();
+            FFAppState().tempIntValue =
+                MemorandumGroup.getMemorandumsCall.totalRows(
+              (_model.memorandumsResp?.jsonBody ?? ''),
+            )!;
             setState(() {});
             _model.isLoading = false;
             setState(() {});
             return;
           } else {
             if ((_model.memorandumsResp?.statusCode ?? 200) == 401) {
-              if (FFAppState().rememberMe) {
-                _model.refreshTokenResp2 =
-                    await AuthenticateGroup.refreshTokenCall.call(
-                  token: currentAuthenticationToken,
-                );
+              GoRouter.of(context).prepareAuthEvent();
+              await authManager.signOut();
+              GoRouter.of(context).clearRedirectLocation();
 
-                if ((_model.refreshTokenResp2?.succeeded ?? true)) {
-                  authManager.updateAuthUserData(
-                    authenticationToken:
-                        AuthenticateGroup.refreshTokenCall.token(
-                      (_model.refreshTokenResp2?.jsonBody ?? ''),
-                    ),
-                  );
-
-                  setState(() {});
-                } else {
-                  GoRouter.of(context).prepareAuthEvent();
-                  await authManager.signOut();
-                  GoRouter.of(context).clearRedirectLocation();
-
-                  navigate =
-                      () => context.goNamedAuth('Login', context.mounted);
-                }
-              } else {
-                GoRouter.of(context).prepareAuthEvent();
-                await authManager.signOut();
-                GoRouter.of(context).clearRedirectLocation();
-
-                navigate = () => context.goNamedAuth('Login', context.mounted);
-              }
+              context.goNamedAuth('Login', context.mounted);
 
               return;
             } else {
@@ -108,34 +89,11 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
           }
         } else {
           if ((_model.confirmMemoResp?.statusCode ?? 200) == 401) {
-            if (FFAppState().rememberMe) {
-              _model.refreshTokenResp3 =
-                  await AuthenticateGroup.refreshTokenCall.call(
-                token: currentAuthenticationToken,
-              );
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
 
-              if ((_model.refreshTokenResp3?.succeeded ?? true)) {
-                authManager.updateAuthUserData(
-                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                    (_model.refreshTokenResp3?.jsonBody ?? ''),
-                  ),
-                );
-
-                setState(() {});
-              } else {
-                GoRouter.of(context).prepareAuthEvent();
-                await authManager.signOut();
-                GoRouter.of(context).clearRedirectLocation();
-
-                navigate = () => context.goNamedAuth('Login', context.mounted);
-              }
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
+            context.goNamedAuth('Login', context.mounted);
 
             return;
           } else {
@@ -146,7 +104,7 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
         return;
       }
 
-      navigate();
+      context.goNamedAuth('Login', context.mounted);
     });
   }
 
@@ -180,7 +138,7 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
               size: 30.0,
             ),
             onPressed: () async {
-              context.pop();
+              context.safePop();
             },
           ),
           actions: const [],

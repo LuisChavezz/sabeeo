@@ -127,7 +127,7 @@ String objectStringValueToString(String status) {
 }
 
 bool stringIsNull(String? value) {
-  if (value == null) {
+  if (value == null || value == 'null') {
     return true;
   } else {
     return false;
@@ -149,4 +149,8 @@ bool isImagePath(String imagePath) {
   final extension = imagePath.split('.').last.toLowerCase();
 
   return imageExtensions.contains(extension);
+}
+
+String removeLineBreaks(String text) {
+  return text.replaceAll('\n', ' ');
 }
