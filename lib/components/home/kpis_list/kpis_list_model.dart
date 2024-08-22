@@ -12,12 +12,8 @@ class KpisListModel extends FlutterFlowModel<KpisListWidget> {
 
   // Stores action output result for [Backend Call - API (Get Kpis)] action in Column widget.
   ApiCallResponse? refreshKpisResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Column widget.
-  ApiCallResponse? refreshTokenResp1;
   // Stores action output result for [Backend Call - API (Get Kpis)] action in Button widget.
   ApiCallResponse? moreKpisResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Button widget.
-  ApiCallResponse? refreshTokenResp2;
 
   @override
   void initState(BuildContext context) {}

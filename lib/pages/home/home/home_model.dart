@@ -24,12 +24,8 @@ class HomeModel extends FlutterFlowModel<HomeWidget> {
 
   // Stores action output result for [Backend Call - API (Get Anomalies)] action in Home widget.
   ApiCallResponse? anomaliesResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Home widget.
-  ApiCallResponse? refreshTokenResp1;
   // Stores action output result for [Backend Call - API (Get Kpis)] action in Home widget.
   ApiCallResponse? kpisResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Home widget.
-  ApiCallResponse? refreshTokenResp2;
   // Model for AnomaliesList component.
   late AnomaliesListModel anomaliesListModel;
   // Model for KpisList component.

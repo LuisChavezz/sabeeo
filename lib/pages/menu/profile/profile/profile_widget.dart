@@ -5,9 +5,9 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 import 'profile_model.dart';
 export 'profile_model.dart';
@@ -46,35 +46,13 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         setState(() {});
       } else {
         if ((_model.profileResp?.statusCode ?? 200) == 401) {
-          if (FFAppState().rememberMe) {
-            _model.refreshTokenResp1 =
-                await AuthenticateGroup.refreshTokenCall.call(
-              token: currentAuthenticationToken,
-            );
+          GoRouter.of(context).prepareAuthEvent();
+          await authManager.signOut();
+          GoRouter.of(context).clearRedirectLocation();
 
-            if ((_model.refreshTokenResp1?.succeeded ?? true)) {
-              authManager.updateAuthUserData(
-                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                  (_model.refreshTokenResp1?.jsonBody ?? ''),
-                ),
-              );
+          navigate = () => context.goNamedAuth('Login', context.mounted);
 
-              setState(() {});
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
-          } else {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
-
-            navigate = () => context.goNamedAuth('Login', context.mounted);
-          }
-
+          navigate();
           return;
         } else {
           await showModalBottomSheet(
@@ -117,8 +95,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -215,10 +191,19 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                               BorderRadius.circular(10.0),
                                           child: Image.network(
                                             valueOrDefault<String>(
-                                              getJsonField(
+                                              functions
+                                                      .isImagePath(getJsonField(
                                                 _model.profileData,
                                                 r'''$.profile_picture''',
-                                              )?.toString(),
+                                              ).toString())
+                                                  ? valueOrDefault<String>(
+                                                      getJsonField(
+                                                        _model.profileData,
+                                                        r'''$.profile_picture''',
+                                                      )?.toString(),
+                                                      'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                                    )
+                                                  : 'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
                                               'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
                                             ),
                                             width: 100.0,

@@ -55,35 +55,13 @@ class _HomeWidgetState extends State<HomeWidget> {
         setState(() {});
       } else {
         if ((_model.anomaliesResp?.statusCode ?? 200) == 401) {
-          if (FFAppState().rememberMe) {
-            _model.refreshTokenResp1 =
-                await AuthenticateGroup.refreshTokenCall.call(
-              token: currentAuthenticationToken,
-            );
+          GoRouter.of(context).prepareAuthEvent();
+          await authManager.signOut();
+          GoRouter.of(context).clearRedirectLocation();
 
-            if ((_model.refreshTokenResp1?.succeeded ?? true)) {
-              authManager.updateAuthUserData(
-                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                  (_model.refreshTokenResp1?.jsonBody ?? ''),
-                ),
-              );
+          navigate = () => context.goNamedAuth('Login', context.mounted);
 
-              setState(() {});
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
-          } else {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
-
-            navigate = () => context.goNamedAuth('Login', context.mounted);
-          }
-
+          navigate();
           return;
         } else {
           await showModalBottomSheet(
@@ -135,35 +113,13 @@ class _HomeWidgetState extends State<HomeWidget> {
         setState(() {});
       } else {
         if ((_model.kpisResp?.statusCode ?? 200) == 401) {
-          if (FFAppState().rememberMe) {
-            _model.refreshTokenResp2 =
-                await AuthenticateGroup.refreshTokenCall.call(
-              token: currentAuthenticationToken,
-            );
+          GoRouter.of(context).prepareAuthEvent();
+          await authManager.signOut();
+          GoRouter.of(context).clearRedirectLocation();
 
-            if ((_model.refreshTokenResp2?.succeeded ?? true)) {
-              authManager.updateAuthUserData(
-                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                  (_model.refreshTokenResp2?.jsonBody ?? ''),
-                ),
-              );
+          navigate = () => context.goNamedAuth('Login', context.mounted);
 
-              setState(() {});
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
-          } else {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
-
-            navigate = () => context.goNamedAuth('Login', context.mounted);
-          }
-
+          navigate();
           return;
         } else {
           await showModalBottomSheet(
@@ -320,7 +276,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     padding:
                         const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 24.0),
                     child: Lottie.asset(
-                      'assets/lottie_animations/Animation_-_1716841230423.json',
+                      'assets/lottie_animations/loading_sabeeo.json',
                       width: MediaQuery.sizeOf(context).width * 0.5,
                       height: MediaQuery.sizeOf(context).height * 0.25,
                       fit: BoxFit.contain,

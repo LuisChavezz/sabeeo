@@ -45,10 +45,18 @@ class _LoginWidgetState extends State<LoginWidget>
       });
     }
 
-    _model.emailFieldTextController ??= TextEditingController();
+    _model.emailFieldTextController ??= TextEditingController(
+        text: FFAppState().rememberMe &&
+                (FFAppState().userAuthData.email != '')
+            ? FFAppState().userAuthData.email
+            : '');
     _model.emailFieldFocusNode ??= FocusNode();
 
-    _model.passwordFieldTextController ??= TextEditingController();
+    _model.passwordFieldTextController ??= TextEditingController(
+        text: FFAppState().rememberMe &&
+                (FFAppState().userAuthData.password != '')
+            ? FFAppState().userAuthData.password
+            : '');
     _model.passwordFieldFocusNode ??= FocusNode();
 
     animationsMap.addAll({
@@ -634,6 +642,13 @@ class _LoginWidgetState extends State<LoginWidget>
                                                 password: _model
                                                     .passwordFieldTextController
                                                     .text,
+                                                noExpiry:
+                                                    valueOrDefault<String>(
+                                                  _model.rememberMeCheckValue!
+                                                      ? 'true'
+                                                      : 'false',
+                                                  'false',
+                                                ),
                                               );
 
                                               if ((_model
@@ -671,6 +686,23 @@ class _LoginWidgetState extends State<LoginWidget>
                                                 navigate = () =>
                                                     context.goNamedAuth('Home',
                                                         context.mounted);
+                                                FFAppState()
+                                                    .updateUserAuthDataStruct(
+                                                  (e) => e
+                                                    ..email = FFAppState()
+                                                            .rememberMe
+                                                        ? _model
+                                                            .emailFieldTextController
+                                                            .text
+                                                        : ''
+                                                    ..password = FFAppState()
+                                                            .rememberMe
+                                                        ? _model
+                                                            .passwordFieldTextController
+                                                            .text
+                                                        : '',
+                                                );
+                                                setState(() {});
                                               } else {
                                                 await showModalBottomSheet(
                                                   isScrollControlled: true,

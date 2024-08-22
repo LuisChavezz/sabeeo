@@ -41,6 +41,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
       _model.memorandumsResp = await MemorandumGroup.getMemorandumsCall.call(
         token: currentAuthenticationToken,
         perPage: _model.memorandumsPerPage,
+        status: 'UNVIEWED',
       );
 
       if ((_model.memorandumsResp?.succeeded ?? true)) {
@@ -50,6 +51,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
             )!
             .toList()
             .cast<dynamic>();
+        FFAppState().tempIntValue = 0;
         setState(() {});
         _model.memorandumsTotal = MemorandumGroup.getMemorandumsCall.totalRows(
           (_model.memorandumsResp?.jsonBody ?? ''),
@@ -57,35 +59,13 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
         setState(() {});
       } else {
         if ((_model.memorandumsResp?.statusCode ?? 200) == 401) {
-          if (FFAppState().rememberMe) {
-            _model.refreshTokenResp1 =
-                await AuthenticateGroup.refreshTokenCall.call(
-              token: currentAuthenticationToken,
-            );
+          GoRouter.of(context).prepareAuthEvent();
+          await authManager.signOut();
+          GoRouter.of(context).clearRedirectLocation();
 
-            if ((_model.refreshTokenResp1?.succeeded ?? true)) {
-              authManager.updateAuthUserData(
-                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                  (_model.refreshTokenResp1?.jsonBody ?? ''),
-                ),
-              );
+          navigate = () => context.goNamedAuth('Login', context.mounted);
 
-              setState(() {});
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
-          } else {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
-
-            navigate = () => context.goNamedAuth('Login', context.mounted);
-          }
-
+          navigate();
           return;
         } else {
           await showModalBottomSheet(
@@ -141,35 +121,13 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
         setState(() {});
       } else {
         if ((_model.notificationsResp?.statusCode ?? 200) == 401) {
-          if (FFAppState().rememberMe) {
-            _model.refreshTokenResp2 =
-                await AuthenticateGroup.refreshTokenCall.call(
-              token: currentAuthenticationToken,
-            );
+          GoRouter.of(context).prepareAuthEvent();
+          await authManager.signOut();
+          GoRouter.of(context).clearRedirectLocation();
 
-            if ((_model.refreshTokenResp2?.succeeded ?? true)) {
-              authManager.updateAuthUserData(
-                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                  (_model.refreshTokenResp2?.jsonBody ?? ''),
-                ),
-              );
+          navigate = () => context.goNamedAuth('Login', context.mounted);
 
-              setState(() {});
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
-          } else {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
-
-            navigate = () => context.goNamedAuth('Login', context.mounted);
-          }
-
+          navigate();
           return;
         } else {
           await showModalBottomSheet(
@@ -242,101 +200,145 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Expanded(
-                            child: FFButtonWidget(
-                              onPressed: () async {
-                                _model.switchValue = 'comun';
-                                setState(() {});
-                              },
-                              text: 'Comunicados',
-                              options: FFButtonOptions(
-                                height: 48.0,
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    6.0, 0.0, 6.0, 0.0),
-                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 0.0, 0.0, 0.0),
+                          FFButtonWidget(
+                            onPressed: () async {
+                              _model.switchValue = 'comun';
+                              setState(() {});
+                            },
+                            text: 'Comunicados',
+                            options: FFButtonOptions(
+                              height: 48.0,
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  6.0, 0.0, 6.0, 0.0),
+                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 0.0),
+                              color: _model.switchValue == 'comun'
+                                  ? FlutterFlowTheme.of(context).primary
+                                  : FlutterFlowTheme.of(context)
+                                      .primaryBackground,
+                              textStyle: FlutterFlowTheme.of(context)
+                                  .titleSmall
+                                  .override(
+                                    fontFamily: 'Montserrat',
+                                    color: _model.switchValue == 'comun'
+                                        ? FlutterFlowTheme.of(context)
+                                            .primaryBackground
+                                        : FlutterFlowTheme.of(context).primary,
+                                    fontSize: 20.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                              elevation: 2.0,
+                              borderSide: BorderSide(
                                 color: _model.switchValue == 'comun'
-                                    ? FlutterFlowTheme.of(context).primary
-                                    : FlutterFlowTheme.of(context)
-                                        .primaryBackground,
-                                textStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .override(
-                                      fontFamily: 'Montserrat',
-                                      color: _model.switchValue == 'comun'
-                                          ? FlutterFlowTheme.of(context)
-                                              .primaryBackground
-                                          : FlutterFlowTheme.of(context)
-                                              .primary,
-                                      fontSize: 20.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                elevation: 2.0,
-                                borderSide: BorderSide(
-                                  color: _model.switchValue == 'comun'
-                                      ? Colors.transparent
-                                      : FlutterFlowTheme.of(context).primary,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
+                                    ? Colors.transparent
+                                    : FlutterFlowTheme.of(context).primary,
+                                width: 2.0,
                               ),
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                           ),
-                          Expanded(
-                            child: FFButtonWidget(
-                              onPressed: () async {
-                                _model.switchValue = 'notis';
-                                setState(() {});
-                              },
-                              text: 'Notificaciones',
-                              options: FFButtonOptions(
-                                height: 48.0,
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    6.0, 0.0, 6.0, 0.0),
-                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 0.0, 0.0, 0.0),
+                          FFButtonWidget(
+                            onPressed: () async {
+                              _model.switchValue = 'notis';
+                              setState(() {});
+                            },
+                            text: 'Notificaciones',
+                            options: FFButtonOptions(
+                              height: 48.0,
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  6.0, 0.0, 6.0, 0.0),
+                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 0.0),
+                              color: _model.switchValue == 'notis'
+                                  ? FlutterFlowTheme.of(context).primary
+                                  : FlutterFlowTheme.of(context)
+                                      .primaryBackground,
+                              textStyle: FlutterFlowTheme.of(context)
+                                  .titleSmall
+                                  .override(
+                                    fontFamily: 'Montserrat',
+                                    color: _model.switchValue == 'notis'
+                                        ? FlutterFlowTheme.of(context)
+                                            .primaryBackground
+                                        : FlutterFlowTheme.of(context).primary,
+                                    fontSize: 20.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                              elevation: 2.0,
+                              borderSide: BorderSide(
                                 color: _model.switchValue == 'notis'
-                                    ? FlutterFlowTheme.of(context).primary
-                                    : FlutterFlowTheme.of(context)
-                                        .primaryBackground,
-                                textStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .override(
-                                      fontFamily: 'Montserrat',
-                                      color: _model.switchValue == 'notis'
-                                          ? FlutterFlowTheme.of(context)
-                                              .primaryBackground
-                                          : FlutterFlowTheme.of(context)
-                                              .primary,
-                                      fontSize: 20.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                elevation: 2.0,
-                                borderSide: BorderSide(
-                                  color: _model.switchValue == 'notis'
-                                      ? Colors.transparent
-                                      : FlutterFlowTheme.of(context).primary,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
+                                    ? Colors.transparent
+                                    : FlutterFlowTheme.of(context).primary,
+                                width: 2.0,
                               ),
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                           ),
                         ].divide(const SizedBox(width: 16.0)),
                       ),
                     ),
                     if (_model.isLoading)
+                      Lottie.asset(
+                        'assets/lottie_animations/loading_sabeeo.json',
+                        width: MediaQuery.sizeOf(context).width * 0.5,
+                        height: MediaQuery.sizeOf(context).height * 0.25,
+                        fit: BoxFit.contain,
+                        animate: true,
+                      ),
+                    if (((_model.memorandumsSwitchValue == 'UNVIEWED') ||
+                            (_model.notificationsSwitchValue == 'unread')) &&
+                        !_model.isLoading)
                       Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 24.0),
-                        child: Lottie.asset(
-                          'assets/lottie_animations/Animation_-_1716841230423.json',
-                          width: MediaQuery.sizeOf(context).width * 0.5,
-                          height: MediaQuery.sizeOf(context).height * 0.25,
-                          fit: BoxFit.contain,
-                          animate: true,
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            24.0, 0.0, 24.0, 24.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (_model.switchValue == 'comun')
+                              Text(
+                                valueOrDefault<String>(
+                                  FFAppState().tempIntValue > 0
+                                      ? FFAppState().tempIntValue.toString()
+                                      : _model.memorandumsTotal?.toString(),
+                                  'zzz',
+                                ),
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 16.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                            if (_model.switchValue == 'notis')
+                              Text(
+                                valueOrDefault<String>(
+                                  _model.notificationsTotal?.toString(),
+                                  '0',
+                                ),
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 16.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                            Text(
+                              'por leer.',
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .override(
+                                    fontFamily: 'Montserrat',
+                                    letterSpacing: 0.0,
+                                  ),
+                            ),
+                          ].divide(const SizedBox(width: 2.0)),
                         ),
                       ),
                     if ((_model.switchValue == 'comun') && !_model.isLoading)
@@ -348,10 +350,20 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                             model: _model.memorandumListModel,
                             updateCallback: () => setState(() {}),
                             child: MemorandumListWidget(
-                              memorandumsTotalRows: _model.memorandumsTotal!,
+                              memorandumsTotalRows: valueOrDefault<int>(
+                                FFAppState().tempIntValue > 0
+                                    ? FFAppState().tempIntValue
+                                    : _model.memorandumsTotal,
+                                0,
+                              ),
                               memorandumsArray: FFAppState().memorandumsArray,
+                              viewedValue: _model.memorandumsSwitchValue,
                               toggleIsLoading: () async {
                                 _model.isLoading = !_model.isLoading;
+                                setState(() {});
+                              },
+                              setMemorandumsTotal: (totalRows) async {
+                                _model.memorandumsTotal = totalRows;
                                 setState(() {});
                               },
                             ),
@@ -381,6 +393,10 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                                 _model.isLoading = !_model.isLoading;
                                 setState(() {});
                               },
+                              setNotificationsTotal: (totalRows) async {
+                                _model.notificationsTotal = totalRows;
+                                setState(() {});
+                              },
                             ),
                           ),
                         ),
@@ -388,7 +404,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                   ],
                 ),
                 if ((_model.notificationsSwitchValue == 'unread') &&
-                    (_model.switchValue == 'notis'))
+                    !_model.isLoading)
                   Align(
                     alignment: const AlignmentDirectional(1.0, 1.0),
                     child: Padding(
@@ -410,7 +426,81 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                           Function() navigate = () {};
                           _model.notificationsSwitchValue = 'read';
                           _model.isLoading = true;
+                          _model.memorandumsSwitchValue = 'VIEWED';
                           setState(() {});
+                          _model.readedMemorandumsResp =
+                              await MemorandumGroup.getMemorandumsCall.call(
+                            token: currentAuthenticationToken,
+                            perPage: _model.memorandumsPerPage,
+                            status: 'VIEWED',
+                          );
+
+                          shouldSetState = true;
+                          if ((_model.readedMemorandumsResp?.succeeded ??
+                              true)) {
+                            FFAppState().memorandumsArray =
+                                MemorandumGroup.getMemorandumsCall
+                                    .rows(
+                                      (_model.readedMemorandumsResp?.jsonBody ??
+                                          ''),
+                                    )!
+                                    .toList()
+                                    .cast<dynamic>();
+                            setState(() {});
+                            _model.memorandumsTotal =
+                                MemorandumGroup.getMemorandumsCall.totalRows(
+                              (_model.readedMemorandumsResp?.jsonBody ?? ''),
+                            );
+                            setState(() {});
+                          } else {
+                            if ((_model.readedMemorandumsResp?.statusCode ??
+                                    200) ==
+                                401) {
+                              GoRouter.of(context).prepareAuthEvent();
+                              await authManager.signOut();
+                              GoRouter.of(context).clearRedirectLocation();
+
+                              navigate = () =>
+                                  context.goNamedAuth('Login', context.mounted);
+
+                              navigate();
+                              if (shouldSetState) setState(() {});
+                              return;
+                            } else {
+                              await showModalBottomSheet(
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                barrierColor:
+                                    FlutterFlowTheme.of(context).barrierColor,
+                                context: context,
+                                builder: (context) {
+                                  return WebViewAware(
+                                    child: GestureDetector(
+                                      onTap: () =>
+                                          FocusScope.of(context).unfocus(),
+                                      child: Padding(
+                                        padding:
+                                            MediaQuery.viewInsetsOf(context),
+                                        child: AlertMessageWidget(
+                                          buttonText: 'Aceptar',
+                                          title:
+                                              'Error: ${(_model.readedMemorandumsResp?.statusCode ?? 200).toString()}',
+                                          message: MemorandumGroup
+                                              .getMemorandumsCall
+                                              .message(
+                                            (_model.readedMemorandumsResp
+                                                    ?.jsonBody ??
+                                                ''),
+                                          )!,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).then((value) => safeSetState(() {}));
+                            }
+                          }
+
                           _model.readedNotificationsResp =
                               await NotificationsGroup.getNotificationsCall
                                   .call(
@@ -497,7 +587,6 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                     ),
                   ),
                 if ((_model.notificationsSwitchValue == 'read') &&
-                    (_model.switchValue == 'notis') &&
                     !_model.isLoading)
                   Align(
                     alignment: const AlignmentDirectional(1.0, 1.0),
@@ -520,7 +609,81 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                           Function() navigate = () {};
                           _model.notificationsSwitchValue = 'unread';
                           _model.isLoading = true;
+                          _model.memorandumsSwitchValue = 'UNVIEWED';
                           setState(() {});
+                          _model.unreadedMemorandumsResp =
+                              await MemorandumGroup.getMemorandumsCall.call(
+                            token: currentAuthenticationToken,
+                            perPage: _model.memorandumsPerPage,
+                            status: 'UNVIEWED',
+                          );
+
+                          shouldSetState = true;
+                          if ((_model.unreadedMemorandumsResp?.succeeded ??
+                              true)) {
+                            FFAppState().memorandumsArray = MemorandumGroup
+                                .getMemorandumsCall
+                                .rows(
+                                  (_model.unreadedMemorandumsResp?.jsonBody ??
+                                      ''),
+                                )!
+                                .toList()
+                                .cast<dynamic>();
+                            setState(() {});
+                            _model.memorandumsTotal =
+                                MemorandumGroup.getMemorandumsCall.totalRows(
+                              (_model.unreadedMemorandumsResp?.jsonBody ?? ''),
+                            );
+                            setState(() {});
+                          } else {
+                            if ((_model.unreadedMemorandumsResp?.statusCode ??
+                                    200) ==
+                                401) {
+                              GoRouter.of(context).prepareAuthEvent();
+                              await authManager.signOut();
+                              GoRouter.of(context).clearRedirectLocation();
+
+                              navigate = () =>
+                                  context.goNamedAuth('Login', context.mounted);
+
+                              navigate();
+                              if (shouldSetState) setState(() {});
+                              return;
+                            } else {
+                              await showModalBottomSheet(
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                barrierColor:
+                                    FlutterFlowTheme.of(context).barrierColor,
+                                context: context,
+                                builder: (context) {
+                                  return WebViewAware(
+                                    child: GestureDetector(
+                                      onTap: () =>
+                                          FocusScope.of(context).unfocus(),
+                                      child: Padding(
+                                        padding:
+                                            MediaQuery.viewInsetsOf(context),
+                                        child: AlertMessageWidget(
+                                          buttonText: 'Aceptar',
+                                          title:
+                                              'Error: ${(_model.unreadedMemorandumsResp?.statusCode ?? 200).toString()}',
+                                          message: MemorandumGroup
+                                              .getMemorandumsCall
+                                              .message(
+                                            (_model.unreadedMemorandumsResp
+                                                    ?.jsonBody ??
+                                                ''),
+                                          )!,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).then((value) => safeSetState(() {}));
+                            }
+                          }
+
                           _model.unreadedNotificationsResp =
                               await NotificationsGroup.getNotificationsCall
                                   .call(

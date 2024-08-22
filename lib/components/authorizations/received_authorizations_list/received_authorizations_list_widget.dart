@@ -93,35 +93,13 @@ class _ReceivedAuthorizationsListWidgetState
           _model.updatePage(() {});
         } else {
           if ((_model.refreshRecAuthsResp?.statusCode ?? 200) == 401) {
-            if (FFAppState().rememberMe) {
-              _model.refreshTokenResp1 =
-                  await AuthenticateGroup.refreshTokenCall.call(
-                token: currentAuthenticationToken,
-              );
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
 
-              if ((_model.refreshTokenResp1?.succeeded ?? true)) {
-                authManager.updateAuthUserData(
-                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                    (_model.refreshTokenResp1?.jsonBody ?? ''),
-                  ),
-                );
+            navigate = () => context.goNamedAuth('Login', context.mounted);
 
-                setState(() {});
-              } else {
-                GoRouter.of(context).prepareAuthEvent();
-                await authManager.signOut();
-                GoRouter.of(context).clearRedirectLocation();
-
-                navigate = () => context.goNamedAuth('Login', context.mounted);
-              }
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
-
+            navigate();
             return;
           } else {
             await showModalBottomSheet(
@@ -306,10 +284,22 @@ class _ReceivedAuthorizationsListWidgetState
                                             BorderRadius.circular(24.0),
                                         child: Image.network(
                                           valueOrDefault<String>(
-                                            getJsonField(
-                                              authorizationsItemItem,
-                                              r'''$.emitter_profile_picture''',
-                                            )?.toString(),
+                                            functions.isImagePath(
+                                                    valueOrDefault<String>(
+                                              getJsonField(
+                                                authorizationsItemItem,
+                                                r'''$.emitter_profile_picture''',
+                                              )?.toString(),
+                                              'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                            ))
+                                                ? valueOrDefault<String>(
+                                                    getJsonField(
+                                                      authorizationsItemItem,
+                                                      r'''$.emitter_profile_picture''',
+                                                    )?.toString(),
+                                                    'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                                  )
+                                                : 'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
                                             'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
                                           ),
                                           width: 35.0,
@@ -338,10 +328,22 @@ class _ReceivedAuthorizationsListWidgetState
                                             BorderRadius.circular(24.0),
                                         child: Image.network(
                                           valueOrDefault<String>(
-                                            getJsonField(
-                                              authorizationsItemItem,
-                                              r'''$.originalAuthorizer_profile_picture''',
-                                            )?.toString(),
+                                            functions.isImagePath(
+                                                    valueOrDefault<String>(
+                                              getJsonField(
+                                                authorizationsItemItem,
+                                                r'''$.originalAuthorizer_profile_picture''',
+                                              )?.toString(),
+                                              'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                            ))
+                                                ? valueOrDefault<String>(
+                                                    getJsonField(
+                                                      authorizationsItemItem,
+                                                      r'''$.originalAuthorizer_profile_picture''',
+                                                    )?.toString(),
+                                                    'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                                  )
+                                                : 'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
                                             'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
                                           ),
                                           width: 35.0,
@@ -405,39 +407,14 @@ class _ReceivedAuthorizationsListWidgetState
                     } else {
                       if ((_model.moreAuthorizationsResp?.statusCode ?? 200) ==
                           401) {
-                        if (FFAppState().rememberMe) {
-                          _model.refreshTokenResp2 =
-                              await AuthenticateGroup.refreshTokenCall.call(
-                            token: currentAuthenticationToken,
-                          );
+                        GoRouter.of(context).prepareAuthEvent();
+                        await authManager.signOut();
+                        GoRouter.of(context).clearRedirectLocation();
 
-                          shouldSetState = true;
-                          if ((_model.refreshTokenResp2?.succeeded ?? true)) {
-                            authManager.updateAuthUserData(
-                              authenticationToken:
-                                  AuthenticateGroup.refreshTokenCall.token(
-                                (_model.refreshTokenResp2?.jsonBody ?? ''),
-                              ),
-                            );
+                        navigate =
+                            () => context.goNamedAuth('Login', context.mounted);
 
-                            setState(() {});
-                          } else {
-                            GoRouter.of(context).prepareAuthEvent();
-                            await authManager.signOut();
-                            GoRouter.of(context).clearRedirectLocation();
-
-                            navigate = () =>
-                                context.goNamedAuth('Login', context.mounted);
-                          }
-                        } else {
-                          GoRouter.of(context).prepareAuthEvent();
-                          await authManager.signOut();
-                          GoRouter.of(context).clearRedirectLocation();
-
-                          navigate = () =>
-                              context.goNamedAuth('Login', context.mounted);
-                        }
-
+                        navigate();
                         if (shouldSetState) setState(() {});
                         return;
                       } else {

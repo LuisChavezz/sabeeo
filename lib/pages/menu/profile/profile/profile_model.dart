@@ -14,8 +14,6 @@ class ProfileModel extends FlutterFlowModel<ProfileWidget> {
 
   // Stores action output result for [Backend Call - API (Profile)] action in Profile widget.
   ApiCallResponse? profileResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Profile widget.
-  ApiCallResponse? refreshTokenResp1;
 
   @override
   void initState(BuildContext context) {}

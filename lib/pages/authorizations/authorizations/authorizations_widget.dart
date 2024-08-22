@@ -60,35 +60,13 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
         setState(() {});
       } else {
         if ((_model.reqAuthsResp?.statusCode ?? 200) == 401) {
-          if (FFAppState().rememberMe) {
-            _model.refreshTokenResp1 =
-                await AuthenticateGroup.refreshTokenCall.call(
-              token: currentAuthenticationToken,
-            );
+          GoRouter.of(context).prepareAuthEvent();
+          await authManager.signOut();
+          GoRouter.of(context).clearRedirectLocation();
 
-            if ((_model.refreshTokenResp1?.succeeded ?? true)) {
-              authManager.updateAuthUserData(
-                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                  (_model.refreshTokenResp1?.jsonBody ?? ''),
-                ),
-              );
+          navigate = () => context.goNamedAuth('Login', context.mounted);
 
-              setState(() {});
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
-          } else {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
-
-            navigate = () => context.goNamedAuth('Login', context.mounted);
-          }
-
+          navigate();
           return;
         } else {
           await showModalBottomSheet(
@@ -144,35 +122,13 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
         setState(() {});
       } else {
         if ((_model.recAuthsResp?.statusCode ?? 200) == 401) {
-          if (FFAppState().rememberMe) {
-            _model.refreshTokenResp2 =
-                await AuthenticateGroup.refreshTokenCall.call(
-              token: currentAuthenticationToken,
-            );
+          GoRouter.of(context).prepareAuthEvent();
+          await authManager.signOut();
+          GoRouter.of(context).clearRedirectLocation();
 
-            if ((_model.refreshTokenResp2?.succeeded ?? true)) {
-              authManager.updateAuthUserData(
-                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                  (_model.refreshTokenResp2?.jsonBody ?? ''),
-                ),
-              );
+          navigate = () => context.goNamedAuth('Login', context.mounted);
 
-              setState(() {});
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
-          } else {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
-
-            navigate = () => context.goNamedAuth('Login', context.mounted);
-          }
-
+          navigate();
           return;
         } else {
           await showModalBottomSheet(
@@ -476,48 +432,15 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                   if ((_model.reqSearchAuthsResp?.statusCode ??
                                           200) ==
                                       401) {
-                                    if (FFAppState().rememberMe) {
-                                      _model.refreshTokenResp3 =
-                                          await AuthenticateGroup
-                                              .refreshTokenCall
-                                              .call(
-                                        token: currentAuthenticationToken,
-                                      );
+                                    GoRouter.of(context).prepareAuthEvent();
+                                    await authManager.signOut();
+                                    GoRouter.of(context)
+                                        .clearRedirectLocation();
 
-                                      shouldSetState = true;
-                                      if ((_model
-                                              .refreshTokenResp3?.succeeded ??
-                                          true)) {
-                                        authManager.updateAuthUserData(
-                                          authenticationToken: AuthenticateGroup
-                                              .refreshTokenCall
-                                              .token(
-                                            (_model.refreshTokenResp3
-                                                    ?.jsonBody ??
-                                                ''),
-                                          ),
-                                        );
+                                    navigate = () => context.goNamedAuth(
+                                        'Login', context.mounted);
 
-                                        setState(() {});
-                                      } else {
-                                        GoRouter.of(context).prepareAuthEvent();
-                                        await authManager.signOut();
-                                        GoRouter.of(context)
-                                            .clearRedirectLocation();
-
-                                        navigate = () => context.goNamedAuth(
-                                            'Login', context.mounted);
-                                      }
-                                    } else {
-                                      GoRouter.of(context).prepareAuthEvent();
-                                      await authManager.signOut();
-                                      GoRouter.of(context)
-                                          .clearRedirectLocation();
-
-                                      navigate = () => context.goNamedAuth(
-                                          'Login', context.mounted);
-                                    }
-
+                                    navigate();
                                     if (shouldSetState) setState(() {});
                                     return;
                                   } else {
@@ -595,48 +518,15 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                   if ((_model.recSearchAuthsResp?.statusCode ??
                                           200) ==
                                       401) {
-                                    if (FFAppState().rememberMe) {
-                                      _model.refreshTokenResp4 =
-                                          await AuthenticateGroup
-                                              .refreshTokenCall
-                                              .call(
-                                        token: currentAuthenticationToken,
-                                      );
+                                    GoRouter.of(context).prepareAuthEvent();
+                                    await authManager.signOut();
+                                    GoRouter.of(context)
+                                        .clearRedirectLocation();
 
-                                      shouldSetState = true;
-                                      if ((_model
-                                              .refreshTokenResp4?.succeeded ??
-                                          true)) {
-                                        authManager.updateAuthUserData(
-                                          authenticationToken: AuthenticateGroup
-                                              .refreshTokenCall
-                                              .token(
-                                            (_model.refreshTokenResp4
-                                                    ?.jsonBody ??
-                                                ''),
-                                          ),
-                                        );
+                                    navigate = () => context.goNamedAuth(
+                                        'Login', context.mounted);
 
-                                        setState(() {});
-                                      } else {
-                                        GoRouter.of(context).prepareAuthEvent();
-                                        await authManager.signOut();
-                                        GoRouter.of(context)
-                                            .clearRedirectLocation();
-
-                                        navigate = () => context.goNamedAuth(
-                                            'Login', context.mounted);
-                                      }
-                                    } else {
-                                      GoRouter.of(context).prepareAuthEvent();
-                                      await authManager.signOut();
-                                      GoRouter.of(context)
-                                          .clearRedirectLocation();
-
-                                      navigate = () => context.goNamedAuth(
-                                          'Login', context.mounted);
-                                    }
-
+                                    navigate();
                                     if (shouldSetState) setState(() {});
                                     return;
                                   } else {
@@ -776,50 +666,15 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                                 ?.statusCode ??
                                             200) ==
                                         401) {
-                                      if (FFAppState().rememberMe) {
-                                        _model.refreshTokenResp5 =
-                                            await AuthenticateGroup
-                                                .refreshTokenCall
-                                                .call(
-                                          token: currentAuthenticationToken,
-                                        );
+                                      GoRouter.of(context).prepareAuthEvent();
+                                      await authManager.signOut();
+                                      GoRouter.of(context)
+                                          .clearRedirectLocation();
 
-                                        shouldSetState = true;
-                                        if ((_model
-                                                .refreshTokenResp5?.succeeded ??
-                                            true)) {
-                                          authManager.updateAuthUserData(
-                                            authenticationToken:
-                                                AuthenticateGroup
-                                                    .refreshTokenCall
-                                                    .token(
-                                              (_model.refreshTokenResp5
-                                                      ?.jsonBody ??
-                                                  ''),
-                                            ),
-                                          );
+                                      navigate = () => context.goNamedAuth(
+                                          'Login', context.mounted);
 
-                                          setState(() {});
-                                        } else {
-                                          GoRouter.of(context)
-                                              .prepareAuthEvent();
-                                          await authManager.signOut();
-                                          GoRouter.of(context)
-                                              .clearRedirectLocation();
-
-                                          navigate = () => context.goNamedAuth(
-                                              'Login', context.mounted);
-                                        }
-                                      } else {
-                                        GoRouter.of(context).prepareAuthEvent();
-                                        await authManager.signOut();
-                                        GoRouter.of(context)
-                                            .clearRedirectLocation();
-
-                                        navigate = () => context.goNamedAuth(
-                                            'Login', context.mounted);
-                                      }
-
+                                      navigate();
                                       if (shouldSetState) setState(() {});
                                       return;
                                     } else {
@@ -902,50 +757,15 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                                 ?.statusCode ??
                                             200) ==
                                         401) {
-                                      if (FFAppState().rememberMe) {
-                                        _model.refreshTokenResp6 =
-                                            await AuthenticateGroup
-                                                .refreshTokenCall
-                                                .call(
-                                          token: currentAuthenticationToken,
-                                        );
+                                      GoRouter.of(context).prepareAuthEvent();
+                                      await authManager.signOut();
+                                      GoRouter.of(context)
+                                          .clearRedirectLocation();
 
-                                        shouldSetState = true;
-                                        if ((_model
-                                                .refreshTokenResp6?.succeeded ??
-                                            true)) {
-                                          authManager.updateAuthUserData(
-                                            authenticationToken:
-                                                AuthenticateGroup
-                                                    .refreshTokenCall
-                                                    .token(
-                                              (_model.refreshTokenResp6
-                                                      ?.jsonBody ??
-                                                  ''),
-                                            ),
-                                          );
+                                      navigate = () => context.goNamedAuth(
+                                          'Login', context.mounted);
 
-                                          setState(() {});
-                                        } else {
-                                          GoRouter.of(context)
-                                              .prepareAuthEvent();
-                                          await authManager.signOut();
-                                          GoRouter.of(context)
-                                              .clearRedirectLocation();
-
-                                          navigate = () => context.goNamedAuth(
-                                              'Login', context.mounted);
-                                        }
-                                      } else {
-                                        GoRouter.of(context).prepareAuthEvent();
-                                        await authManager.signOut();
-                                        GoRouter.of(context)
-                                            .clearRedirectLocation();
-
-                                        navigate = () => context.goNamedAuth(
-                                            'Login', context.mounted);
-                                      }
-
+                                      navigate();
                                       if (shouldSetState) setState(() {});
                                       return;
                                     } else {
@@ -1031,7 +851,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                         padding:
                             const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 24.0),
                         child: Lottie.asset(
-                          'assets/lottie_animations/Animation_-_1716841230423.json',
+                          'assets/lottie_animations/loading_sabeeo.json',
                           width: MediaQuery.sizeOf(context).width * 0.5,
                           height: MediaQuery.sizeOf(context).height * 0.25,
                           fit: BoxFit.contain,

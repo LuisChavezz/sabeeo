@@ -31,8 +31,6 @@ class RulesModel extends FlutterFlowModel<RulesWidget> {
 
   // Stores action output result for [Backend Call - API (Get Documents)] action in Rules widget.
   ApiCallResponse? rulesResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in Rules widget.
-  ApiCallResponse? refreshTokenResp1;
   // State field(s) for searchField widget.
   FocusNode? searchFieldFocusNode;
   TextEditingController? searchFieldTextController;
@@ -41,8 +39,6 @@ class RulesModel extends FlutterFlowModel<RulesWidget> {
   late RulesDocumentsListModel rulesDocumentsListModel;
   // Stores action output result for [Backend Call - API (Get Documents)] action in RulesDocumentsList widget.
   ApiCallResponse? reloadRulesResp;
-  // Stores action output result for [Backend Call - API (Refresh Token)] action in RulesDocumentsList widget.
-  ApiCallResponse? refreshTokenResp2;
 
   @override
   void initState(BuildContext context) {

@@ -1,5 +1,6 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/components/home/kpi_info/kpi_info_widget.dart';
 import '/components/ui/alert_message/alert_message_widget.dart';
 import '/components/ui/empty_list/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -74,35 +75,13 @@ class _KpisListWidgetState extends State<KpisListWidget> {
           _model.updatePage(() {});
         } else {
           if ((_model.refreshKpisResp?.statusCode ?? 200) == 401) {
-            if (FFAppState().rememberMe) {
-              _model.refreshTokenResp1 =
-                  await AuthenticateGroup.refreshTokenCall.call(
-                token: currentAuthenticationToken,
-              );
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
 
-              if ((_model.refreshTokenResp1?.succeeded ?? true)) {
-                authManager.updateAuthUserData(
-                  authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                    (_model.refreshTokenResp1?.jsonBody ?? ''),
-                  ),
-                );
+            navigate = () => context.goNamedAuth('Login', context.mounted);
 
-                setState(() {});
-              } else {
-                GoRouter.of(context).prepareAuthEvent();
-                await authManager.signOut();
-                GoRouter.of(context).clearRedirectLocation();
-
-                navigate = () => context.goNamedAuth('Login', context.mounted);
-              }
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-
-              navigate = () => context.goNamedAuth('Login', context.mounted);
-            }
-
+            navigate();
             return;
           } else {
             await showModalBottomSheet(
@@ -248,11 +227,41 @@ class _KpisListWidgetState extends State<KpisListWidget> {
                             child: Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(
                                   0.0, 12.0, 12.0, 0.0),
-                              child: Icon(
-                                Icons.info_outline,
-                                color:
-                                    FlutterFlowTheme.of(context).secondaryText,
-                                size: 20.0,
+                              child: InkWell(
+                                splashColor: Colors.transparent,
+                                focusColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onTap: () async {
+                                  await showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    barrierColor: FlutterFlowTheme.of(context)
+                                        .barrierColor,
+                                    context: context,
+                                    builder: (context) {
+                                      return WebViewAware(
+                                        child: Padding(
+                                          padding:
+                                              MediaQuery.viewInsetsOf(context),
+                                          child: KpiInfoWidget(
+                                            buttonText: 'Aceptar',
+                                            message: getJsonField(
+                                              kpisItemItem,
+                                              r'''$.name''',
+                                            ).toString(),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ).then((value) => safeSetState(() {}));
+                                },
+                                child: Icon(
+                                  Icons.info_outline,
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryText,
+                                  size: 20.0,
+                                ),
                               ),
                             ),
                           ),
@@ -289,39 +298,14 @@ class _KpisListWidgetState extends State<KpisListWidget> {
                       _model.updatePage(() {});
                     } else {
                       if ((_model.moreKpisResp?.statusCode ?? 200) == 401) {
-                        if (FFAppState().rememberMe) {
-                          _model.refreshTokenResp2 =
-                              await AuthenticateGroup.refreshTokenCall.call(
-                            token: currentAuthenticationToken,
-                          );
+                        GoRouter.of(context).prepareAuthEvent();
+                        await authManager.signOut();
+                        GoRouter.of(context).clearRedirectLocation();
 
-                          shouldSetState = true;
-                          if ((_model.refreshTokenResp2?.succeeded ?? true)) {
-                            authManager.updateAuthUserData(
-                              authenticationToken:
-                                  AuthenticateGroup.refreshTokenCall.token(
-                                (_model.refreshTokenResp2?.jsonBody ?? ''),
-                              ),
-                            );
+                        navigate =
+                            () => context.goNamedAuth('Login', context.mounted);
 
-                            setState(() {});
-                          } else {
-                            GoRouter.of(context).prepareAuthEvent();
-                            await authManager.signOut();
-                            GoRouter.of(context).clearRedirectLocation();
-
-                            navigate = () =>
-                                context.goNamedAuth('Login', context.mounted);
-                          }
-                        } else {
-                          GoRouter.of(context).prepareAuthEvent();
-                          await authManager.signOut();
-                          GoRouter.of(context).clearRedirectLocation();
-
-                          navigate = () =>
-                              context.goNamedAuth('Login', context.mounted);
-                        }
-
+                        navigate();
                         if (shouldSetState) setState(() {});
                         return;
                       } else {

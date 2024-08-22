@@ -170,6 +170,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'isImagePath',
               ParamType.bool,
             ),
+            viewedValue: params.getParam(
+              'viewedValue',
+              ParamType.String,
+            ),
           ),
         ),
         FFRoute(

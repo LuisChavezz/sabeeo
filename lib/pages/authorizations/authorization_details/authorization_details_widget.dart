@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 import 'authorization_details_model.dart';
 export 'authorization_details_model.dart';
@@ -63,30 +62,9 @@ class _AuthorizationDetailsWidgetState
         setState(() {});
       } else {
         if ((_model.authorizationResp?.statusCode ?? 200) == 401) {
-          if (FFAppState().rememberMe) {
-            _model.refreshTokenResp1 =
-                await AuthenticateGroup.refreshTokenCall.call(
-              token: currentAuthenticationToken,
-            );
-
-            if ((_model.refreshTokenResp1?.succeeded ?? true)) {
-              authManager.updateAuthUserData(
-                authenticationToken: AuthenticateGroup.refreshTokenCall.token(
-                  (_model.refreshTokenResp1?.jsonBody ?? ''),
-                ),
-              );
-
-              setState(() {});
-            } else {
-              GoRouter.of(context).prepareAuthEvent();
-              await authManager.signOut();
-              GoRouter.of(context).clearRedirectLocation();
-            }
-          } else {
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
-          }
+          GoRouter.of(context).prepareAuthEvent();
+          await authManager.signOut();
+          GoRouter.of(context).clearRedirectLocation();
 
           return;
         } else {
@@ -137,8 +115,6 @@ class _AuthorizationDetailsWidgetState
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: WillPopScope(
@@ -205,7 +181,7 @@ class _AuthorizationDetailsWidgetState
                           padding: const EdgeInsetsDirectional.fromSTEB(
                               0.0, 0.0, 0.0, 24.0),
                           child: Lottie.asset(
-                            'assets/lottie_animations/Animation_-_1716841230423.json',
+                            'assets/lottie_animations/loading_sabeeo.json',
                             width: MediaQuery.sizeOf(context).width * 0.5,
                             height: MediaQuery.sizeOf(context).height * 0.25,
                             fit: BoxFit.contain,
@@ -261,13 +237,25 @@ class _AuthorizationDetailsWidgetState
                                         borderRadius:
                                             BorderRadius.circular(24.0),
                                         child: Image.network(
-                                          AuthorizationsGroup
-                                              .authorizationDetailsCall
-                                              .emitterProfilePic(
-                                            (_model.authorizationResp
-                                                    ?.jsonBody ??
-                                                ''),
-                                          )!,
+                                          valueOrDefault<String>(
+                                            functions.isImagePath(
+                                                    AuthorizationsGroup
+                                                        .authorizationDetailsCall
+                                                        .emitterProfilePic(
+                                              (_model.authorizationResp
+                                                      ?.jsonBody ??
+                                                  ''),
+                                            )!)
+                                                ? AuthorizationsGroup
+                                                    .authorizationDetailsCall
+                                                    .emitterProfilePic(
+                                                    (_model.authorizationResp
+                                                            ?.jsonBody ??
+                                                        ''),
+                                                  )
+                                                : 'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                            'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                          ),
                                           width: 35.0,
                                           height: 35.0,
                                           fit: BoxFit.cover,
@@ -293,13 +281,25 @@ class _AuthorizationDetailsWidgetState
                                         borderRadius:
                                             BorderRadius.circular(24.0),
                                         child: Image.network(
-                                          AuthorizationsGroup
-                                              .authorizationDetailsCall
-                                              .authorizerProfilePic(
-                                            (_model.authorizationResp
-                                                    ?.jsonBody ??
-                                                ''),
-                                          )!,
+                                          valueOrDefault<String>(
+                                            functions.isImagePath(
+                                                    AuthorizationsGroup
+                                                        .authorizationDetailsCall
+                                                        .authorizerProfilePic(
+                                              (_model.authorizationResp
+                                                      ?.jsonBody ??
+                                                  ''),
+                                            )!)
+                                                ? AuthorizationsGroup
+                                                    .authorizationDetailsCall
+                                                    .authorizerProfilePic(
+                                                    (_model.authorizationResp
+                                                            ?.jsonBody ??
+                                                        ''),
+                                                  )
+                                                : 'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                            'https://res.cloudinary.com/dshn8thfr/image/upload/v1694029660/blank-profile-picture-973460_1920_lc1bnn.png',
+                                          ),
                                           width: 35.0,
                                           height: 35.0,
                                           fit: BoxFit.cover,
@@ -423,9 +423,73 @@ class _AuthorizationDetailsWidgetState
                                   ],
                                 ),
                               ),
+                              if (!functions.stringIsNull(AuthorizationsGroup
+                                      .authorizationDetailsCall
+                                      .authorizerRemarks(
+                                        (_model.authorizationResp?.jsonBody ??
+                                            ''),
+                                      )
+                                      .toString()) ||
+                                  (_model.authorizationAnswer != null &&
+                                      _model.authorizationAnswer != ''))
+                                Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                      0.0, 4.0, 0.0, 0.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Respuesta:',
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .override(
+                                              fontFamily: 'Montserrat',
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      ),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              valueOrDefault<String>(
+                                                _model.authorizationAnswer !=
+                                                            null &&
+                                                        _model.authorizationAnswer !=
+                                                            ''
+                                                    ? _model.authorizationAnswer
+                                                    : AuthorizationsGroup
+                                                        .authorizationDetailsCall
+                                                        .authorizerRemarks(
+                                                          (_model.authorizationResp
+                                                                  ?.jsonBody ??
+                                                              ''),
+                                                        )
+                                                        .toString(),
+                                                '[Empty]',
+                                              ),
+                                              style:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily:
+                                                            'Montserrat',
+                                                        fontSize: 12.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 24.0, 0.0, 0.0),
+                                    0.0, 12.0, 0.0, 12.0),
                                 child: Html(
                                   data: AuthorizationsGroup
                                       .authorizationDetailsCall
@@ -493,157 +557,146 @@ class _AuthorizationDetailsWidgetState
                                         child: Padding(
                                           padding:
                                               MediaQuery.viewInsetsOf(context),
-                                          child: SizedBox(
-                                            height: MediaQuery.sizeOf(context)
-                                                    .height *
-                                                0.3,
-                                            child: ConfirmActionWidget(
-                                              confirmButtonText: 'Rechazar',
-                                              cancelButtonText: 'Cancelar',
-                                              mainAction: () async {
-                                                var shouldSetState = false;
-                                                navigate() {}
-                                                _model.isLoading = true;
+                                          child: ConfirmActionWidget(
+                                            confirmButtonText: 'Rechazar',
+                                            cancelButtonText: 'Cancelar',
+                                            hasTextField: true,
+                                            textFieldValidationMessage:
+                                                '* Respuesta obligatoria',
+                                            mainAction: (textValue) async {
+                                              var shouldSetState = false;
+                                              navigate() {}
+                                              _model.isLoading = true;
+                                              setState(() {});
+                                              _model.rejectedAuthoResp =
+                                                  await AuthorizationsGroup
+                                                      .responseAuthorizationCall
+                                                      .call(
+                                                token:
+                                                    currentAuthenticationToken,
+                                                id: widget.authorizationId,
+                                                status: 'rejected',
+                                                authorizerRemarks:
+                                                    functions.removeLineBreaks(
+                                                        textValue!),
+                                              );
+
+                                              shouldSetState = true;
+                                              if ((_model.rejectedAuthoResp
+                                                      ?.succeeded ??
+                                                  true)) {
+                                                _model.authorizationStatusValue =
+                                                    'rejected';
+                                                _model.authorizationStatusLabel =
+                                                    'rechazada';
                                                 setState(() {});
-                                                _model.rejectedAuthoResp =
-                                                    await AuthorizationsGroup
-                                                        .responseAuthorizationCall
-                                                        .call(
-                                                  token:
-                                                      currentAuthenticationToken,
-                                                  id: widget.authorizationId,
-                                                  status: 'rejected',
-                                                );
-
-                                                shouldSetState = true;
+                                              } else {
                                                 if ((_model.rejectedAuthoResp
-                                                        ?.succeeded ??
-                                                    true)) {
-                                                  _model.authorizationStatusValue =
-                                                      'rejected';
-                                                  _model.authorizationStatusLabel =
-                                                      'rechazada';
-                                                  setState(() {});
+                                                            ?.statusCode ??
+                                                        200) ==
+                                                    401) {
+                                                  return;
                                                 } else {
-                                                  if ((_model.rejectedAuthoResp
-                                                              ?.statusCode ??
-                                                          200) ==
-                                                      401) {
-                                                    if (FFAppState()
-                                                        .rememberMe) {
-                                                      _model.refreshTokenResp2 =
-                                                          await AuthenticateGroup
-                                                              .refreshTokenCall
-                                                              .call(
-                                                        token:
-                                                            currentAuthenticationToken,
-                                                      );
-
-                                                      shouldSetState = true;
-                                                      if ((_model
-                                                              .refreshTokenResp2
-                                                              ?.succeeded ??
-                                                          true)) {
-                                                        setState(() {});
-                                                      }
-                                                    }
-                                                    return;
-                                                  } else {
-                                                    await showModalBottomSheet(
-                                                      isScrollControlled: true,
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      barrierColor:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .barrierColor,
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return WebViewAware(
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () =>
-                                                                FocusScope.of(
-                                                                        context)
-                                                                    .unfocus(),
-                                                            child: Padding(
-                                                              padding: MediaQuery
-                                                                  .viewInsetsOf(
-                                                                      context),
-                                                              child:
-                                                                  AlertMessageWidget(
-                                                                buttonText:
-                                                                    'Aceptar',
-                                                                title:
-                                                                    'Error: ${(_model.rejectedAuthoResp?.statusCode ?? 200).toString()}',
-                                                                message:
-                                                                    valueOrDefault<
-                                                                        String>(
-                                                                  AuthorizationsGroup
-                                                                      .responseAuthorizationCall
-                                                                      .message(
-                                                                    (_model.rejectedAuthoResp
-                                                                            ?.jsonBody ??
-                                                                        ''),
-                                                                  ),
-                                                                  'Ocurrió un error en el servidor.',
+                                                  await showModalBottomSheet(
+                                                    isScrollControlled: true,
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    barrierColor:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .barrierColor,
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return WebViewAware(
+                                                        child: GestureDetector(
+                                                          onTap: () =>
+                                                              FocusScope.of(
+                                                                      context)
+                                                                  .unfocus(),
+                                                          child: Padding(
+                                                            padding: MediaQuery
+                                                                .viewInsetsOf(
+                                                                    context),
+                                                            child:
+                                                                AlertMessageWidget(
+                                                              buttonText:
+                                                                  'Aceptar',
+                                                              title:
+                                                                  'Error: ${(_model.rejectedAuthoResp?.statusCode ?? 200).toString()}',
+                                                              message:
+                                                                  valueOrDefault<
+                                                                      String>(
+                                                                AuthorizationsGroup
+                                                                    .responseAuthorizationCall
+                                                                    .message(
+                                                                  (_model.rejectedAuthoResp
+                                                                          ?.jsonBody ??
+                                                                      ''),
                                                                 ),
+                                                                'Ocurrió un error en el servidor.',
                                                               ),
                                                             ),
                                                           ),
-                                                        );
-                                                      },
-                                                    ).then((value) =>
-                                                        safeSetState(() {}));
-                                                  }
+                                                        ),
+                                                      );
+                                                    },
+                                                  ).then((value) =>
+                                                      safeSetState(() {}));
                                                 }
+                                              }
 
-                                                _model.isLoading = false;
-                                                _model.wasUpdated = true;
-                                                setState(() {});
-                                                Navigator.pop(context);
-                                                await showModalBottomSheet(
-                                                  isScrollControlled: true,
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  barrierColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .barrierColor,
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return WebViewAware(
-                                                      child: GestureDetector(
-                                                        onTap: () =>
-                                                            FocusScope.of(
-                                                                    context)
-                                                                .unfocus(),
-                                                        child: Padding(
-                                                          padding: MediaQuery
-                                                              .viewInsetsOf(
-                                                                  context),
-                                                          child: SizedBox(
-                                                            height: MediaQuery
-                                                                        .sizeOf(
-                                                                            context)
-                                                                    .height *
-                                                                0.35,
-                                                            child:
-                                                                const AlertMessageWidget(
-                                                              title:
-                                                                  'Rechazada',
-                                                              message:
-                                                                  'La autorización ha sido rechazada con éxito.',
-                                                            ),
+                                              _model.isLoading = false;
+                                              _model.wasUpdated = true;
+                                              _model.authorizationAnswer =
+                                                  AuthorizationsGroup
+                                                      .responseAuthorizationCall
+                                                      .authorizerRemarks(
+                                                        (_model.rejectedAuthoResp
+                                                                ?.jsonBody ??
+                                                            ''),
+                                                      )
+                                                      .toString();
+                                              setState(() {});
+                                              Navigator.pop(context);
+                                              await showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                barrierColor:
+                                                    FlutterFlowTheme.of(context)
+                                                        .barrierColor,
+                                                context: context,
+                                                builder: (context) {
+                                                  return WebViewAware(
+                                                    child: GestureDetector(
+                                                      onTap: () =>
+                                                          FocusScope.of(context)
+                                                              .unfocus(),
+                                                      child: Padding(
+                                                        padding: MediaQuery
+                                                            .viewInsetsOf(
+                                                                context),
+                                                        child: SizedBox(
+                                                          height:
+                                                              MediaQuery.sizeOf(
+                                                                          context)
+                                                                      .height *
+                                                                  0.35,
+                                                          child:
+                                                              const AlertMessageWidget(
+                                                            title: 'Rechazada',
+                                                            message:
+                                                                'La autorización ha sido rechazada con éxito.',
                                                           ),
                                                         ),
                                                       ),
-                                                    );
-                                                  },
-                                                ).then((value) =>
-                                                    safeSetState(() {}));
-                                              },
-                                            ),
+                                                    ),
+                                                  );
+                                                },
+                                              ).then((value) =>
+                                                  safeSetState(() {}));
+                                            },
+                                            setPageState: (intValue) async {},
                                           ),
                                         ),
                                       ),
@@ -700,156 +753,131 @@ class _AuthorizationDetailsWidgetState
                                         child: Padding(
                                           padding:
                                               MediaQuery.viewInsetsOf(context),
-                                          child: SizedBox(
-                                            height: MediaQuery.sizeOf(context)
-                                                    .height *
-                                                0.3,
-                                            child: ConfirmActionWidget(
-                                              confirmButtonText: 'Aprobar',
-                                              cancelButtonText: 'Cancelar',
-                                              mainAction: () async {
-                                                var shouldSetState = false;
-                                                navigate() {}
-                                                _model.isLoading = true;
+                                          child: ConfirmActionWidget(
+                                            confirmButtonText: 'Aprobar',
+                                            cancelButtonText: 'Cancelar',
+                                            mainAction: (textValue) async {
+                                              var shouldSetState = false;
+                                              navigate() {}
+                                              _model.isLoading = true;
+                                              setState(() {});
+                                              _model.approvedAuthResp =
+                                                  await AuthorizationsGroup
+                                                      .responseAuthorizationCall
+                                                      .call(
+                                                token:
+                                                    currentAuthenticationToken,
+                                                id: widget.authorizationId,
+                                                status: 'approved',
+                                              );
+
+                                              shouldSetState = true;
+                                              if ((_model.approvedAuthResp
+                                                      ?.succeeded ??
+                                                  true)) {
+                                                _model.authorizationStatusValue =
+                                                    'approved';
+                                                _model.authorizationStatusLabel =
+                                                    'aprobada';
                                                 setState(() {});
-                                                _model.approvedAuthResp =
-                                                    await AuthorizationsGroup
-                                                        .responseAuthorizationCall
-                                                        .call(
-                                                  token:
-                                                      currentAuthenticationToken,
-                                                  id: widget.authorizationId,
-                                                  status: 'approved',
-                                                );
-
-                                                shouldSetState = true;
+                                              } else {
                                                 if ((_model.approvedAuthResp
-                                                        ?.succeeded ??
-                                                    true)) {
-                                                  _model.authorizationStatusValue =
-                                                      'approved';
-                                                  _model.authorizationStatusLabel =
-                                                      'aprobada';
-                                                  setState(() {});
+                                                            ?.statusCode ??
+                                                        200) ==
+                                                    401) {
+                                                  return;
                                                 } else {
-                                                  if ((_model.approvedAuthResp
-                                                              ?.statusCode ??
-                                                          200) ==
-                                                      401) {
-                                                    if (FFAppState()
-                                                        .rememberMe) {
-                                                      _model.refreshTokenResp3 =
-                                                          await AuthenticateGroup
-                                                              .refreshTokenCall
-                                                              .call(
-                                                        token:
-                                                            currentAuthenticationToken,
-                                                      );
-
-                                                      shouldSetState = true;
-                                                      if ((_model
-                                                              .refreshTokenResp3
-                                                              ?.succeeded ??
-                                                          true)) {
-                                                        setState(() {});
-                                                      }
-                                                    }
-                                                    return;
-                                                  } else {
-                                                    await showModalBottomSheet(
-                                                      isScrollControlled: true,
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      barrierColor:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .barrierColor,
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return WebViewAware(
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () =>
-                                                                FocusScope.of(
-                                                                        context)
-                                                                    .unfocus(),
-                                                            child: Padding(
-                                                              padding: MediaQuery
-                                                                  .viewInsetsOf(
-                                                                      context),
-                                                              child:
-                                                                  AlertMessageWidget(
-                                                                buttonText:
-                                                                    'Aceptar',
-                                                                title:
-                                                                    'Error: ${(_model.approvedAuthResp?.statusCode ?? 200).toString()}',
-                                                                message:
-                                                                    valueOrDefault<
-                                                                        String>(
-                                                                  AuthorizationsGroup
-                                                                      .responseAuthorizationCall
-                                                                      .message(
-                                                                    (_model.approvedAuthResp
-                                                                            ?.jsonBody ??
-                                                                        ''),
-                                                                  ),
-                                                                  'Ocurrió un error en el servidor.',
+                                                  await showModalBottomSheet(
+                                                    isScrollControlled: true,
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    barrierColor:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .barrierColor,
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return WebViewAware(
+                                                        child: GestureDetector(
+                                                          onTap: () =>
+                                                              FocusScope.of(
+                                                                      context)
+                                                                  .unfocus(),
+                                                          child: Padding(
+                                                            padding: MediaQuery
+                                                                .viewInsetsOf(
+                                                                    context),
+                                                            child:
+                                                                AlertMessageWidget(
+                                                              buttonText:
+                                                                  'Aceptar',
+                                                              title:
+                                                                  'Error: ${(_model.approvedAuthResp?.statusCode ?? 200).toString()}',
+                                                              message:
+                                                                  valueOrDefault<
+                                                                      String>(
+                                                                AuthorizationsGroup
+                                                                    .responseAuthorizationCall
+                                                                    .message(
+                                                                  (_model.approvedAuthResp
+                                                                          ?.jsonBody ??
+                                                                      ''),
                                                                 ),
+                                                                'Ocurrió un error en el servidor.',
                                                               ),
                                                             ),
                                                           ),
-                                                        );
-                                                      },
-                                                    ).then((value) =>
-                                                        safeSetState(() {}));
-                                                  }
+                                                        ),
+                                                      );
+                                                    },
+                                                  ).then((value) =>
+                                                      safeSetState(() {}));
                                                 }
+                                              }
 
-                                                _model.isLoading = false;
-                                                _model.wasUpdated = true;
-                                                setState(() {});
-                                                Navigator.pop(context);
-                                                await showModalBottomSheet(
-                                                  isScrollControlled: true,
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  barrierColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .barrierColor,
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return WebViewAware(
-                                                      child: GestureDetector(
-                                                        onTap: () =>
-                                                            FocusScope.of(
-                                                                    context)
-                                                                .unfocus(),
-                                                        child: Padding(
-                                                          padding: MediaQuery
-                                                              .viewInsetsOf(
-                                                                  context),
-                                                          child: SizedBox(
-                                                            height: MediaQuery
-                                                                        .sizeOf(
-                                                                            context)
-                                                                    .height *
-                                                                0.35,
-                                                            child:
-                                                                const AlertMessageWidget(
-                                                              title: 'Aprobada',
-                                                              message:
-                                                                  'La autorización ha sido aprobada con éxito.',
-                                                            ),
+                                              _model.isLoading = false;
+                                              _model.wasUpdated = true;
+                                              setState(() {});
+                                              Navigator.pop(context);
+                                              await showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                barrierColor:
+                                                    FlutterFlowTheme.of(context)
+                                                        .barrierColor,
+                                                context: context,
+                                                builder: (context) {
+                                                  return WebViewAware(
+                                                    child: GestureDetector(
+                                                      onTap: () =>
+                                                          FocusScope.of(context)
+                                                              .unfocus(),
+                                                      child: Padding(
+                                                        padding: MediaQuery
+                                                            .viewInsetsOf(
+                                                                context),
+                                                        child: SizedBox(
+                                                          height:
+                                                              MediaQuery.sizeOf(
+                                                                          context)
+                                                                      .height *
+                                                                  0.35,
+                                                          child:
+                                                              const AlertMessageWidget(
+                                                            title: 'Aprobada',
+                                                            message:
+                                                                'La autorización ha sido aprobada con éxito.',
                                                           ),
                                                         ),
                                                       ),
-                                                    );
-                                                  },
-                                                ).then((value) =>
-                                                    safeSetState(() {}));
-                                              },
-                                            ),
+                                                    ),
+                                                  );
+                                                },
+                                              ).then((value) =>
+                                                  safeSetState(() {}));
+                                            },
+                                            setPageState: (intValue) async {},
                                           ),
                                         ),
                                       ),
