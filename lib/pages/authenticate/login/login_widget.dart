@@ -271,15 +271,42 @@ class _LoginWidgetState extends State<LoginWidget>
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Image.asset(
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? 'assets/images/logo_amarillo.png'
-                                    : 'assets/images/Grupo_837.png',
-                                width: 260.0,
-                                height: 140.0,
-                                fit: BoxFit.fitWidth,
+                            InkWell(
+                              splashColor: Colors.transparent,
+                              focusColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              onTap: () async {
+                                await showDialog(
+                                  context: context,
+                                  builder: (alertDialogContext) {
+                                    return WebViewAware(
+                                      child: AlertDialog(
+                                        title: const Text('FCM TOKEN'),
+                                        content: Text(FFAppState().fcmToken),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                alertDialogContext),
+                                            child: const Text('Ok'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Image.asset(
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? 'assets/images/logo_amarillo.png'
+                                      : 'assets/images/Grupo_837.png',
+                                  width: 260.0,
+                                  height: 140.0,
+                                  fit: BoxFit.fitWidth,
+                                ),
                               ),
                             ).animateOnPageLoad(
                                 animationsMap['imageOnPageLoadAnimation']!),

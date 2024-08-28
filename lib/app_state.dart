@@ -33,6 +33,12 @@ class FFAppState extends ChangeNotifier {
     _safeInit(() {
       _rememberMe = prefs.getBool('ff_rememberMe') ?? _rememberMe;
     });
+    _safeInit(() {
+      _fcmToken = prefs.getString('ff_fcmToken') ?? _fcmToken;
+    });
+    _safeInit(() {
+      _apnsToken = prefs.getString('ff_apnsToken') ?? _apnsToken;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -298,6 +304,20 @@ class FFAppState extends ChangeNotifier {
   int get tempIntValue => _tempIntValue;
   set tempIntValue(int value) {
     _tempIntValue = value;
+  }
+
+  String _fcmToken = '';
+  String get fcmToken => _fcmToken;
+  set fcmToken(String value) {
+    _fcmToken = value;
+    prefs.setString('ff_fcmToken', value);
+  }
+
+  String _apnsToken = '';
+  String get apnsToken => _apnsToken;
+  set apnsToken(String value) {
+    _apnsToken = value;
+    prefs.setString('ff_apnsToken', value);
   }
 }
 

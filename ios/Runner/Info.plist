@@ -54,7 +54,8 @@
 	<true/>
 
 
-
+	<key>PermissionGroupNotification</key>
+    <string>Por favor habilite los permisos para recibir notificaciones.</string>
 
 
 	<key>UILaunchStoryboardName</key>

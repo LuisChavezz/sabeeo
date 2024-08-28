@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class ForgotPasswordModel extends FlutterFlowModel<ForgotPasswordWidget> {
   ///  State fields for stateful widgets in this page.
 
+  final unfocusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
   // State field(s) for emailField widget.
   FocusNode? emailFieldFocusNode;

@@ -20,6 +20,7 @@ class AuthorizationDetailsModel
 
   ///  State fields for stateful widgets in this page.
 
+  final unfocusNode = FocusNode();
   // Stores action output result for [Backend Call - API (Authorization Details)] action in Authorization_details widget.
   ApiCallResponse? authorizationResp;
   // Model for AuthorizationPdfList component.
