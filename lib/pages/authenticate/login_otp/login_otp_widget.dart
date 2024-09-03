@@ -1,13 +1,17 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
 import 'login_otp_model.dart';
 export 'login_otp_model.dart';
 
@@ -137,6 +141,8 @@ class _LoginOtpWidgetState extends State<LoginOtpWidget>
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -312,6 +318,7 @@ class _LoginOtpWidgetState extends State<LoginOtpWidget>
                                       FFButtonWidget(
                                         onPressed: () async {
                                           var shouldSetState = false;
+                                          Function() navigate = () {};
                                           if (_model.formKey.currentState ==
                                                   null ||
                                               !_model.formKey.currentState!
@@ -349,14 +356,71 @@ class _LoginOtpWidgetState extends State<LoginOtpWidget>
                                                     ''),
                                               ),
                                             );
+                                            navigate = () =>
+                                                context.goNamedAuth(
+                                                    'Communication',
+                                                    context.mounted);
+                                            if (functions.stringLength(
+                                                    FFAppState().fcmToken) >
+                                                100) {
+                                              _model.userFcmTokenDoc =
+                                                  await queryUserFcmTokensRecordOnce(
+                                                queryBuilder:
+                                                    (userFcmTokensRecord) =>
+                                                        userFcmTokensRecord
+                                                            .where(
+                                                  'userId',
+                                                  isEqualTo: currentUserUid,
+                                                ),
+                                                singleRecord: true,
+                                              ).then((s) => s.firstOrNull);
+                                              shouldSetState = true;
+                                              if (_model.userFcmTokenDoc !=
+                                                  null) {
+                                                await _model
+                                                    .userFcmTokenDoc!.reference
+                                                    .update({
+                                                  ...mapToFirestore(
+                                                    {
+                                                      'fcmTokens': FieldValue
+                                                          .arrayUnion([
+                                                        FFAppState().fcmToken
+                                                      ]),
+                                                    },
+                                                  ),
+                                                });
+                                              } else {
+                                                await UserFcmTokensRecord
+                                                    .collection
+                                                    .doc()
+                                                    .set({
+                                                  ...createUserFcmTokensRecordData(
+                                                    userId: currentUserUid,
+                                                    userEmail:
+                                                        currentUserData?.email,
+                                                  ),
+                                                  ...mapToFirestore(
+                                                    {
+                                                      'fcmTokens': [
+                                                        FFAppState().fcmToken
+                                                      ],
+                                                    },
+                                                  ),
+                                                });
+                                              }
 
-                                            context.goNamedAuth(
-                                                'Home', context.mounted);
-
-                                            if (shouldSetState) {
-                                              setState(() {});
+                                              navigate();
+                                              if (shouldSetState) {
+                                                setState(() {});
+                                              }
+                                              return;
+                                            } else {
+                                              navigate();
+                                              if (shouldSetState) {
+                                                setState(() {});
+                                              }
+                                              return;
                                             }
-                                            return;
                                           } else {
                                             if (shouldSetState) {
                                               setState(() {});
@@ -364,9 +428,7 @@ class _LoginOtpWidgetState extends State<LoginOtpWidget>
                                             return;
                                           }
 
-                                          context.goNamedAuth(
-                                              'Home', context.mounted);
-
+                                          navigate();
                                           if (shouldSetState) setState(() {});
                                         },
                                         text: 'Ingresar',

@@ -1,11 +1,13 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/backend/backend.dart';
 import '/components/ui/alert_message/alert_message_widget.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:async';
+import '/flutter_flow/custom_functions.dart' as functions;
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -271,42 +273,15 @@ class _LoginWidgetState extends State<LoginWidget>
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                await showDialog(
-                                  context: context,
-                                  builder: (alertDialogContext) {
-                                    return WebViewAware(
-                                      child: AlertDialog(
-                                        title: const Text('FCM TOKEN'),
-                                        content: Text(FFAppState().fcmToken),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () => Navigator.pop(
-                                                alertDialogContext),
-                                            child: const Text('Ok'),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Image.asset(
-                                  Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? 'assets/images/logo_amarillo.png'
-                                      : 'assets/images/Grupo_837.png',
-                                  width: 260.0,
-                                  height: 140.0,
-                                  fit: BoxFit.fitWidth,
-                                ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.asset(
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? 'assets/images/logo_amarillo.png'
+                                    : 'assets/images/Grupo_837.png',
+                                width: 260.0,
+                                height: 140.0,
+                                fit: BoxFit.fitWidth,
                               ),
                             ).animateOnPageLoad(
                                 animationsMap['imageOnPageLoadAnimation']!),
@@ -652,6 +627,7 @@ class _LoginWidgetState extends State<LoginWidget>
                                         children: [
                                           FFButtonWidget(
                                             onPressed: () async {
+                                              var shouldSetState = false;
                                               Function() navigate = () {};
                                               if (_model.formKey.currentState ==
                                                       null ||
@@ -678,6 +654,7 @@ class _LoginWidgetState extends State<LoginWidget>
                                                 ),
                                               );
 
+                                              shouldSetState = true;
                                               if ((_model
                                                       .loginResp?.succeeded ??
                                                   true)) {
@@ -711,7 +688,8 @@ class _LoginWidgetState extends State<LoginWidget>
                                                   ),
                                                 );
                                                 navigate = () =>
-                                                    context.goNamedAuth('Home',
+                                                    context.goNamedAuth(
+                                                        'Communication',
                                                         context.mounted);
                                                 FFAppState()
                                                     .updateUserAuthDataStruct(
@@ -730,6 +708,72 @@ class _LoginWidgetState extends State<LoginWidget>
                                                         : '',
                                                 );
                                                 setState(() {});
+                                                if (functions.stringLength(
+                                                        FFAppState().fcmToken) >
+                                                    100) {
+                                                  _model.userFcmTokenDoc =
+                                                      await queryUserFcmTokensRecordOnce(
+                                                    queryBuilder:
+                                                        (userFcmTokensRecord) =>
+                                                            userFcmTokensRecord
+                                                                .where(
+                                                      'userId',
+                                                      isEqualTo: currentUserUid,
+                                                    ),
+                                                    singleRecord: true,
+                                                  ).then((s) => s.firstOrNull);
+                                                  shouldSetState = true;
+                                                  if (_model.userFcmTokenDoc !=
+                                                      null) {
+                                                    await _model
+                                                        .userFcmTokenDoc!
+                                                        .reference
+                                                        .update({
+                                                      ...mapToFirestore(
+                                                        {
+                                                          'fcmTokens':
+                                                              FieldValue
+                                                                  .arrayUnion([
+                                                            FFAppState()
+                                                                .fcmToken
+                                                          ]),
+                                                        },
+                                                      ),
+                                                    });
+                                                  } else {
+                                                    await UserFcmTokensRecord
+                                                        .collection
+                                                        .doc()
+                                                        .set({
+                                                      ...createUserFcmTokensRecordData(
+                                                        userId: currentUserUid,
+                                                        userEmail:
+                                                            currentUserData
+                                                                ?.email,
+                                                      ),
+                                                      ...mapToFirestore(
+                                                        {
+                                                          'fcmTokens': [
+                                                            FFAppState()
+                                                                .fcmToken
+                                                          ],
+                                                        },
+                                                      ),
+                                                    });
+                                                  }
+
+                                                  navigate();
+                                                  if (shouldSetState) {
+                                                    setState(() {});
+                                                  }
+                                                  return;
+                                                } else {
+                                                  navigate();
+                                                  if (shouldSetState) {
+                                                    setState(() {});
+                                                  }
+                                                  return;
+                                                }
                                               } else {
                                                 await showModalBottomSheet(
                                                   isScrollControlled: true,
@@ -772,11 +816,17 @@ class _LoginWidgetState extends State<LoginWidget>
                                                   },
                                                 ).then((value) =>
                                                     safeSetState(() {}));
+
+                                                if (shouldSetState) {
+                                                  setState(() {});
+                                                }
+                                                return;
                                               }
 
                                               navigate();
-
-                                              setState(() {});
+                                              if (shouldSetState) {
+                                                setState(() {});
+                                              }
                                             },
                                             text: 'Ingresar',
                                             options: FFButtonOptions(

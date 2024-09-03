@@ -1,4 +1,5 @@
 import '/backend/api_requests/api_calls.dart';
+import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'login_otp_widget.dart' show LoginOtpWidget;
 import 'package:flutter/material.dart';
@@ -23,6 +24,8 @@ class LoginOtpModel extends FlutterFlowModel<LoginOtpWidget> {
 
   // Stores action output result for [Backend Call - API (Validate Login OTP)] action in Button widget.
   ApiCallResponse? validateOtpResp;
+  // Stores action output result for [Firestore Query - Query a collection] action in Button widget.
+  UserFcmTokensRecord? userFcmTokenDoc;
 
   @override
   void initState(BuildContext context) {

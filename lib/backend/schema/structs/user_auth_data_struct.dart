@@ -1,16 +1,19 @@
 // ignore_for_file: unnecessary_getters_setters
 
-import '/backend/schema/util/schema_util.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'index.dart';
+import '/backend/schema/util/firestore_util.dart';
+
 import '/flutter_flow/flutter_flow_util.dart';
 
-class UserAuthDataStruct extends BaseStruct {
+class UserAuthDataStruct extends FFFirebaseStruct {
   UserAuthDataStruct({
     String? email,
     String? password,
+    FirestoreUtilData firestoreUtilData = const FirestoreUtilData(),
   })  : _email = email,
-        _password = password;
+        _password = password,
+        super(firestoreUtilData);
 
   // "email" field.
   String? _email;
@@ -84,8 +87,80 @@ class UserAuthDataStruct extends BaseStruct {
 UserAuthDataStruct createUserAuthDataStruct({
   String? email,
   String? password,
+  Map<String, dynamic> fieldValues = const {},
+  bool clearUnsetFields = true,
+  bool create = false,
+  bool delete = false,
 }) =>
     UserAuthDataStruct(
       email: email,
       password: password,
+      firestoreUtilData: FirestoreUtilData(
+        clearUnsetFields: clearUnsetFields,
+        create: create,
+        delete: delete,
+        fieldValues: fieldValues,
+      ),
     );
+
+UserAuthDataStruct? updateUserAuthDataStruct(
+  UserAuthDataStruct? userAuthData, {
+  bool clearUnsetFields = true,
+  bool create = false,
+}) =>
+    userAuthData
+      ?..firestoreUtilData = FirestoreUtilData(
+        clearUnsetFields: clearUnsetFields,
+        create: create,
+      );
+
+void addUserAuthDataStructData(
+  Map<String, dynamic> firestoreData,
+  UserAuthDataStruct? userAuthData,
+  String fieldName, [
+  bool forFieldValue = false,
+]) {
+  firestoreData.remove(fieldName);
+  if (userAuthData == null) {
+    return;
+  }
+  if (userAuthData.firestoreUtilData.delete) {
+    firestoreData[fieldName] = FieldValue.delete();
+    return;
+  }
+  final clearFields =
+      !forFieldValue && userAuthData.firestoreUtilData.clearUnsetFields;
+  if (clearFields) {
+    firestoreData[fieldName] = <String, dynamic>{};
+  }
+  final userAuthDataData =
+      getUserAuthDataFirestoreData(userAuthData, forFieldValue);
+  final nestedData =
+      userAuthDataData.map((k, v) => MapEntry('$fieldName.$k', v));
+
+  final mergeFields = userAuthData.firestoreUtilData.create || clearFields;
+  firestoreData
+      .addAll(mergeFields ? mergeNestedFields(nestedData) : nestedData);
+}
+
+Map<String, dynamic> getUserAuthDataFirestoreData(
+  UserAuthDataStruct? userAuthData, [
+  bool forFieldValue = false,
+]) {
+  if (userAuthData == null) {
+    return {};
+  }
+  final firestoreData = mapToFirestore(userAuthData.toMap());
+
+  // Add any Firestore field values
+  userAuthData.firestoreUtilData.fieldValues
+      .forEach((k, v) => firestoreData[k] = v);
+
+  return forFieldValue ? mergeNestedFields(firestoreData) : firestoreData;
+}
+
+List<Map<String, dynamic>> getUserAuthDataListFirestoreData(
+  List<UserAuthDataStruct>? userAuthDatas,
+) =>
+    userAuthDatas?.map((e) => getUserAuthDataFirestoreData(e, true)).toList() ??
+    [];

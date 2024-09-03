@@ -37,6 +37,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       Function() navigate = () {};
       _model.isLoading = true;
+      _model.switchValue = 'notis';
       setState(() {});
       _model.memorandumsResp = await MemorandumGroup.getMemorandumsCall.call(
         token: currentAuthenticationToken,

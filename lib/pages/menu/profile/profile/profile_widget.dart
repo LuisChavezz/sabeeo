@@ -1,13 +1,16 @@
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/backend/backend.dart';
 import '/components/ui/alert_message/alert_message_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 import 'profile_model.dart';
 export 'profile_model.dart';
@@ -95,6 +98,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -601,6 +606,25 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               Expanded(
                                 child: FFButtonWidget(
                                   onPressed: () async {
+                                    _model.userFcmTokenDoc =
+                                        await queryUserFcmTokensRecordOnce(
+                                      queryBuilder: (userFcmTokensRecord) =>
+                                          userFcmTokensRecord.where(
+                                        'userId',
+                                        isEqualTo: currentUserUid,
+                                      ),
+                                      singleRecord: true,
+                                    ).then((s) => s.firstOrNull);
+
+                                    await _model.userFcmTokenDoc!.reference
+                                        .update({
+                                      ...mapToFirestore(
+                                        {
+                                          'fcmTokens': FieldValue.arrayRemove(
+                                              [FFAppState().fcmToken]),
+                                        },
+                                      ),
+                                    });
                                     GoRouter.of(context).prepareAuthEvent();
                                     await authManager.signOut();
                                     GoRouter.of(context)
@@ -608,6 +632,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
                                     context.goNamedAuth(
                                         'Login', context.mounted);
+
+                                    setState(() {});
                                   },
                                   text: 'Cerrar sesión',
                                   icon: const Icon(
