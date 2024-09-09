@@ -221,6 +221,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               ParamType.JSON,
             ),
           ),
+        ),
+        FFRoute(
+          name: 'User_directory',
+          path: '/userDirectory',
+          requireAuth: true,
+          builder: (context, params) => const UserDirectoryWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );

@@ -35,7 +35,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       Function() navigate = () {};
       _model.isLoading = true;
-      setState(() {});
+      safeSetState(() {});
       _model.anomaliesResp = await AnomaliesGroup.getAnomaliesCall.call(
         token: currentAuthenticationToken,
         perPage: _model.anomaliesPerPage,
@@ -48,11 +48,11 @@ class _HomeWidgetState extends State<HomeWidget> {
             )!
             .toList()
             .cast<dynamic>();
-        setState(() {});
+        safeSetState(() {});
         _model.anomaliesTotal = AnomaliesGroup.getAnomaliesCall.totalRows(
           (_model.anomaliesResp?.jsonBody ?? ''),
         );
-        setState(() {});
+        safeSetState(() {});
       } else {
         if ((_model.anomaliesResp?.statusCode ?? 200) == 401) {
           GoRouter.of(context).prepareAuthEvent();
@@ -106,11 +106,11 @@ class _HomeWidgetState extends State<HomeWidget> {
             )!
             .toList()
             .cast<dynamic>();
-        setState(() {});
+        safeSetState(() {});
         _model.kpisTotal = KpiGroup.getKpisCall.totalRows(
           (_model.kpisResp?.jsonBody ?? ''),
         );
-        setState(() {});
+        safeSetState(() {});
       } else {
         if ((_model.kpisResp?.statusCode ?? 200) == 401) {
           GoRouter.of(context).prepareAuthEvent();
@@ -155,7 +155,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       }
 
       _model.isLoading = false;
-      setState(() {});
+      safeSetState(() {});
 
       navigate();
     });
@@ -194,7 +194,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                         child: FFButtonWidget(
                           onPressed: () async {
                             _model.switchValue = 'anom';
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'Anomalías',
                           options: FFButtonOptions(
@@ -233,7 +233,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                         child: FFButtonWidget(
                           onPressed: () async {
                             _model.switchValue = 'kpi';
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'KPIs',
                           options: FFButtonOptions(
@@ -290,13 +290,13 @@ class _HomeWidgetState extends State<HomeWidget> {
                           const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 24.0),
                       child: wrapWithModel(
                         model: _model.anomaliesListModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: AnomaliesListWidget(
                           anomaliesArray: FFAppState().anomaliesArray,
                           anomaliesTotalRows: _model.anomaliesTotal!,
                           toggleIsLoading: () async {
                             _model.isLoading = !_model.isLoading;
-                            setState(() {});
+                            safeSetState(() {});
                           },
                         ),
                       ),
@@ -309,13 +309,13 @@ class _HomeWidgetState extends State<HomeWidget> {
                           const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 24.0),
                       child: wrapWithModel(
                         model: _model.kpisListModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: KpisListWidget(
                           kpisTotalRows: _model.kpisTotal!,
                           kpisArray: FFAppState().kpisArray,
                           toggleIsLoading: () async {
                             _model.isLoading = !_model.isLoading;
-                            setState(() {});
+                            safeSetState(() {});
                           },
                         ),
                       ),

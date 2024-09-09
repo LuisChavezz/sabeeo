@@ -183,6 +183,7 @@ class UsersGroup {
   };
   static RecoverPassCall recoverPassCall = RecoverPassCall();
   static ProfileCall profileCall = ProfileCall();
+  static DirectoryCall directoryCall = DirectoryCall();
 }
 
 class RecoverPassCall {
@@ -277,6 +278,59 @@ class ProfileCall {
   String? phone(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.data.phone''',
+      ));
+}
+
+class DirectoryCall {
+  Future<ApiCallResponse> call({
+    String? token = '',
+    int? page = 1,
+    int? perPage = 10,
+    String? searchKeys = 'firstname,lastname,phone,id',
+    String? searchValue = '',
+  }) async {
+    final baseUrl = UsersGroup.getBaseUrl();
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'Directory',
+      apiUrl: '$baseUrl/directory',
+      callType: ApiCallType.GET,
+      headers: {
+        'Content-Type': 'application/json',
+        'ignore-inactivity-check': 'true',
+        'Authorization': 'Bearer $token',
+      },
+      params: {
+        'page': page,
+        'perPage': perPage,
+        'searchKeys': searchKeys,
+        'searchValue': searchValue,
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  List? rows(dynamic response) => getJsonField(
+        response,
+        r'''$.data.rows''',
+        true,
+      ) as List?;
+  int? totalRows(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.data.total''',
+      ));
+  int? statusCode(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.statusCode''',
+      ));
+  String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
       ));
 }
 
@@ -930,9 +984,9 @@ class GetHistoryAuthsCall {
 
 /// End Authorizations Group Code
 
-/// Start Original API Endpoints Group Code
+/// Start Rule Documents Group Code
 
-class OriginalAPIEndpointsGroup {
+class RuleDocumentsGroup {
   static String getBaseUrl() => 'https://apiv2.menita.cloud/api';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
@@ -949,7 +1003,7 @@ class GetDocumentsCall {
     int? perPage = 10,
     String? searchValue = '',
   }) async {
-    final baseUrl = OriginalAPIEndpointsGroup.getBaseUrl();
+    final baseUrl = RuleDocumentsGroup.getBaseUrl();
 
     return ApiManager.instance.makeApiCall(
       callName: 'Get Documents',
@@ -996,7 +1050,7 @@ class ConfirmDocumentCall {
     bool? status = true,
     String? nip = '',
   }) async {
-    final baseUrl = OriginalAPIEndpointsGroup.getBaseUrl();
+    final baseUrl = RuleDocumentsGroup.getBaseUrl();
 
     final ffApiRequestBody = '''
 {
@@ -1036,7 +1090,7 @@ class ConfirmDocumentCall {
       ));
 }
 
-/// End Original API Endpoints Group Code
+/// End Rule Documents Group Code
 
 class ApiPagingParams {
   int nextPageNumber = 0;

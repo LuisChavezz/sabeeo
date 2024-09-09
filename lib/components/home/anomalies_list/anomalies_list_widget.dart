@@ -351,7 +351,7 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                     await widget.toggleIsLoading?.call();
                     _model.moreAnomaliesPerPage =
                         _model.moreAnomaliesPerPage + 10;
-                    setState(() {});
+                    safeSetState(() {});
                     _model.moreAnomaliesResp =
                         await AnomaliesGroup.getAnomaliesCall.call(
                       token: currentAuthenticationToken,
@@ -379,7 +379,7 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                             () => context.goNamedAuth('Login', context.mounted);
 
                         navigate();
-                        if (shouldSetState) setState(() {});
+                        if (shouldSetState) safeSetState(() {});
                         return;
                       } else {
                         await showModalBottomSheet(
@@ -414,7 +414,7 @@ class _AnomaliesListWidgetState extends State<AnomaliesListWidget> {
                     await widget.toggleIsLoading?.call();
 
                     navigate();
-                    if (shouldSetState) setState(() {});
+                    if (shouldSetState) safeSetState(() {});
                   },
                   text: 'Ver más',
                   options: FFButtonOptions(

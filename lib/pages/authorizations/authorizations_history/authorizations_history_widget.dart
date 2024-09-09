@@ -36,7 +36,7 @@ class _AuthorizationsHistoryWidgetState
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       Function() navigate = () {};
       _model.isLoading = true;
-      setState(() {});
+      safeSetState(() {});
       _model.allAuthsResp = await AuthorizationsGroup.getHistoryAuthsCall.call(
         token: currentAuthenticationToken,
         perPage: 10,
@@ -49,12 +49,12 @@ class _AuthorizationsHistoryWidgetState
             )!
             .toList()
             .cast<dynamic>();
-        setState(() {});
+        safeSetState(() {});
         _model.authorizationsTotal =
             AuthorizationsGroup.getHistoryAuthsCall.totalRows(
           (_model.allAuthsResp?.jsonBody ?? ''),
         );
-        setState(() {});
+        safeSetState(() {});
       } else {
         if ((_model.allAuthsResp?.statusCode ?? 200) == 401) {
           GoRouter.of(context).prepareAuthEvent();
@@ -97,7 +97,7 @@ class _AuthorizationsHistoryWidgetState
       }
 
       _model.isLoading = false;
-      setState(() {});
+      safeSetState(() {});
 
       navigate();
     });
@@ -238,10 +238,10 @@ class _AuthorizationsHistoryWidgetState
                           var shouldSetState = false;
                           Function() navigate = () {};
                           _model.isLoading = true;
-                          setState(() {});
+                          safeSetState(() {});
                           _model.searchValue =
                               _model.searchFieldTextController.text;
-                          setState(() {});
+                          safeSetState(() {});
                           _model.searchAuthsResp = await AuthorizationsGroup
                               .getHistoryAuthsCall
                               .call(
@@ -259,13 +259,13 @@ class _AuthorizationsHistoryWidgetState
                                     )!
                                     .toList()
                                     .cast<dynamic>();
-                            setState(() {});
+                            safeSetState(() {});
                             _model.authorizationsTotal = AuthorizationsGroup
                                 .getHistoryAuthsCall
                                 .totalRows(
                               (_model.searchAuthsResp?.jsonBody ?? ''),
                             );
-                            setState(() {});
+                            safeSetState(() {});
                           } else {
                             if ((_model.searchAuthsResp?.statusCode ?? 200) ==
                                 401) {
@@ -277,7 +277,7 @@ class _AuthorizationsHistoryWidgetState
                                   context.goNamedAuth('Login', context.mounted);
 
                               navigate();
-                              if (shouldSetState) setState(() {});
+                              if (shouldSetState) safeSetState(() {});
                               return;
                             } else {
                               await showModalBottomSheet(
@@ -318,10 +318,10 @@ class _AuthorizationsHistoryWidgetState
                           }
 
                           _model.isLoading = false;
-                          setState(() {});
+                          safeSetState(() {});
 
                           navigate();
-                          if (shouldSetState) setState(() {});
+                          if (shouldSetState) safeSetState(() {});
                         },
                         child: Container(
                           width: 48.0,
@@ -359,8 +359,8 @@ class _AuthorizationsHistoryWidgetState
                             var shouldSetState = false;
                             Function() navigate = () {};
                             _model.isLoading = true;
-                            setState(() {});
-                            setState(() {
+                            safeSetState(() {});
+                            safeSetState(() {
                               _model.searchFieldTextController?.text = '';
                               _model.searchFieldTextController?.selection =
                                   TextSelection.collapsed(
@@ -368,7 +368,7 @@ class _AuthorizationsHistoryWidgetState
                                           .text.length);
                             });
                             _model.searchValue = null;
-                            setState(() {});
+                            safeSetState(() {});
                             _model.clearSearchAuthsResp =
                                 await AuthorizationsGroup.getHistoryAuthsCall
                                     .call(
@@ -388,13 +388,13 @@ class _AuthorizationsHistoryWidgetState
                                       )!
                                       .toList()
                                       .cast<dynamic>();
-                              setState(() {});
+                              safeSetState(() {});
                               _model.authorizationsTotal = AuthorizationsGroup
                                   .getHistoryAuthsCall
                                   .totalRows(
                                 (_model.clearSearchAuthsResp?.jsonBody ?? ''),
                               );
-                              setState(() {});
+                              safeSetState(() {});
                             } else {
                               if ((_model.clearSearchAuthsResp?.statusCode ??
                                       200) ==
@@ -407,7 +407,7 @@ class _AuthorizationsHistoryWidgetState
                                     'Login', context.mounted);
 
                                 navigate();
-                                if (shouldSetState) setState(() {});
+                                if (shouldSetState) safeSetState(() {});
                                 return;
                               } else {
                                 await showModalBottomSheet(
@@ -448,10 +448,10 @@ class _AuthorizationsHistoryWidgetState
                             }
 
                             _model.isLoading = false;
-                            setState(() {});
+                            safeSetState(() {});
 
                             navigate();
-                            if (shouldSetState) setState(() {});
+                            if (shouldSetState) safeSetState(() {});
                           },
                           child: Container(
                             width: 48.0,
@@ -501,7 +501,7 @@ class _AuthorizationsHistoryWidgetState
                           const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 24.0),
                       child: wrapWithModel(
                         model: _model.allAuthorizationsListModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: AllAuthorizationsListWidget(
                           authorizationsTotalRows: _model.authorizationsTotal!,
                           searchValue: _model.searchValue != null &&
@@ -511,7 +511,7 @@ class _AuthorizationsHistoryWidgetState
                           authorizationsArray: FFAppState().allAuthorizations,
                           toggleIsLoading: () async {
                             _model.isLoading = !_model.isLoading;
-                            setState(() {});
+                            safeSetState(() {});
                           },
                         ),
                       ),

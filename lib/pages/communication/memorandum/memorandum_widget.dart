@@ -70,9 +70,9 @@ class _MemorandumWidgetState extends State<MemorandumWidget> {
                 MemorandumGroup.getMemorandumsCall.totalRows(
               (_model.memorandumsResp?.jsonBody ?? ''),
             )!;
-            setState(() {});
+            safeSetState(() {});
             _model.isLoading = false;
-            setState(() {});
+            safeSetState(() {});
             return;
           } else {
             if ((_model.memorandumsResp?.statusCode ?? 200) == 401) {

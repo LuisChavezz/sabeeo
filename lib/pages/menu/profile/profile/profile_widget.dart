@@ -36,7 +36,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       Function() navigate = () {};
       _model.isLoading = true;
-      setState(() {});
+      safeSetState(() {});
       _model.profileResp = await UsersGroup.profileCall.call(
         token: currentAuthenticationToken,
       );
@@ -46,7 +46,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           (_model.profileResp?.jsonBody ?? ''),
           r'''$.data''',
         );
-        setState(() {});
+        safeSetState(() {});
       } else {
         if ((_model.profileResp?.statusCode ?? 200) == 401) {
           GoRouter.of(context).prepareAuthEvent();
@@ -83,7 +83,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       }
 
       _model.isLoading = false;
-      setState(() {});
+      safeSetState(() {});
 
       navigate();
     });
@@ -615,16 +615,17 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                       ),
                                       singleRecord: true,
                                     ).then((s) => s.firstOrNull);
-
-                                    await _model.userFcmTokenDoc!.reference
-                                        .update({
-                                      ...mapToFirestore(
-                                        {
-                                          'fcmTokens': FieldValue.arrayRemove(
-                                              [FFAppState().fcmToken]),
-                                        },
-                                      ),
-                                    });
+                                    if (_model.userFcmTokenDoc != null) {
+                                      await _model.userFcmTokenDoc!.reference
+                                          .update({
+                                        ...mapToFirestore(
+                                          {
+                                            'fcmTokens': FieldValue.arrayRemove(
+                                                [FFAppState().fcmToken]),
+                                          },
+                                        ),
+                                      });
+                                    }
                                     GoRouter.of(context).prepareAuthEvent();
                                     await authManager.signOut();
                                     GoRouter.of(context)
@@ -633,7 +634,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                     context.goNamedAuth(
                                         'Login', context.mounted);
 
-                                    setState(() {});
+                                    safeSetState(() {});
                                   },
                                   text: 'Cerrar sesión',
                                   icon: const Icon(

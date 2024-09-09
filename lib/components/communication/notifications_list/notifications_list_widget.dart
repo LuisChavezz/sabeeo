@@ -54,10 +54,10 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
       if (!((widget.readValue == _model.readCS) ||
           functions.stringIsNull(_model.readCS))) {
         _model.moreNotificationsPerPage = 10;
-        setState(() {});
+        safeSetState(() {});
       }
       _model.readCS = widget.readValue;
-      setState(() {});
+      safeSetState(() {});
     });
   }
 
@@ -274,7 +274,7 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                           ).then((value) => safeSetState(() {}));
                         }
 
-                        setState(() {});
+                        safeSetState(() {});
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
@@ -283,7 +283,7 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(24.0),
                             child: Image.network(
-                              'https://media.licdn.com/dms/image/D560BAQHf1XTJ50sbtw/company-logo_200_200/0/1704916187819/menita_comercial_logo?e=1725494400&v=beta&t=bDiZ3v07npwy2eCL-SRZHvaeoH0f_w-XRfVLhYqClzM',
+                              'https://appmenita-test.s3.us-east-1.amazonaws.com/assets/logo-menita.jpeg',
                               width: 50.0,
                               height: 50.0,
                               fit: BoxFit.cover,
@@ -386,7 +386,7 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                     await widget.toggleIsLoading?.call();
                     _model.moreNotificationsPerPage =
                         _model.moreNotificationsPerPage! + 10;
-                    setState(() {});
+                    safeSetState(() {});
                     _model.moreNotificationsResp =
                         await NotificationsGroup.getNotificationsCall.call(
                       token: currentAuthenticationToken,
@@ -420,7 +420,7 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                             () => context.goNamedAuth('Login', context.mounted);
 
                         navigate();
-                        if (shouldSetState) setState(() {});
+                        if (shouldSetState) safeSetState(() {});
                         return;
                       } else {
                         await showModalBottomSheet(
@@ -458,7 +458,7 @@ class _NotificationsListWidgetState extends State<NotificationsListWidget> {
                     await widget.toggleIsLoading?.call();
 
                     navigate();
-                    if (shouldSetState) setState(() {});
+                    if (shouldSetState) safeSetState(() {});
                   },
                   text: 'Ver más',
                   options: FFButtonOptions(

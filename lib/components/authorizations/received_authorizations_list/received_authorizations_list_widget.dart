@@ -52,10 +52,10 @@ class _ReceivedAuthorizationsListWidgetState
       if (!((widget.searchValue == _model.searchValueCS) ||
           functions.stringIsNull(_model.searchValueCS))) {
         _model.moreAuthorizationsPerPage = 10;
-        setState(() {});
+        safeSetState(() {});
       }
       _model.searchValueCS = widget.searchValue;
-      setState(() {});
+      safeSetState(() {});
     });
   }
 
@@ -386,7 +386,7 @@ class _ReceivedAuthorizationsListWidgetState
                     await widget.toggleIsLoading?.call();
                     _model.moreAuthorizationsPerPage =
                         _model.moreAuthorizationsPerPage + 10;
-                    setState(() {});
+                    safeSetState(() {});
                     _model.moreAuthorizationsResp =
                         await AuthorizationsGroup.getReceivedAuthsCall.call(
                       token: currentAuthenticationToken,
@@ -415,7 +415,7 @@ class _ReceivedAuthorizationsListWidgetState
                             () => context.goNamedAuth('Login', context.mounted);
 
                         navigate();
-                        if (shouldSetState) setState(() {});
+                        if (shouldSetState) safeSetState(() {});
                         return;
                       } else {
                         await showModalBottomSheet(
@@ -454,7 +454,7 @@ class _ReceivedAuthorizationsListWidgetState
                     await widget.toggleIsLoading?.call();
 
                     navigate();
-                    if (shouldSetState) setState(() {});
+                    if (shouldSetState) safeSetState(() {});
                   },
                   text: 'Ver más',
                   options: FFButtonOptions(

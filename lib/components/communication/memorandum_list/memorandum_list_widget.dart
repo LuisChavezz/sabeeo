@@ -53,10 +53,10 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
       if (!((widget.viewedValue == _model.viewedCS) ||
           functions.stringIsNull(_model.viewedCS))) {
         _model.moreMemorandumsPerPage = 10;
-        setState(() {});
+        safeSetState(() {});
       }
       _model.viewedCS = widget.viewedValue;
-      setState(() {});
+      safeSetState(() {});
     });
   }
 
@@ -273,7 +273,7 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                     await widget.toggleIsLoading?.call();
                     _model.moreMemorandumsPerPage =
                         _model.moreMemorandumsPerPage + 10;
-                    setState(() {});
+                    safeSetState(() {});
                     _model.moreMemorandumResp =
                         await MemorandumGroup.getMemorandumsCall.call(
                       token: currentAuthenticationToken,
@@ -308,7 +308,7 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                             () => context.goNamedAuth('Login', context.mounted);
 
                         navigate();
-                        if (shouldSetState) setState(() {});
+                        if (shouldSetState) safeSetState(() {});
                         return;
                       } else {
                         await showModalBottomSheet(
@@ -343,7 +343,7 @@ class _MemorandumListWidgetState extends State<MemorandumListWidget> {
                     await widget.toggleIsLoading?.call();
 
                     navigate();
-                    if (shouldSetState) setState(() {});
+                    if (shouldSetState) safeSetState(() {});
                   },
                   text: 'Ver más',
                   options: FFButtonOptions(

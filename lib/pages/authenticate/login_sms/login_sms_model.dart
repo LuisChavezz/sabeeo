@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 class LoginSmsModel extends FlutterFlowModel<LoginSmsWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
   // State field(s) for phoneField widget.
   FocusNode? phoneFieldFocusNode;

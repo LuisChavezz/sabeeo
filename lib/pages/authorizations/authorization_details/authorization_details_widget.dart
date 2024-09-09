@@ -43,7 +43,7 @@ class _AuthorizationDetailsWidgetState
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _model.isLoading = true;
-      setState(() {});
+      safeSetState(() {});
       _model.authorizationResp =
           await AuthorizationsGroup.authorizationDetailsCall.call(
         token: currentAuthenticationToken,
@@ -59,7 +59,7 @@ class _AuthorizationDetailsWidgetState
             AuthorizationsGroup.authorizationDetailsCall.statusLabel(
           (_model.authorizationResp?.jsonBody ?? ''),
         );
-        setState(() {});
+        safeSetState(() {});
       } else {
         if ((_model.authorizationResp?.statusCode ?? 200) == 401) {
           GoRouter.of(context).prepareAuthEvent();
@@ -102,7 +102,7 @@ class _AuthorizationDetailsWidgetState
       }
 
       _model.isLoading = false;
-      setState(() {});
+      safeSetState(() {});
     });
   }
 
@@ -512,7 +512,7 @@ class _AuthorizationDetailsWidgetState
                                       .isNotEmpty)
                                 wrapWithModel(
                                   model: _model.authorizationPdfListModel,
-                                  updateCallback: () => setState(() {}),
+                                  updateCallback: () => safeSetState(() {}),
                                   child: AuthorizationPdfListWidget(
                                     pdfArray: AuthorizationsGroup
                                         .authorizationDetailsCall
@@ -567,7 +567,7 @@ class _AuthorizationDetailsWidgetState
                                               var shouldSetState = false;
                                               navigate() {}
                                               _model.isLoading = true;
-                                              setState(() {});
+                                              safeSetState(() {});
                                               _model.rejectedAuthoResp =
                                                   await AuthorizationsGroup
                                                       .responseAuthorizationCall
@@ -589,7 +589,7 @@ class _AuthorizationDetailsWidgetState
                                                     'rejected';
                                                 _model.authorizationStatusLabel =
                                                     'rechazada';
-                                                setState(() {});
+                                                safeSetState(() {});
                                               } else {
                                                 if ((_model.rejectedAuthoResp
                                                             ?.statusCode ??
@@ -656,7 +656,7 @@ class _AuthorizationDetailsWidgetState
                                                             ''),
                                                       )
                                                       .toString();
-                                              setState(() {});
+                                              safeSetState(() {});
                                               Navigator.pop(context);
                                               await showModalBottomSheet(
                                                 isScrollControlled: true,
@@ -704,7 +704,7 @@ class _AuthorizationDetailsWidgetState
                                   },
                                 ).then((value) => safeSetState(() {}));
 
-                                setState(() {});
+                                safeSetState(() {});
                               },
                               text: 'Rechazar',
                               icon: const Icon(
@@ -760,7 +760,7 @@ class _AuthorizationDetailsWidgetState
                                               var shouldSetState = false;
                                               navigate() {}
                                               _model.isLoading = true;
-                                              setState(() {});
+                                              safeSetState(() {});
                                               _model.approvedAuthResp =
                                                   await AuthorizationsGroup
                                                       .responseAuthorizationCall
@@ -779,7 +779,7 @@ class _AuthorizationDetailsWidgetState
                                                     'approved';
                                                 _model.authorizationStatusLabel =
                                                     'aprobada';
-                                                setState(() {});
+                                                safeSetState(() {});
                                               } else {
                                                 if ((_model.approvedAuthResp
                                                             ?.statusCode ??
@@ -837,7 +837,7 @@ class _AuthorizationDetailsWidgetState
 
                                               _model.isLoading = false;
                                               _model.wasUpdated = true;
-                                              setState(() {});
+                                              safeSetState(() {});
                                               Navigator.pop(context);
                                               await showModalBottomSheet(
                                                 isScrollControlled: true,
@@ -885,7 +885,7 @@ class _AuthorizationDetailsWidgetState
                                   },
                                 ).then((value) => safeSetState(() {}));
 
-                                setState(() {});
+                                safeSetState(() {});
                               },
                               text: 'Aprobar',
                               icon: const Icon(

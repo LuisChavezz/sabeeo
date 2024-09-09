@@ -26,7 +26,6 @@ class AuthorizationsModel extends FlutterFlowModel<AuthorizationsWidget> {
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Backend Call - API (Get Requested Auths)] action in Authorizations widget.
   ApiCallResponse? reqAuthsResp;
   // Stores action output result for [Backend Call - API (Get Received Auths)] action in Authorizations widget.

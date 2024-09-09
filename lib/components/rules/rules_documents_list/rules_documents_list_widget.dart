@@ -49,7 +49,7 @@ class _RulesDocumentsListWidgetState extends State<RulesDocumentsListWidget> {
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _model.moreRulesPerPage = 10;
-      setState(() {});
+      safeSetState(() {});
     });
   }
 
@@ -350,7 +350,7 @@ class _RulesDocumentsListWidgetState extends State<RulesDocumentsListWidget> {
                   onPressed: () async {
                     await widget.toggleIsLoading?.call();
                     _model.moreRulesPerPage = _model.moreRulesPerPage + 10;
-                    setState(() {});
+                    safeSetState(() {});
                     await widget.setMoreRules?.call(
                       _model.moreRulesPerPage,
                     );

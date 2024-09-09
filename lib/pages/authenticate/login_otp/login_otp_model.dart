@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 class LoginOtpModel extends FlutterFlowModel<LoginOtpWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
   // State field(s) for PinCode widget.
   TextEditingController? pinCodeController;

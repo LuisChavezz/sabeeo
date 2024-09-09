@@ -52,10 +52,10 @@ class _AllAuthorizationsListWidgetState
       if (!((widget.searchValue == _model.searchValueCS) ||
           functions.stringIsNull(_model.searchValueCS))) {
         _model.moreAuthorizationsPerPage = 10;
-        setState(() {});
+        safeSetState(() {});
       }
       _model.searchValueCS = widget.searchValue;
-      setState(() {});
+      safeSetState(() {});
     });
   }
 
@@ -448,7 +448,7 @@ class _AllAuthorizationsListWidgetState
                 );
               },
             ),
-            if (FFAppState().reqAuthorizationsArray.length <
+            if (FFAppState().allAuthorizations.length <
                 widget.authorizationsTotalRows!)
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
@@ -459,7 +459,7 @@ class _AllAuthorizationsListWidgetState
                     await widget.toggleIsLoading?.call();
                     _model.moreAuthorizationsPerPage =
                         _model.moreAuthorizationsPerPage + 10;
-                    setState(() {});
+                    safeSetState(() {});
                     _model.moreAuthorizationsResp =
                         await AuthorizationsGroup.getHistoryAuthsCall.call(
                       token: currentAuthenticationToken,
@@ -488,7 +488,7 @@ class _AllAuthorizationsListWidgetState
                             () => context.goNamedAuth('Login', context.mounted);
 
                         navigate();
-                        if (shouldSetState) setState(() {});
+                        if (shouldSetState) safeSetState(() {});
                         return;
                       } else {
                         await showModalBottomSheet(
@@ -525,7 +525,7 @@ class _AllAuthorizationsListWidgetState
                     await widget.toggleIsLoading?.call();
 
                     navigate();
-                    if (shouldSetState) setState(() {});
+                    if (shouldSetState) safeSetState(() {});
                   },
                   text: 'Ver más',
                   options: FFButtonOptions(

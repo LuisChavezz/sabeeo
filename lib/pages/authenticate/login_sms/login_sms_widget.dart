@@ -358,7 +358,7 @@ class _LoginSmsWidgetState extends State<LoginSmsWidget>
                                             context.pushNamed('Login_otp');
 
                                             if (shouldSetState) {
-                                              setState(() {});
+                                              safeSetState(() {});
                                             }
                                             return;
                                           } else {
@@ -402,12 +402,14 @@ class _LoginSmsWidgetState extends State<LoginSmsWidget>
                                                 (value) => safeSetState(() {}));
 
                                             if (shouldSetState) {
-                                              setState(() {});
+                                              safeSetState(() {});
                                             }
                                             return;
                                           }
 
-                                          if (shouldSetState) setState(() {});
+                                          if (shouldSetState) {
+                                            safeSetState(() {});
+                                          }
                                         },
                                         text: 'Enviar SMS',
                                         options: FFButtonOptions(

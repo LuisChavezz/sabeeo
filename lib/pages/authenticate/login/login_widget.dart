@@ -41,7 +41,7 @@ class _LoginWidgetState extends State<LoginWidget>
     if (!isWeb) {
       _keyboardVisibilitySubscription =
           KeyboardVisibilityController().onChange.listen((bool visible) {
-        setState(() {
+        safeSetState(() {
           _isKeyboardVisible = visible;
         });
       });
@@ -514,7 +514,7 @@ class _LoginWidgetState extends State<LoginWidget>
                                                 const EdgeInsetsDirectional.fromSTEB(
                                                     20.0, 22.0, 20.0, 22.0),
                                             suffixIcon: InkWell(
-                                              onTap: () => setState(
+                                              onTap: () => safeSetState(
                                                 () => _model
                                                         .passwordFieldVisibility =
                                                     !_model
@@ -581,17 +581,17 @@ class _LoginWidgetState extends State<LoginWidget>
                                                       .rememberMeCheckValue ??=
                                                   FFAppState().rememberMe,
                                               onChanged: (newValue) async {
-                                                setState(() => _model
+                                                safeSetState(() => _model
                                                         .rememberMeCheckValue =
                                                     newValue!);
                                                 if (newValue!) {
                                                   FFAppState().rememberMe =
                                                       true;
-                                                  setState(() {});
+                                                  safeSetState(() {});
                                                 } else {
                                                   FFAppState().rememberMe =
                                                       false;
-                                                  setState(() {});
+                                                  safeSetState(() {});
                                                 }
                                               },
                                               side: BorderSide(
@@ -707,7 +707,7 @@ class _LoginWidgetState extends State<LoginWidget>
                                                             .text
                                                         : '',
                                                 );
-                                                setState(() {});
+                                                safeSetState(() {});
                                                 if (functions.stringLength(
                                                         FFAppState().fcmToken) >
                                                     100) {
@@ -764,13 +764,13 @@ class _LoginWidgetState extends State<LoginWidget>
 
                                                   navigate();
                                                   if (shouldSetState) {
-                                                    setState(() {});
+                                                    safeSetState(() {});
                                                   }
                                                   return;
                                                 } else {
                                                   navigate();
                                                   if (shouldSetState) {
-                                                    setState(() {});
+                                                    safeSetState(() {});
                                                   }
                                                   return;
                                                 }
@@ -818,14 +818,14 @@ class _LoginWidgetState extends State<LoginWidget>
                                                     safeSetState(() {}));
 
                                                 if (shouldSetState) {
-                                                  setState(() {});
+                                                  safeSetState(() {});
                                                 }
                                                 return;
                                               }
 
                                               navigate();
                                               if (shouldSetState) {
-                                                setState(() {});
+                                                safeSetState(() {});
                                               }
                                             },
                                             text: 'Ingresar',

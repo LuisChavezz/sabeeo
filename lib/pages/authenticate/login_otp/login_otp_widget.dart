@@ -411,25 +411,27 @@ class _LoginOtpWidgetState extends State<LoginOtpWidget>
 
                                               navigate();
                                               if (shouldSetState) {
-                                                setState(() {});
+                                                safeSetState(() {});
                                               }
                                               return;
                                             } else {
                                               navigate();
                                               if (shouldSetState) {
-                                                setState(() {});
+                                                safeSetState(() {});
                                               }
                                               return;
                                             }
                                           } else {
                                             if (shouldSetState) {
-                                              setState(() {});
+                                              safeSetState(() {});
                                             }
                                             return;
                                           }
 
                                           navigate();
-                                          if (shouldSetState) setState(() {});
+                                          if (shouldSetState) {
+                                            safeSetState(() {});
+                                          }
                                         },
                                         text: 'Ingresar',
                                         options: FFButtonOptions(

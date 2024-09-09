@@ -32,25 +32,24 @@ class _RulesWidgetState extends State<RulesWidget> {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       Function() navigate = () {};
       _model.isLoading = true;
-      setState(() {});
-      _model.rulesResp = await OriginalAPIEndpointsGroup.getDocumentsCall.call(
+      safeSetState(() {});
+      _model.rulesResp = await RuleDocumentsGroup.getDocumentsCall.call(
         token: currentAuthenticationToken,
         perPage: _model.rulesPerPage,
       );
 
       if ((_model.rulesResp?.succeeded ?? true)) {
-        FFAppState().rulesDocumentsArray =
-            OriginalAPIEndpointsGroup.getDocumentsCall
-                .data(
-                  (_model.rulesResp?.jsonBody ?? ''),
-                )!
-                .toList()
-                .cast<dynamic>();
-        setState(() {});
+        FFAppState().rulesDocumentsArray = RuleDocumentsGroup.getDocumentsCall
+            .data(
+              (_model.rulesResp?.jsonBody ?? ''),
+            )!
+            .toList()
+            .cast<dynamic>();
+        safeSetState(() {});
         _model.rulesTotal = FFAppState().rulesDocumentsArray.length;
         _model.rulesDocuments = functions
             .pagination(
-                OriginalAPIEndpointsGroup.getDocumentsCall
+                RuleDocumentsGroup.getDocumentsCall
                     .data(
                       (_model.rulesResp?.jsonBody ?? ''),
                     )!
@@ -58,7 +57,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                 _model.rulesPerPage!)
             .toList()
             .cast<dynamic>();
-        setState(() {});
+        safeSetState(() {});
       } else {
         if ((_model.rulesResp?.statusCode ?? 200) == 401) {
           GoRouter.of(context).prepareAuthEvent();
@@ -73,7 +72,7 @@ class _RulesWidgetState extends State<RulesWidget> {
       }
 
       _model.isLoading = false;
-      setState(() {});
+      safeSetState(() {});
 
       navigate();
     });
@@ -214,9 +213,9 @@ class _RulesWidgetState extends State<RulesWidget> {
                                   _model.rulesPerPage!)
                               .toList()
                               .cast<dynamic>();
-                          setState(() {});
+                          safeSetState(() {});
                           _model.isLoading = false;
-                          setState(() {});
+                          safeSetState(() {});
                         },
                         child: Container(
                           width: 48.0,
@@ -259,8 +258,8 @@ class _RulesWidgetState extends State<RulesWidget> {
                                     _model.rulesPerPage!)
                                 .toList()
                                 .cast<dynamic>();
-                            setState(() {});
-                            setState(() {
+                            safeSetState(() {});
+                            safeSetState(() {
                               _model.searchFieldTextController?.text = '';
                               _model.searchFieldTextController?.selection =
                                   TextSelection.collapsed(
@@ -268,7 +267,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                                           .text.length);
                             });
                             _model.isLoading = false;
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           child: Container(
                             width: 48.0,
@@ -318,7 +317,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                           const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 24.0),
                       child: wrapWithModel(
                         model: _model.rulesDocumentsListModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: RulesDocumentsListWidget(
                           rulesTotalRows: _model.rulesTotal!,
                           searchValue: _model.searchValue != null &&
@@ -328,7 +327,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                           rulesArray: _model.rulesDocuments,
                           toggleIsLoading: () async {
                             _model.isLoading = !_model.isLoading;
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           setMoreRules: (perPage) async {
                             _model.rulesDocuments = functions
@@ -344,16 +343,15 @@ class _RulesWidgetState extends State<RulesWidget> {
                                     perPage)
                                 .toList()
                                 .cast<dynamic>();
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           reloadQuery: () async {
                             var shouldSetState = false;
                             Function() navigate = () {};
                             _model.isLoading = true;
-                            setState(() {});
+                            safeSetState(() {});
                             _model.reloadRulesResp =
-                                await OriginalAPIEndpointsGroup.getDocumentsCall
-                                    .call(
+                                await RuleDocumentsGroup.getDocumentsCall.call(
                               token: currentAuthenticationToken,
                               perPage: _model.rulesPerPage,
                             );
@@ -361,21 +359,21 @@ class _RulesWidgetState extends State<RulesWidget> {
                             shouldSetState = true;
                             if ((_model.reloadRulesResp?.succeeded ?? true)) {
                               FFAppState().rulesDocumentsArray =
-                                  OriginalAPIEndpointsGroup.getDocumentsCall
+                                  RuleDocumentsGroup.getDocumentsCall
                                       .data(
                                         (_model.reloadRulesResp?.jsonBody ??
                                             ''),
                                       )!
                                       .toList()
                                       .cast<dynamic>();
-                              setState(() {});
+                              safeSetState(() {});
                               _model.rulesTotal =
                                   FFAppState().rulesDocumentsArray.length;
                               _model.rulesDocuments = functions
                                   .pagination(
                                       functions
                                           .searchRuleDocumentsFilter(
-                                              OriginalAPIEndpointsGroup
+                                              RuleDocumentsGroup
                                                   .getDocumentsCall
                                                   .data(
                                                     (_model.reloadRulesResp
@@ -390,7 +388,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                                           .moreRulesPerPage)
                                   .toList()
                                   .cast<dynamic>();
-                              setState(() {});
+                              safeSetState(() {});
                             } else {
                               if ((_model.reloadRulesResp?.statusCode ?? 200) ==
                                   401) {
@@ -400,16 +398,16 @@ class _RulesWidgetState extends State<RulesWidget> {
 
                                 navigate = () => context.goNamedAuth(
                                     'Login', context.mounted);
-                                if (shouldSetState) setState(() {});
+                                if (shouldSetState) safeSetState(() {});
                                 return;
                               }
                             }
 
                             _model.isLoading = false;
-                            setState(() {});
+                            safeSetState(() {});
 
                             navigate();
-                            if (shouldSetState) setState(() {});
+                            if (shouldSetState) safeSetState(() {});
                           },
                         ),
                       ),

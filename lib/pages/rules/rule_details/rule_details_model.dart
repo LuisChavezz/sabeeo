@@ -18,7 +18,6 @@ class RuleDetailsModel extends FlutterFlowModel<RuleDetailsWidget> {
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Backend Call - API (Confirm Document)] action in Button widget.
   ApiCallResponse? ruleDocConfirmResp;
 

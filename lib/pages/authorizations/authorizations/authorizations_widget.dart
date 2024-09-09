@@ -36,7 +36,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       Function() navigate = () {};
       _model.isLoading = true;
-      setState(() {});
+      safeSetState(() {});
       _model.reqAuthsResp =
           await AuthorizationsGroup.getRequestedAuthsCall.call(
         token: currentAuthenticationToken,
@@ -52,12 +52,12 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                 )!
                 .toList()
                 .cast<dynamic>();
-        setState(() {});
+        safeSetState(() {});
         _model.reqAuthorizationsTotal =
             AuthorizationsGroup.getRequestedAuthsCall.totalRows(
           (_model.reqAuthsResp?.jsonBody ?? ''),
         );
-        setState(() {});
+        safeSetState(() {});
       } else {
         if ((_model.reqAuthsResp?.statusCode ?? 200) == 401) {
           GoRouter.of(context).prepareAuthEvent();
@@ -114,12 +114,12 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                 )!
                 .toList()
                 .cast<dynamic>();
-        setState(() {});
+        safeSetState(() {});
         _model.recAuthorizationsTotal =
             AuthorizationsGroup.getReceivedAuthsCall.totalRows(
           (_model.recAuthsResp?.jsonBody ?? ''),
         );
-        setState(() {});
+        safeSetState(() {});
       } else {
         if ((_model.recAuthsResp?.statusCode ?? 200) == 401) {
           GoRouter.of(context).prepareAuthEvent();
@@ -162,7 +162,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
       }
 
       _model.isLoading = false;
-      setState(() {});
+      safeSetState(() {});
 
       navigate();
     });
@@ -206,8 +206,8 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                             child: FFButtonWidget(
                               onPressed: () async {
                                 _model.switchValue = 'solic';
-                                setState(() {});
-                                setState(() {
+                                safeSetState(() {});
+                                safeSetState(() {
                                   _model.searchFieldTextController?.text =
                                       (_model.searchReqValue != null &&
                                               _model.searchReqValue != ''
@@ -260,8 +260,8 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                             child: FFButtonWidget(
                               onPressed: () async {
                                 _model.switchValue = 'recib';
-                                setState(() {});
-                                setState(() {
+                                safeSetState(() {});
+                                safeSetState(() {
                                   _model.searchFieldTextController?.text =
                                       (_model.searchRecValue != null &&
                                               _model.searchRecValue != ''
@@ -393,11 +393,11 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                               var shouldSetState = false;
                               Function() navigate = () {};
                               _model.isLoading = true;
-                              setState(() {});
+                              safeSetState(() {});
                               if (_model.switchValue == 'solic') {
                                 _model.searchReqValue =
                                     _model.searchFieldTextController.text;
-                                setState(() {});
+                                safeSetState(() {});
                                 _model.reqSearchAuthsResp =
                                     await AuthorizationsGroup
                                         .getRequestedAuthsCall
@@ -421,13 +421,13 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                           )!
                                           .toList()
                                           .cast<dynamic>();
-                                  setState(() {});
+                                  safeSetState(() {});
                                   _model.reqAuthorizationsTotal =
                                       AuthorizationsGroup.getRequestedAuthsCall
                                           .totalRows(
                                     (_model.reqSearchAuthsResp?.jsonBody ?? ''),
                                   );
-                                  setState(() {});
+                                  safeSetState(() {});
                                 } else {
                                   if ((_model.reqSearchAuthsResp?.statusCode ??
                                           200) ==
@@ -441,7 +441,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                         'Login', context.mounted);
 
                                     navigate();
-                                    if (shouldSetState) setState(() {});
+                                    if (shouldSetState) safeSetState(() {});
                                     return;
                                   } else {
                                     await showModalBottomSheet(
@@ -484,7 +484,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                               } else {
                                 _model.searchRecValue =
                                     _model.searchFieldTextController.text;
-                                setState(() {});
+                                safeSetState(() {});
                                 _model.recSearchAuthsResp =
                                     await AuthorizationsGroup
                                         .getReceivedAuthsCall
@@ -507,13 +507,13 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                           )!
                                           .toList()
                                           .cast<dynamic>();
-                                  setState(() {});
+                                  safeSetState(() {});
                                   _model.recAuthorizationsTotal =
                                       AuthorizationsGroup.getReceivedAuthsCall
                                           .totalRows(
                                     (_model.recSearchAuthsResp?.jsonBody ?? ''),
                                   );
-                                  setState(() {});
+                                  safeSetState(() {});
                                 } else {
                                   if ((_model.recSearchAuthsResp?.statusCode ??
                                           200) ==
@@ -527,7 +527,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                         'Login', context.mounted);
 
                                     navigate();
-                                    if (shouldSetState) setState(() {});
+                                    if (shouldSetState) safeSetState(() {});
                                     return;
                                   } else {
                                     await showModalBottomSheet(
@@ -569,10 +569,10 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                               }
 
                               _model.isLoading = false;
-                              setState(() {});
+                              safeSetState(() {});
 
                               navigate();
-                              if (shouldSetState) setState(() {});
+                              if (shouldSetState) safeSetState(() {});
                             },
                             child: Container(
                               width: 48.0,
@@ -615,8 +615,8 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                 var shouldSetState = false;
                                 Function() navigate = () {};
                                 _model.isLoading = true;
-                                setState(() {});
-                                setState(() {
+                                safeSetState(() {});
+                                safeSetState(() {
                                   _model.searchFieldTextController?.text = '';
                                   _model.searchFieldTextController?.selection =
                                       TextSelection.collapsed(
@@ -627,7 +627,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                 });
                                 if (_model.switchValue == 'solic') {
                                   _model.searchReqValue = null;
-                                  setState(() {});
+                                  safeSetState(() {});
                                   _model.reqClearSearchAuthsResp =
                                       await AuthorizationsGroup
                                           .getRequestedAuthsCall
@@ -651,7 +651,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                             )!
                                             .toList()
                                             .cast<dynamic>();
-                                    setState(() {});
+                                    safeSetState(() {});
                                     _model.reqAuthorizationsTotal =
                                         AuthorizationsGroup
                                             .getRequestedAuthsCall
@@ -660,7 +660,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                               ?.jsonBody ??
                                           ''),
                                     );
-                                    setState(() {});
+                                    safeSetState(() {});
                                   } else {
                                     if ((_model.reqClearSearchAuthsResp
                                                 ?.statusCode ??
@@ -675,7 +675,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                           'Login', context.mounted);
 
                                       navigate();
-                                      if (shouldSetState) setState(() {});
+                                      if (shouldSetState) safeSetState(() {});
                                       return;
                                     } else {
                                       await showModalBottomSheet(
@@ -721,7 +721,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                   }
                                 } else {
                                   _model.searchRecValue = null;
-                                  setState(() {});
+                                  safeSetState(() {});
                                   _model.recClearSearchAuthsResp =
                                       await AuthorizationsGroup
                                           .getReceivedAuthsCall
@@ -743,7 +743,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                             )!
                                             .toList()
                                             .cast<dynamic>();
-                                    setState(() {});
+                                    safeSetState(() {});
                                     _model.recAuthorizationsTotal =
                                         AuthorizationsGroup.getReceivedAuthsCall
                                             .totalRows(
@@ -751,7 +751,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                               ?.jsonBody ??
                                           ''),
                                     );
-                                    setState(() {});
+                                    safeSetState(() {});
                                   } else {
                                     if ((_model.recClearSearchAuthsResp
                                                 ?.statusCode ??
@@ -766,7 +766,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                           'Login', context.mounted);
 
                                       navigate();
-                                      if (shouldSetState) setState(() {});
+                                      if (shouldSetState) safeSetState(() {});
                                       return;
                                     } else {
                                       await showModalBottomSheet(
@@ -812,10 +812,10 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                 }
 
                                 _model.isLoading = false;
-                                setState(() {});
+                                safeSetState(() {});
 
                                 navigate();
-                                if (shouldSetState) setState(() {});
+                                if (shouldSetState) safeSetState(() {});
                               },
                               child: Container(
                                 width: 48.0,
@@ -865,7 +865,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                               24.0, 0.0, 24.0, 24.0),
                           child: wrapWithModel(
                             model: _model.requestedAuthorizationsListModel,
-                            updateCallback: () => setState(() {}),
+                            updateCallback: () => safeSetState(() {}),
                             child: RequestedAuthorizationsListWidget(
                               authorizationsTotalRows:
                                   _model.reqAuthorizationsTotal!,
@@ -877,7 +877,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                   : '',
                               toggleIsLoading: () async {
                                 _model.isLoading = !_model.isLoading;
-                                setState(() {});
+                                safeSetState(() {});
                               },
                             ),
                           ),
@@ -890,7 +890,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                               24.0, 0.0, 24.0, 24.0),
                           child: wrapWithModel(
                             model: _model.receivedAuthorizationsListModel,
-                            updateCallback: () => setState(() {}),
+                            updateCallback: () => safeSetState(() {}),
                             child: ReceivedAuthorizationsListWidget(
                               authorizationsTotalRows:
                                   _model.recAuthorizationsTotal!,
@@ -902,7 +902,7 @@ class _AuthorizationsWidgetState extends State<AuthorizationsWidget> {
                                   : '',
                               toggleIsLoading: () async {
                                 _model.isLoading = !_model.isLoading;
-                                setState(() {});
+                                safeSetState(() {});
                               },
                             ),
                           ),

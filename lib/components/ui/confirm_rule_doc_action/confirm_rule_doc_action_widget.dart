@@ -140,14 +140,14 @@ class _ConfirmRuleDocActionWidgetState
                                       .toString() ==
                                   '4') {
                                 _model.showButton = true;
-                                setState(() {});
+                                safeSetState(() {});
                                 await widget.setNipAction?.call(
                                   _model.nipFieldTextController.text,
                                 );
                                 return;
                               } else {
                                 _model.showButton = false;
-                                setState(() {});
+                                safeSetState(() {});
                                 return;
                               }
                             },

@@ -25,3 +25,5 @@ export '/pages/authorizations/p_d_f_viewer/p_d_f_viewer_widget.dart'
 export '/pages/rules/rules/rules_widget.dart' show RulesWidget;
 export '/pages/rules/rule_details/rule_details_widget.dart'
     show RuleDetailsWidget;
+export '/pages/menu/directory/user_directory/user_directory_widget.dart'
+    show UserDirectoryWidget;

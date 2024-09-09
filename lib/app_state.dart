@@ -320,6 +320,35 @@ class FFAppState extends ChangeNotifier {
     _apnsToken = value;
     prefs.setString('ff_apnsToken', value);
   }
+
+  List<dynamic> _usersArray = [];
+  List<dynamic> get usersArray => _usersArray;
+  set usersArray(List<dynamic> value) {
+    _usersArray = value;
+  }
+
+  void addToUsersArray(dynamic value) {
+    usersArray.add(value);
+  }
+
+  void removeFromUsersArray(dynamic value) {
+    usersArray.remove(value);
+  }
+
+  void removeAtIndexFromUsersArray(int index) {
+    usersArray.removeAt(index);
+  }
+
+  void updateUsersArrayAtIndex(
+    int index,
+    dynamic Function(dynamic) updateFn,
+  ) {
+    usersArray[index] = updateFn(_usersArray[index]);
+  }
+
+  void insertAtIndexInUsersArray(int index, dynamic value) {
+    usersArray.insert(index, value);
+  }
 }
 
 void _safeInit(Function() initializeField) {

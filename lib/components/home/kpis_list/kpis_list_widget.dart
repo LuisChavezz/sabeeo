@@ -281,7 +281,7 @@ class _KpisListWidgetState extends State<KpisListWidget> {
                     Function() navigate = () {};
                     await widget.toggleIsLoading?.call();
                     _model.moreKpisPerPage = _model.moreKpisPerPage + 10;
-                    setState(() {});
+                    safeSetState(() {});
                     _model.moreKpisResp = await KpiGroup.getKpisCall.call(
                       token: currentAuthenticationToken,
                       perPage: _model.moreKpisPerPage.toString(),
@@ -306,7 +306,7 @@ class _KpisListWidgetState extends State<KpisListWidget> {
                             () => context.goNamedAuth('Login', context.mounted);
 
                         navigate();
-                        if (shouldSetState) setState(() {});
+                        if (shouldSetState) safeSetState(() {});
                         return;
                       } else {
                         await showModalBottomSheet(
@@ -345,7 +345,7 @@ class _KpisListWidgetState extends State<KpisListWidget> {
                     await widget.toggleIsLoading?.call();
 
                     navigate();
-                    if (shouldSetState) setState(() {});
+                    if (shouldSetState) safeSetState(() {});
                   },
                   text: 'Ver más',
                   options: FFButtonOptions(

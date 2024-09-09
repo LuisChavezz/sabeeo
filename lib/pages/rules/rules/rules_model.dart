@@ -29,7 +29,6 @@ class RulesModel extends FlutterFlowModel<RulesWidget> {
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Backend Call - API (Get Documents)] action in Rules widget.
   ApiCallResponse? rulesResp;
   // State field(s) for searchField widget.

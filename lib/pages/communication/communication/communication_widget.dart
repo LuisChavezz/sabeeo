@@ -38,7 +38,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
       Function() navigate = () {};
       _model.isLoading = true;
       _model.switchValue = 'notis';
-      setState(() {});
+      safeSetState(() {});
       _model.memorandumsResp = await MemorandumGroup.getMemorandumsCall.call(
         token: currentAuthenticationToken,
         perPage: _model.memorandumsPerPage,
@@ -53,11 +53,11 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
             .toList()
             .cast<dynamic>();
         FFAppState().tempIntValue = 0;
-        setState(() {});
+        safeSetState(() {});
         _model.memorandumsTotal = MemorandumGroup.getMemorandumsCall.totalRows(
           (_model.memorandumsResp?.jsonBody ?? ''),
         );
-        setState(() {});
+        safeSetState(() {});
       } else {
         if ((_model.memorandumsResp?.statusCode ?? 200) == 401) {
           GoRouter.of(context).prepareAuthEvent();
@@ -114,12 +114,12 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                 )!
                 .toList()
                 .cast<dynamic>();
-        setState(() {});
+        safeSetState(() {});
         _model.notificationsTotal =
             NotificationsGroup.getNotificationsCall.totalRows(
           (_model.notificationsResp?.jsonBody ?? ''),
         );
-        setState(() {});
+        safeSetState(() {});
       } else {
         if ((_model.notificationsResp?.statusCode ?? 200) == 401) {
           GoRouter.of(context).prepareAuthEvent();
@@ -164,7 +164,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
       }
 
       _model.isLoading = false;
-      setState(() {});
+      safeSetState(() {});
 
       navigate();
     });
@@ -204,7 +204,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                           FFButtonWidget(
                             onPressed: () async {
                               _model.switchValue = 'comun';
-                              setState(() {});
+                              safeSetState(() {});
                             },
                             text: 'Comunicados',
                             options: FFButtonOptions(
@@ -242,7 +242,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                           FFButtonWidget(
                             onPressed: () async {
                               _model.switchValue = 'notis';
-                              setState(() {});
+                              safeSetState(() {});
                             },
                             text: 'Notificaciones',
                             options: FFButtonOptions(
@@ -349,7 +349,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                               24.0, 0.0, 24.0, 24.0),
                           child: wrapWithModel(
                             model: _model.memorandumListModel,
-                            updateCallback: () => setState(() {}),
+                            updateCallback: () => safeSetState(() {}),
                             child: MemorandumListWidget(
                               memorandumsTotalRows: valueOrDefault<int>(
                                 FFAppState().tempIntValue > 0
@@ -361,11 +361,11 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                               viewedValue: _model.memorandumsSwitchValue,
                               toggleIsLoading: () async {
                                 _model.isLoading = !_model.isLoading;
-                                setState(() {});
+                                safeSetState(() {});
                               },
                               setMemorandumsTotal: (totalRows) async {
                                 _model.memorandumsTotal = totalRows;
-                                setState(() {});
+                                safeSetState(() {});
                               },
                             ),
                           ),
@@ -378,7 +378,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                               24.0, 0.0, 24.0, 24.0),
                           child: wrapWithModel(
                             model: _model.notificationsListModel,
-                            updateCallback: () => setState(() {}),
+                            updateCallback: () => safeSetState(() {}),
                             child: NotificationsListWidget(
                               notificationsTotalRows:
                                   _model.notificationsTotal!,
@@ -392,11 +392,11 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                               ),
                               toggleIsLoading: () async {
                                 _model.isLoading = !_model.isLoading;
-                                setState(() {});
+                                safeSetState(() {});
                               },
                               setNotificationsTotal: (totalRows) async {
                                 _model.notificationsTotal = totalRows;
-                                setState(() {});
+                                safeSetState(() {});
                               },
                             ),
                           ),
@@ -428,7 +428,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                           _model.notificationsSwitchValue = 'read';
                           _model.isLoading = true;
                           _model.memorandumsSwitchValue = 'VIEWED';
-                          setState(() {});
+                          safeSetState(() {});
                           _model.readedMemorandumsResp =
                               await MemorandumGroup.getMemorandumsCall.call(
                             token: currentAuthenticationToken,
@@ -447,12 +447,12 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                                     )!
                                     .toList()
                                     .cast<dynamic>();
-                            setState(() {});
+                            safeSetState(() {});
                             _model.memorandumsTotal =
                                 MemorandumGroup.getMemorandumsCall.totalRows(
                               (_model.readedMemorandumsResp?.jsonBody ?? ''),
                             );
-                            setState(() {});
+                            safeSetState(() {});
                           } else {
                             if ((_model.readedMemorandumsResp?.statusCode ??
                                     200) ==
@@ -465,7 +465,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                                   context.goNamedAuth('Login', context.mounted);
 
                               navigate();
-                              if (shouldSetState) setState(() {});
+                              if (shouldSetState) safeSetState(() {});
                               return;
                             } else {
                               await showModalBottomSheet(
@@ -521,13 +521,13 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                                 )!
                                 .toList()
                                 .cast<dynamic>();
-                            setState(() {});
+                            safeSetState(() {});
                             _model.notificationsTotal = NotificationsGroup
                                 .getNotificationsCall
                                 .totalRows(
                               (_model.readedNotificationsResp?.jsonBody ?? ''),
                             );
-                            setState(() {});
+                            safeSetState(() {});
                           } else {
                             if ((_model.readedNotificationsResp?.statusCode ??
                                     200) ==
@@ -540,7 +540,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                                   context.goNamedAuth('Login', context.mounted);
 
                               navigate();
-                              if (shouldSetState) setState(() {});
+                              if (shouldSetState) safeSetState(() {});
                               return;
                             } else {
                               await showModalBottomSheet(
@@ -579,10 +579,10 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                           }
 
                           _model.isLoading = false;
-                          setState(() {});
+                          safeSetState(() {});
 
                           navigate();
-                          if (shouldSetState) setState(() {});
+                          if (shouldSetState) safeSetState(() {});
                         },
                       ),
                     ),
@@ -611,7 +611,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                           _model.notificationsSwitchValue = 'unread';
                           _model.isLoading = true;
                           _model.memorandumsSwitchValue = 'UNVIEWED';
-                          setState(() {});
+                          safeSetState(() {});
                           _model.unreadedMemorandumsResp =
                               await MemorandumGroup.getMemorandumsCall.call(
                             token: currentAuthenticationToken,
@@ -630,12 +630,12 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                                 )!
                                 .toList()
                                 .cast<dynamic>();
-                            setState(() {});
+                            safeSetState(() {});
                             _model.memorandumsTotal =
                                 MemorandumGroup.getMemorandumsCall.totalRows(
                               (_model.unreadedMemorandumsResp?.jsonBody ?? ''),
                             );
-                            setState(() {});
+                            safeSetState(() {});
                           } else {
                             if ((_model.unreadedMemorandumsResp?.statusCode ??
                                     200) ==
@@ -648,7 +648,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                                   context.goNamedAuth('Login', context.mounted);
 
                               navigate();
-                              if (shouldSetState) setState(() {});
+                              if (shouldSetState) safeSetState(() {});
                               return;
                             } else {
                               await showModalBottomSheet(
@@ -704,14 +704,14 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                                 )!
                                 .toList()
                                 .cast<dynamic>();
-                            setState(() {});
+                            safeSetState(() {});
                             _model.notificationsTotal = NotificationsGroup
                                 .getNotificationsCall
                                 .totalRows(
                               (_model.unreadedNotificationsResp?.jsonBody ??
                                   ''),
                             );
-                            setState(() {});
+                            safeSetState(() {});
                           } else {
                             if ((_model.unreadedNotificationsResp?.statusCode ??
                                     200) ==
@@ -724,7 +724,7 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                                   context.goNamedAuth('Login', context.mounted);
 
                               navigate();
-                              if (shouldSetState) setState(() {});
+                              if (shouldSetState) safeSetState(() {});
                               return;
                             } else {
                               await showModalBottomSheet(
@@ -763,10 +763,10 @@ class _CommunicationWidgetState extends State<CommunicationWidget> {
                           }
 
                           _model.isLoading = false;
-                          setState(() {});
+                          safeSetState(() {});
 
                           navigate();
-                          if (shouldSetState) setState(() {});
+                          if (shouldSetState) safeSetState(() {});
                         },
                       ),
                     ),

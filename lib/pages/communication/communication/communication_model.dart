@@ -26,7 +26,6 @@ class CommunicationModel extends FlutterFlowModel<CommunicationWidget> {
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Backend Call - API (Get Memorandums)] action in Communication widget.
   ApiCallResponse? memorandumsResp;
   // Stores action output result for [Backend Call - API (Get Notifications)] action in Communication widget.

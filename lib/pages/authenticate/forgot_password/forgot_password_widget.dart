@@ -425,13 +425,15 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget>
                                                 (value) => safeSetState(() {}));
 
                                             if (shouldSetState) {
-                                              setState(() {});
+                                              safeSetState(() {});
                                             }
                                             return;
                                           }
 
                                           context.safePop();
-                                          if (shouldSetState) setState(() {});
+                                          if (shouldSetState) {
+                                            safeSetState(() {});
+                                          }
                                         },
                                         text: 'Enviar correo',
                                         options: FFButtonOptions(

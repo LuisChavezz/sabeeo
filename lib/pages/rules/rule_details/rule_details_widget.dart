@@ -41,9 +41,9 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _model.isLoading = true;
-      setState(() {});
+      safeSetState(() {});
       _model.isLoading = false;
-      setState(() {});
+      safeSetState(() {});
     });
   }
 
@@ -740,7 +740,7 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                                               var shouldSetState = false;
                                               navigate() {}
                                               _model.ruleDocConfirmResp =
-                                                  await OriginalAPIEndpointsGroup
+                                                  await RuleDocumentsGroup
                                                       .confirmDocumentCall
                                                       .call(
                                                 token:
@@ -856,7 +856,7 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                                                               message:
                                                                   valueOrDefault<
                                                                       String>(
-                                                                OriginalAPIEndpointsGroup
+                                                                RuleDocumentsGroup
                                                                     .confirmDocumentCall
                                                                     .message(
                                                                   (_model.ruleDocConfirmResp
@@ -879,7 +879,7 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                                             },
                                             setNipAction: (nip) async {
                                               _model.userNip = nip;
-                                              setState(() {});
+                                              safeSetState(() {});
                                             },
                                           ),
                                         ),
@@ -888,7 +888,7 @@ class _RuleDetailsWidgetState extends State<RuleDetailsWidget> {
                                   },
                                 ).then((value) => safeSetState(() {}));
 
-                                setState(() {});
+                                safeSetState(() {});
                               },
                               text: 'Confirmar como leído',
                               options: FFButtonOptions(

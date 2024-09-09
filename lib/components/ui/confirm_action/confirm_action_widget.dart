@@ -202,7 +202,7 @@ class _ConfirmActionWidgetState extends State<ConfirmActionWidget> {
                           if (widget.hasTextField &&
                               (_model.textFieldTextController.text == '')) {
                             _model.showFieldValidationMessage = true;
-                            setState(() {});
+                            safeSetState(() {});
                           } else {
                             await widget.mainAction?.call(
                               _model.textFieldTextController.text,

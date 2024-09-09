@@ -22,7 +22,6 @@ class HomeModel extends FlutterFlowModel<HomeWidget> {
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Backend Call - API (Get Anomalies)] action in Home widget.
   ApiCallResponse? anomaliesResp;
   // Stores action output result for [Backend Call - API (Get Kpis)] action in Home widget.

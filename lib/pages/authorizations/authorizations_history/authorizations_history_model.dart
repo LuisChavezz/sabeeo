@@ -18,7 +18,6 @@ class AuthorizationsHistoryModel
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Backend Call - API (Get History Auths)] action in Authorizations_history widget.
   ApiCallResponse? allAuthsResp;
   // State field(s) for searchField widget.
