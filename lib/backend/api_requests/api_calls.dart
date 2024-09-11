@@ -305,6 +305,7 @@ class DirectoryCall {
         'perPage': perPage,
         'searchKeys': searchKeys,
         'searchValue': searchValue,
+        'status': "1",
       },
       returnBody: true,
       encodeBodyUtf8: false,
